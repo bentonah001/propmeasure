@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PropMeasure – Distance, Area &amp; Valuation</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap);
+:root{--bg:#0f0a2a;--card:#1a1440;--text:#fff;--muted:#c4bdea;--accent:#a3e635;--accent2:#22d3ee;--line:rgba(255,255,255,.14);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:Poppins,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;background-image:radial-gradient(circle at 100% 0,rgba(124,58,237,.45),transparent 45%),radial-gradient(circle at 0 100%,rgba(190,24,93,.3),transparent 45%);background-attachment:fixed}
+header{background:linear-gradient(135deg,#6d28d9,#be185d 65%,#ea580c);color:#fff;padding:24px 18px 50px;border-radius:0 0 28px 28px}
+header h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
+header p{margin:4px 0 0;opacity:.92;font-size:14px}
+main{max-width:640px;margin:-30px auto 40px;padding:0 14px}
+nav{display:flex;gap:6px;background:var(--card);padding:6px;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.35);margin-bottom:14px;border:1px solid var(--line)}
+nav button{font-size:12px!important;flex:1;border:0;background:none;color:var(--muted);padding:10px 2px;border-radius:12px;font-weight:600;font-family:inherit;cursor:pointer}
+nav button.on{background:var(--accent);color:#0f0a2a;font-weight:800}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
+.card h2{margin:0 0 12px;font-size:16px;font-weight:700}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;font-weight:600}
+input,select,textarea{font-family:inherit;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.06);color:var(--text);font-size:16px}
+input::placeholder,textarea::placeholder{color:#a79fd6}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{width:100%;margin-top:14px;padding:14px;border:0;border-radius:16px;background:var(--accent);color:#0f0a2a;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;box-shadow:0 5px 0 #6a9a12}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #6a9a12}
+.btn.alt{background:transparent;color:#fff;border:2px solid var(--line);margin-top:8px;box-shadow:none}
+.btn.alt.on{background:var(--accent);color:#0f0a2a;border-color:var(--accent)}
+.res{margin-top:14px;padding:14px;border-radius:16px;background:rgba(163,230,53,.08);border:1px dashed var(--accent)}
+.res .big{font-size:28px;font-weight:800;color:var(--accent)}
+.res small{color:var(--muted);display:block;margin-top:4px;line-height:1.5}
+.hide{display:none}.rec{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.rec button{border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer;width:auto;margin:0}.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}.chip{border:1px solid var(--line);background:transparent;color:var(--accent);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
+.auth{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,#6d28d9,#be185d 62%,#ea580c);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}.auth.hide{display:none}.auth .card{width:100%;max-width:420px;margin:0;background:#150f38}#amsg{color:#fb7185!important}#lo{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:12px;padding:8px 12px;font-weight:600;font-family:inherit;cursor:pointer}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.tile{border:0;border-radius:20px;padding:18px 16px;min-height:96px;justify-content:center;text-align:left;color:#fff;cursor:pointer;display:flex;flex-direction:column;gap:4px;font-size:16px;font-family:inherit}.tile span{font-size:12px;color:rgba(255,255,255,.9)}
+.tiles .tile:nth-child(1){background:linear-gradient(135deg,#6d28d9,#be185d)}.tiles .tile:nth-child(2){background:linear-gradient(135deg,#0e7490,#1d4ed8)}.tiles .tile:nth-child(3){background:linear-gradient(135deg,#047857,#0e7490)}.tiles .tile:nth-child(4){background:linear-gradient(135deg,#c2410c,#be123c)}.tiles .tile:nth-child(5){background:linear-gradient(135deg,#4338ca,#7c3aed)}.tiles .tile:nth-child(6){background:var(--accent);color:#0f0a2a}.tiles .tile:nth-child(6) span{color:#0f0a2a}
+.note{font-size:12px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div id='auth' class='auth'><div class='card'><h2 style='font-size:22px;margin-bottom:4px'>PropMeasure</h2><p class='note' style='margin-top:0'>Measure land, value property and keep your records.</p>
+<div class='row'><button class='btn alt on' id='atg_reg' onclick="authSwitch('reg')">Register</button><button class='btn alt' id='atg_login' onclick="authSwitch('login')">Log in</button></div>
+<div id='awrap'><label>Full name</label><input id='aname' autocomplete='name'></div>
+<label>Email</label><input id='aemail' type='email' autocomplete='email'>
+<label>Password</label><input id='apass' type='password' autocomplete='current-password' placeholder='At least 8 characters'>
+<button class='btn' id='abtn' onclick='authGo()'>Create account</button><div class='note' id='amsg' style='color:#dc2626'></div>
+<p class='note'>Accounts and records are stored only in this browser on this device. There is no password recovery.</p></div></div>
+<header style='position:relative'><h1>PropMeasure</h1><p>Measure distance, area and value property.</p><button id='lo' class='hide' onclick='logout()'>Log out</button></header>
+<main>
+<nav id="tabs">
+<button data-t="home" class="on">Home</button>
+<button data-t="dist">Distance</button>
+<button data-t="area">Land</button>
+<button data-t="val">Value</button>
+<button data-t="conv">Convert</button>
+<button data-t="gps">Map</button>
+</nav>
+
+<section id='home'>
+<div class='card'><p class='note' style='margin:0'>Welcome back</p><h2 id='hname' style='font-size:22px;margin:4px 0 0'></h2></div>
+<div class='tiles'>
+<button class='tile' onclick="go('area')"><b>Land</b><span>Measure plots</span></button>
+<button class='tile' onclick="go('val')"><b>Valuation</b><span>Six methods</span></button>
+<button class='tile' onclick="go('gps')"><b>Map</b><span>Satellite and GPS</span></button>
+<button class='tile' onclick="go('conv')"><b>Convert</b><span>Units and plots</span></button>
+<button class='tile' onclick="go('dist')"><b>Distance</b><span>Between two points</span></button>
+<button class='tile' onclick="go('area')"><b>Saved plots</b><span id='hcount'></span></button>
+</div>
+<div class='card'><h2>Recent plots</h2><div id='hrecent'></div></div>
+<button class='btn alt' onclick='logout()'>Log out</button>
+</section>
+
+<section id="dist" class="hide">
+<div class="card"><h2>Distance between two points</h2>
+<label>Point A (latitude, longitude)</label>
+<div class="row"><input id="alat" type="number" step="any" placeholder="Latitude"><input id="alng" type="number" step="any" placeholder="Longitude"></div>
+<button class="btn alt" onclick="useLoc('a')">Use my location for A</button>
+<label>Point B (latitude, longitude)</label>
+<div class="row"><input id="blat" type="number" step="any" placeholder="Latitude"><input id="blng" type="number" step="any" placeholder="Longitude"></div>
+<button class="btn alt" onclick="useLoc('b')">Use my location for B</button>
+<button class="btn" onclick="calcDist()">Calculate distance</button>
+<div class="res hide" id="distRes"></div>
+<p class="note">Straight-line (great-circle) distance. Road distance will be longer. Tip: in Google Maps, long-press a spot to copy its coordinates.</p></div>
+
+<div class="card"><h2>Length converter</h2>
+<div class="row"><div><label>Value</label><input id="cv" type="number" step="any" value="100"></div>
+<div><label>From</label><select id="cfrom"></select></div></div>
+<div class="res" id="cvRes"></div></div>
+</section>
+
+<section id="area" class="hide">
+<div class="card"><h2>Area of a plot or room</h2>
+<div class="row"><div><label>Length</label><input id="len" type="number" step="any" placeholder="e.g. 30"></div>
+<div><label>Width</label><input id="wid" type="number" step="any" placeholder="e.g. 15"></div></div>
+<label>Unit</label><select id="aunit"><option value="1">Metres</option><option value="0.3048">Feet</option><option value="0.9144">Yards</option></select>
+<label>Shape</label><select id="shape"><option value="1">Rectangle</option><option value="0.5">Triangle</option></select>
+<button class="btn" onclick="calcArea()">Calculate area</button>
+<div class="res hide" id="areaRes"></div></div>
+
+<div class='card'><h2>Irregular land</h2><p class='note' style='margin-top:0'>Split the plot into rectangles and triangles, one per line: length width (add t for a triangle).</p><textarea id='secs' rows='4' placeholder='30 20&#10;12 10 t'></textarea><label>Unit</label><select id='sunit'><option value='1'>Metres</option><option value='0.3048'>Feet</option><option value='0.9144'>Yards</option></select><button class='btn' onclick='calcSec()'>Add up area</button><div class='res hide' id='secRes'></div></div>
+
+<div class='card'><h2>Polygon &amp; boundary marking</h2><p class='note' style='margin-top:0'>Walk to each corner and tap Mark my corner, or type coordinates. Add 3 or more corners in order around the plot.</p><button class='btn' onclick='markHere()'>Mark my corner (GPS)</button><div class='row' style='margin-top:10px'><input id='plat' type='number' step='any' placeholder='Latitude'><input id='plng' type='number' step='any' placeholder='Longitude'></div><div class='row'><button class='btn alt' onclick='addManual()'>Add corner</button><button class='btn alt' onclick='undoPt()'>Undo</button></div><button class='btn alt' onclick='clearPts()'>Clear all</button><div class='note' id='ptList'></div><svg id='polySvg' style='width:100%;max-height:260px;color:var(--text)'></svg><div class='res hide' id='polyRes'></div><p class='note'>Phone GPS is usually accurate to a few metres, so treat results as estimates, not survey-grade or legal boundaries.</p></div>
+
+<div class='card'><h2>Saved plots</h2><label>Name for the last measurement</label><input id='rname' placeholder='e.g. Plot 4, Block B'><button class='btn' onclick='saveRec()'>Save last measurement</button><div id='recList' style='margin-top:12px'></div><label>Compare two saved plots</label><div class='row'><select id='cmpA' onchange='cmpRecs()'></select><select id='cmpB' onchange='cmpRecs()'></select></div><div class='res hide' id='cmpRes'></div></div>
+</section>
+
+<section id="val" class="hide">
+<div class="card"><h2>Valuation method</h2>
+<select id="method" onchange="showMethod()">
+<option value="inv">Investment (income capitalisation)</option>
+<option value="cmp">Comparison (price per m²)</option>
+<option value="cost">Cost (depreciated replacement)</option>
+<option value="pa">Profit account (accounts) method</option>
+<option value="res">Residual method</option>
+<option value="rd">Redevelopment method</option></select></div>
+
+<div class="card" id="m_inv"><h2>Investment method</h2>
+<label>Annual gross rent</label><input id="rent" type="number" step="any" placeholder="e.g. 5000000">
+<label>Annual outgoings (management, repairs, rates)</label><input id="outg" type="number" step="any" placeholder="e.g. 800000">
+<label>Capitalisation rate (%)</label><input id="cap" type="number" step="any" placeholder="e.g. 8">
+<button class="btn" onclick="calcInv()">Calculate value</button><div class="res hide" id="invRes"></div></div>
+
+<div class="card hide" id="m_cmp"><h2>Comparison method</h2>
+<label>Comparable sale prices (one per line)</label>
+<textarea id="comps" rows="3" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-size:16px" placeholder="10000000&#10;12000000"></textarea>
+<label>Their sizes in m² (one per line, same order)</label>
+<textarea id="csz" rows="3" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-size:16px" placeholder="400&#10;450"></textarea>
+<label>Subject property size (m²)</label><input id="subsz" type="number" step="any">
+<button class="btn" onclick="calcCmp()">Calculate value</button><div class="res hide" id="vcmpRes"></div></div>
+
+<div class="card hide" id="m_cost"><h2>Cost method</h2>
+<label>Land value</label><input id="land" type="number" step="any">
+<label>Building area (m²)</label><input id="barea" type="number" step="any">
+<label>Replacement cost per m²</label><input id="rcost" type="number" step="any">
+<div class="row"><div><label>Building age (yrs)</label><input id="age" type="number" step="any"></div>
+<div><label>Economic life (yrs)</label><input id="life" type="number" step="any" value="60"></div></div>
+<button class="btn" onclick="calcCost()">Calculate value</button><div class="res hide" id="costRes"></div></div>
+<div class="card hide" id="m_pa"><h2>Profit account method</h2>
+<label>Annual gross receipts (turnover)</label><input id="pa_rev" type="number" step="any">
+<label>Cost of purchases / stock</label><input id="pa_purch" type="number" step="any">
+<label>Working expenses (staff, utilities, etc.)</label><input id="pa_exp" type="number" step="any">
+<label>Tenant’s remuneration &amp; profit (amount)</label><input id="pa_prof" type="number" step="any">
+<label>Capitalisation rate (%)</label><input id="pa_cap" type="number" step="any" placeholder="e.g. 10">
+<button class="btn" onclick="calcPA()">Calculate value</button><div class="res hide" id="paRes"></div>
+<p class="note">Used for trade-based property such as hotels, cinemas and filling stations.</p></div>
+
+<div class="card hide" id="m_res"><h2>Residual method</h2>
+<label>Gross development value (GDV)</label><input id="rs_gdv" type="number" step="any">
+<label>Construction cost</label><input id="rs_build" type="number" step="any">
+<div class="row"><div><label>Professional fees (% of build)</label><input id="rs_fees" type="number" step="any" value="10"></div>
+<div><label>Contingency (% of build)</label><input id="rs_cont" type="number" step="any" value="5"></div></div>
+<div class="row"><div><label>Finance (% of build)</label><input id="rs_fin" type="number" step="any" value="8"></div>
+<div><label>Developer’s profit (% of GDV)</label><input id="rs_prof" type="number" step="any" value="20"></div></div>
+<button class="btn" onclick="calcRes()">Calculate land value</button><div class="res hide" id="rsRes"></div></div>
+
+<div class="card hide" id="m_rd"><h2>Redevelopment method</h2>
+<label>GDV of the redeveloped property</label><input id="rd_gdv" type="number" step="any">
+<label>Demolition &amp; clearance cost</label><input id="rd_demo" type="number" step="any">
+<label>New construction cost</label><input id="rd_build" type="number" step="any">
+<div class="row"><div><label>Professional fees (% of build)</label><input id="rd_fees" type="number" step="any" value="10"></div>
+<div><label>Finance (% of build)</label><input id="rd_fin" type="number" step="any" value="8"></div></div>
+<label>Developer’s profit (% of GDV)</label><input id="rd_prof" type="number" step="any" value="20">
+<label>Value in existing use (optional, to compare)</label><input id="rd_exist" type="number" step="any">
+<button class="btn" onclick="calcRd()">Calculate value</button><div class="res hide" id="rdRes"></div></div>
+<p class="note">Estimates only. A registered valuer should confirm figures for formal valuations.</p>
+</section>
+<section id='gps' class='hide'>
+<div class='card' style='padding:0;overflow:hidden'><div id='mapdiv' style='height:52vh;min-height:320px'></div></div>
+<div class='card'><div id='mtotal' style='font-size:20px;font-weight:800'>Tap the map to add points</div><div class='note' id='mdetail'></div><div class='res hide' id='mapRes'></div>
+<div class='row' style='margin-top:12px'><button class='btn alt' id='mundo'>Undo</button><button class='btn alt' id='mclear'>Clear</button></div>
+<div class='row'><button class='btn alt' id='mme'>My location</button><button class='btn alt' id='munits'>Units</button></div>
+<label>Save as plot (needs 3+ points)</label><input id='mname' placeholder='Plot name'><button class='btn' onclick='saveMap()'>Save plot</button><div class='note' id='mmsg'></div>
+<p class='note'>Tap the map to drop points. Distances are straight-line between points. Areas from tapped points are estimates, not survey-grade.</p></div></section>
+<section id='conv' class='hide'><div class='card'><h2>Unit converter</h2><div class='chips' id='chips'></div><label>Type</label><select id='ccat' onchange='fillCat()'><option value='L'>Length</option><option value='A'>Area (incl. Nigerian plots)</option></select><label>Value</label><input id='cv2' type='number' step='any' value='1' oninput='conv2()'><div class='row'><div><label>From</label><select id='cf2' onchange='conv2()'></select></div><div><label>To</label><select id='ct2' onchange='conv2()'></select></div></div><div class='res' id='cv2Res'></div><p class='note'>Plot sizes differ by state and layout (for example 50×100 ft, 60×120 ft, 450 m² or 600 m²). Check the size on your survey plan or with the local land office.</p></div></section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):"–";
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  ["home","dist","area","val","conv","gps"].forEach(id=>$(id).classList.toggle("hide",id!==b.dataset.t));if(b.dataset.t==="gps")openMap();if(b.dataset.t==="home")drawHome();
+});
+function useLoc(p){
+  if(!navigator.geolocation){alert("Location isn’t available on this device.");return}
+  navigator.geolocation.getCurrentPosition(pos=>{$(p+"lat").value=pos.coords.latitude.toFixed(6);$(p+"lng").value=pos.coords.longitude.toFixed(6)},()=>alert("Couldn’t get your location. Enter coordinates manually."));
+}
+function calcDist(){
+  const v=["alat","alng","blat","blng"].map(i=>parseFloat($(i).value));
+  const r=$("distRes");r.classList.remove("hide");
+  if(v.some(isNaN)){r.innerHTML="Please fill in both points.";return}
+  const R=6371008.8,rad=x=>x*Math.PI/180;
+  const dLat=rad(v[2]-v[0]),dLng=rad(v[3]-v[1]);
+  const h=Math.sin(dLat/2)**2+Math.cos(rad(v[0]))*Math.cos(rad(v[2]))*Math.sin(dLng/2)**2;
+  const m=2*R*Math.asin(Math.sqrt(h));
+  r.innerHTML=`<div class="big">${fmt(m/1000)} km</div><small>${fmt(m)} m · ${fmt(m*3.28084)} ft · ${fmt(m/1609.344)} miles</small>`;
+}
+const U={"Metres":1,"Kilometres":1000,"Feet":0.3048,"Yards":0.9144,"Miles":1609.344};
+$("cfrom").innerHTML=Object.keys(U).map(k=>`<option>${k}</option>`).join("");
+function conv(){
+  const m=parseFloat($("cv").value)*U[$("cfrom").value];
+  $("cvRes").innerHTML=isNaN(m)?"Enter a value.":Object.keys(U).map(k=>`${fmt(m/U[k])} ${k.toLowerCase()}`).join("<br>");
+}
+$("cv").oninput=conv;$("cfrom").onchange=conv;conv();
+function calcArea(){
+  const l=parseFloat($("len").value),w=parseFloat($("wid").value),f=parseFloat($("aunit").value),s=parseFloat($("shape").value);
+  const r=$("areaRes");r.classList.remove("hide");
+  if(isNaN(l)||isNaN(w)){r.innerHTML="Enter length and width.";return}
+  const a=l*f*w*f*s;
+  show('areaRes',a,s==1?2*(l+w)*f:null);
+}
+function showMethod(){const m=$("method").value;["inv","cmp","cost","pa","res","rd"].forEach(k=>$("m_"+k).classList.toggle("hide",k!==m))}
+function calcInv(){
+  const rent=parseFloat($("rent").value),o=parseFloat($("outg").value)||0,c=parseFloat($("cap").value);
+  const r=$("invRes");r.classList.remove("hide");
+  if(isNaN(rent)||isNaN(c)||c<=0){r.innerHTML="Enter rent and a cap rate above 0.";return}
+  const noi=rent-o;
+  r.innerHTML=`<div class="big">${fmt(noi/(c/100))}</div><small>Net income: ${fmt(noi)} ÷ ${c}% cap rate (years’ purchase: ${fmt(100/c)})</small>`;
+}
+function lines(id){return $(id).value.split(/\n/).map(x=>parseFloat(x.replace(/,/g,""))).filter(x=>!isNaN(x))}
+function calcCmp(){
+  const p=lines("comps"),s=lines("csz"),sub=parseFloat($("subsz").value);
+  const r=$("vcmpRes");r.classList.remove("hide");
+  if(!p.length||p.length!==s.length||isNaN(sub)){r.innerHTML="Give matching prices and sizes, plus the subject size.";return}
+  const pp=p.map((x,i)=>x/s[i]),avg=pp.reduce((a,b)=>a+b,0)/pp.length;
+  r.innerHTML=`<div class="big">${fmt(avg*sub)}</div><small>Average rate ${fmt(avg)} per m² (range ${fmt(Math.min(...pp))}–${fmt(Math.max(...pp))}) × ${fmt(sub)} m²</small>`;
+}
+function calcCost(){
+  const land=parseFloat($("land").value)||0,a=parseFloat($("barea").value),rc=parseFloat($("rcost").value),age=parseFloat($("age").value)||0,life=parseFloat($("life").value);
+  const r=$("costRes");r.classList.remove("hide");
+  if(isNaN(a)||isNaN(rc)||isNaN(life)||life<=0){r.innerHTML="Enter building area, cost and life.";return}
+  const gross=a*rc,dep=Math.min(1,age/life),net=gross*(1-dep);
+  r.innerHTML=`<div class="big">${fmt(land+net)}</div><small>Land ${fmt(land)} + building ${fmt(net)} (replacement ${fmt(gross)} less ${fmt(dep*100)}% depreciation)</small>`;
+}
+const n=id=>parseFloat($(id).value)||0;
+function calcPA(){
+  const cap=n("pa_cap"),r=$("paRes");r.classList.remove("hide");
+  if(!n("pa_rev")||cap<=0){r.innerHTML="Enter gross receipts and a cap rate above 0.";return}
+  const div=n("pa_rev")-n("pa_purch")-n("pa_exp")-n("pa_prof");
+  if(div<=0){r.innerHTML="No divisible balance: costs and tenant’s profit use up all receipts.";return}
+  r.innerHTML=`<div class="big">${fmt(div/(cap/100))}</div><small>Divisible balance (rent): ${fmt(div)} ÷ ${cap}% cap rate</small>`;
+}
+function calcRes(){
+  const g=n("rs_gdv"),b=n("rs_build"),r=$("rsRes");r.classList.remove("hide");
+  if(!g||!b){r.innerHTML="Enter GDV and construction cost.";return}
+  const f=b*n("rs_fees")/100,c=b*n("rs_cont")/100,fin=b*n("rs_fin")/100,p=g*n("rs_prof")/100;
+  const land=g-b-f-c-fin-p;
+  r.innerHTML=`<div class="big">${fmt(land)}</div><small>Residual land value = GDV ${fmt(g)} − build ${fmt(b)} − fees ${fmt(f)} − contingency ${fmt(c)} − finance ${fmt(fin)} − profit ${fmt(p)}${land<=0?"<br><b>Negative: the scheme isn’t viable as set out.</b>":""}</small>`;
+}
+function calcRd(){
+  const g=n("rd_gdv"),b=n("rd_build"),r=$("rdRes");r.classList.remove("hide");
+  if(!g||!b){r.innerHTML="Enter GDV and construction cost.";return}
+  const d=n("rd_demo"),f=b*n("rd_fees")/100,fin=b*n("rd_fin")/100,p=g*n("rd_prof")/100;
+  const v=g-d-b-f-fin-p,ex=n("rd_exist");
+  let cmp="";
+  if(ex)cmp=`<br>Existing use: ${fmt(ex)}. <b>${v>ex?"Redevelopment gives the higher value.":"Existing use is worth more."}</b>`;
+  r.innerHTML=`<div class="big">${fmt(v)}</div><small>GDV ${fmt(g)} − demolition ${fmt(d)} − build ${fmt(b)} − fees ${fmt(f)} − finance ${fmt(fin)} − profit ${fmt(p)}${cmp}</small>`;
+}
+const fm=x=>isFinite(x)?(+x.toPrecision(8)).toLocaleString(undefined,{maximumFractionDigits:8}):'–';
+const CAT={L:{Metres:1,Kilometres:1000,Feet:.3048,Yards:.9144,Miles:1609.344,Centimetres:.01,Inches:.0254},A:{'Square metres':1,'Square feet':.09290304,'Square yards':.83612736,Hectares:1e4,Acres:4046.8564224,'Square kilometres':1e6,'Plot (50×100 ft)':464.5152,'Plot (60×120 ft)':668.9019,'Plot (450 m²)':450,'Plot (600 m²)':600}};
+const Q=[['L','Metres','Feet','m → ft'],['L','Feet','Metres','ft → m'],['A','Square metres','Square feet','m² → ft²'],['A','Acres','Hectares','ac → ha'],['A','Hectares','Acres','ha → ac'],['A','Square feet','Acres','ft² → ac'],['A','Square metres','Hectares','m² → ha'],['L','Kilometres','Metres','km → m'],['L','Miles','Kilometres','mi → km']];
+function fillCat(f,t){const u=Object.keys(CAT[$('ccat').value]),o=u.map(k=>`<option>${k}</option>`).join('');$('cf2').innerHTML=o;$('ct2').innerHTML=o;$('cf2').value=f||u[0];$('ct2').value=t||u[1];conv2()}
+function conv2(){const C=CAT[$('ccat').value],v=parseFloat($('cv2').value),r=$('cv2Res');if(isNaN(v)){r.innerHTML='Enter a value.';return}const b=v*C[$('cf2').value];r.innerHTML=`<div class='big'>${fm(b/C[$('ct2').value])} ${$('ct2').value.toLowerCase()}</div><small>${Object.keys(C).map(k=>fm(b/C[k])+' '+k.toLowerCase()).join('<br>')}</small>`}
+let last=null;
+const PL=[['50×100 ft plots',464.5152],['60×120 ft plots',668.9019],['450 m² plots',450],['600 m² plots',600]];
+function show(id,a,p,note){last={area:a,perim:p};const r=$(id);r.classList.remove('hide');r.innerHTML=`<div class='big'>${fmt(a)} m²</div><small>${fmt(a*10.7639)} sq ft · ${fmt(a/10000)} ha · ${fmt(a/4046.856)} acres${p?`<br>Perimeter: ${fmt(p)} m (${fmt(p*3.28084)} ft)`:''}<br>≈ ${PL.map(x=>fmt(a/x[1])+' '+x[0]).join(' · ')}${note?'<br>'+note:''}</small>`}
+function calcSec(){const f=parseFloat($('sunit').value);let a=0,c=0;$('secs').value.split('\n').forEach(l=>{const t=l.trim().split(/[\s,x×]+/),L=parseFloat(t[0]),W=parseFloat(t[1]);if(!isNaN(L)&&!isNaN(W)){a+=L*f*W*f*(/^t/i.test(t[2]||'')?.5:1);c++}});if(!c){const r=$('secRes');r.classList.remove('hide');r.innerHTML='Add at least one line, e.g. 30 20';return}show('secRes',a,null,c+' section(s) added')}
+let pts=[];
+function addPt(la,lo){if(isNaN(la)||isNaN(lo)){alert('Enter latitude and longitude.');return}pts.push([la,lo]);drawPoly()}
+function addManual(){addPt(parseFloat($('plat').value),parseFloat($('plng').value));$('plat').value='';$('plng').value=''}
+function markHere(){if(!navigator.geolocation){alert('Location isn’t available on this device.');return}navigator.geolocation.getCurrentPosition(p=>addPt(+p.coords.latitude.toFixed(6),+p.coords.longitude.toFixed(6)),()=>alert('Couldn’t get your location. Enter coordinates manually.'),{enableHighAccuracy:true})}
+function undoPt(){pts.pop();drawPoly()}
+function clearPts(){pts=[];drawPoly()}
+function drawPoly(){$('ptList').innerHTML=pts.map((p,i)=>(i+1)+'. '+p[0]+', '+p[1]).join('<br>')||'No corners marked yet.';const r=$('polyRes'),s=$('polySvg');if(pts.length<3){r.classList.add('hide');s.innerHTML='';return}const lat0=pts.reduce((a,p)=>a+p[0],0)/pts.length,k=111320,xs=pts.map(p=>[(p[1]-pts[0][1])*k*Math.cos(lat0*Math.PI/180),(p[0]-pts[0][0])*k]);let A=0,per=0;xs.forEach((p,i)=>{const q=xs[(i+1)%xs.length];A+=p[0]*q[1]-q[0]*p[1];per+=Math.hypot(q[0]-p[0],q[1]-p[1])});const X=xs.map(p=>p[0]),Y=xs.map(p=>p[1]),mx=Math.min(...X),my=Math.max(...Y),w=Math.max(...X)-mx,h=my-Math.min(...Y),sc=180/Math.max(w,h,1e-9),pd=20,pp=xs.map(p=>[pd+(p[0]-mx)*sc,pd+(my-p[1])*sc]);s.setAttribute('viewBox',`0 0 ${w*sc+2*pd} ${h*sc+2*pd}`);s.innerHTML=`<polygon points='${pp.map(p=>p.join(',')).join(' ')}' fill='var(--accent)' fill-opacity='.18' stroke='var(--accent)' stroke-width='2'/>`+pp.map((p,i)=>`<circle cx='${p[0]}' cy='${p[1]}' r='5' fill='var(--accent2)'/><text x='${p[0]+7}' y='${p[1]-7}' font-size='12' fill='currentColor'>${i+1}</text>`).join('');show('polyRes',Math.abs(A)/2,per,pts.length+' corners')}
+let recs=[];
+function persist(){try{localStorage.setItem(recKey,JSON.stringify(recs))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function saveRec(){if(!last){alert('Measure a plot first.');return}recs.push({name:$('rname').value.trim()||'Plot '+(recs.length+1),area:last.area,perim:last.perim});$('rname').value='';persist();drawRecs()}
+function delRec(i){recs.splice(i,1);persist();drawRecs()}
+function drawRecs(){$('recList').innerHTML=recs.length?recs.map((x,i)=>`<div class='rec'><span><b>${esc(x.name)}</b><br><small>${fmt(x.area)} m²${x.perim?' · perimeter '+fmt(x.perim)+' m':''}</small></span><button onclick='delRec(${i})'>✕</button></div>`).join('')+`<div class='rec'><b>Total (${recs.length})</b><b>${fmt(recs.reduce((a,x)=>a+x.area,0))} m²</b></div>`:'<small>No saved plots yet.</small>';const o=recs.map((x,i)=>`<option value='${i}'>${esc(x.name)}</option>`).join('');$('cmpA').innerHTML=o;$('cmpB').innerHTML=o;if(recs.length>1)$('cmpB').value=1;cmpRecs()}
+function cmpRecs(){const r=$('cmpRes');if(recs.length<2){r.classList.add('hide');return}r.classList.remove('hide');const a=recs[$('cmpA').value],b=recs[$('cmpB').value],d=a.area-b.area;r.innerHTML=`<div class='big'>${fmt(Math.abs(d))} m²</div><small>${d===0?'Same size.':esc(d>0?a.name:b.name)+' is larger by '+fmt(Math.abs(d)/Math.min(a.area,b.area)*100)+'%'}<br>${esc(a.name)}: ${fmt(a.area)} m² · ${esc(b.name)}: ${fmt(b.area)} m²${a.perim&&b.perim?'<br>Perimeter: '+fmt(a.perim)+' m vs '+fmt(b.perim)+' m':''}</small>`}
+Q.forEach(q=>{const b=document.createElement('button');b.className='chip';b.textContent=q[3];b.onclick=()=>{$('ccat').value=q[0];fillCat(q[1],q[2])};$('chips').appendChild(b)});
+fillCat();drawRecs();drawPoly();
+let gmap=null,mpts=[],mdots=[],mline=null,mpoly=null,mmetric=true;
+function mdist(a,b){const R=6371008.8,r=x=>x*Math.PI/180,dl=r(b.lat-a.lat),dg=r(b.lng-a.lng),h=Math.sin(dl/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function mfmt(m){if(mmetric)return m<1000?Math.round(m)+' m':(m/1000).toFixed(m<10000?2:1)+' km';const ft=m*3.28084,mi=m/1609.344;return mi<0.25?Math.round(ft)+' ft':mi.toFixed(mi<10?2:1)+' mi'}
+function mArea(){const lat0=mpts.reduce((s,p)=>s+p.lat,0)/mpts.length,k=111320,xs=mpts.map(p=>[(p.lng-mpts[0].lng)*k*Math.cos(lat0*Math.PI/180),(p.lat-mpts[0].lat)*k]);let A=0,per=0;xs.forEach((p,i)=>{const q=xs[(i+1)%xs.length];A+=p[0]*q[1]-q[0]*p[1];per+=Math.hypot(q[0]-p[0],q[1]-p[1])});return{area:Math.abs(A)/2,perim:per}}
+function openMap(){
+  if(typeof L==='undefined'){$('mtotal').textContent='The map library did not load. Check your internet connection.';return}
+  if(gmap){setTimeout(()=>gmap.invalidateSize(),50);return}
+  gmap=L.map('mapdiv').setView([20,0],2);
+  const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:21,maxNativeZoom:19,attribution:'Imagery &copy; Esri, Maxar, Earthstar Geographics'});
+  const lab=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:21,maxNativeZoom:19});
+  const st=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:21,maxNativeZoom:19,attribution:'&copy; OpenStreetMap contributors'});
+  sat.addTo(gmap);lab.addTo(gmap);
+  L.control.layers({'Satellite':sat,'Streets':st},{'Place names':lab}).addTo(gmap);
+  gmap.on('click',e=>{mpts.push(e.latlng);mdots.push(L.circleMarker(e.latlng,{radius:6,fillOpacity:1}).addTo(gmap));mrefresh()});
+  gmap.on('locationerror',()=>{$('mmsg').textContent='Could not get your location. Check location permission.'});
+  $('mundo').onclick=()=>{if(!mpts.length)return;mpts.pop();gmap.removeLayer(mdots.pop());mrefresh()};
+  $('mclear').onclick=()=>{mpts.length=0;mdots.forEach(d=>gmap.removeLayer(d));mdots.length=0;mrefresh()};
+  $('munits').onclick=()=>{mmetric=!mmetric;mrefresh()};
+  $('mme').onclick=()=>gmap.locate({setView:true,maxZoom:18});
+  mrefresh();
+}
+function mrefresh(){
+  if(mline){gmap.removeLayer(mline);mline=null}
+  if(mpoly){gmap.removeLayer(mpoly);mpoly=null}
+  if(mpts.length>=2)mline=L.polyline(mpts,{weight:5}).addTo(gmap);
+  if(mpts.length>=3)mpoly=L.polygon(mpts,{weight:0,fillOpacity:.2}).addTo(gmap);
+  const t=$('mtotal'),d=$('mdetail'),r=$('mapRes');$('mmsg').textContent='';
+  if(mpts.length<3)r.classList.add('hide');
+  if(mpts.length<2){t.textContent='Tap the map to add points';d.textContent='Points: '+mpts.length;return}
+  let sum=0;for(let i=1;i<mpts.length;i++)sum+=mdist(mpts[i-1],mpts[i]);
+  const n=mpts.length;
+  t.textContent='Total: '+mfmt(sum);
+  d.textContent='Points: '+n+' • Last leg: '+mfmt(mdist(mpts[n-2],mpts[n-1]))+' • Start to end: '+mfmt(mdist(mpts[0],mpts[n-1]));
+  if(n>=3){const P=mArea();show('mapRes',P.area,P.perim,'Shape closes from the last point back to the first.')}
+}
+function saveMap(){if(mpts.length<3){$('mmsg').textContent='Add at least 3 points to save a plot.';return}const P=mArea();recs.push({name:$('mname').value.trim()||'Map plot '+(recs.length+1),area:P.area,perim:P.perim});$('mname').value='';persist();drawRecs();$('mmsg').textContent='Saved. Find it under Saved plots on the Land tab.'}
+
+const enc=new TextEncoder();
+async function hash(pw,salt){const b=await crypto.subtle.digest('SHA-256',enc.encode(salt+pw));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+function users(){try{return JSON.parse(localStorage.getItem('pm_users')||'{}')}catch(e){return{}}}
+let authMode='reg',recKey='pm_recs',me=null;
+function go(t){document.querySelector('#tabs [data-t="'+t+'"]').click()}
+function authSwitch(m){authMode=m;$('awrap').classList.toggle('hide',m!=='reg');$('abtn').textContent=m==='reg'?'Create account':'Log in';$('atg_reg').classList.toggle('on',m==='reg');$('atg_login').classList.toggle('on',m!=='reg');$('apass').autocomplete=m==='reg'?'new-password':'current-password';$('amsg').textContent=''}
+async function authGo(){
+  const em=$('aemail').value.trim().toLowerCase(),pw=$('apass').value,msg=$('amsg');msg.textContent='';
+  if(!/^\S+@\S+\.\S+$/.test(em)){msg.textContent='Enter a valid email.';return}
+  if(pw.length<8){msg.textContent='Password must be at least 8 characters.';return}
+  if(!window.crypto||!crypto.subtle){msg.textContent='This browser cannot secure passwords here. Open the app over https or localhost.';return}
+  const u=users();
+  if(authMode==='reg'){
+    const nm=$('aname').value.trim();
+    if(!nm){msg.textContent='Enter your name.';return}
+    if(u[em]){msg.textContent='That email is already registered. Switch to Log in.';return}
+    const salt=Array.from(crypto.getRandomValues(new Uint32Array(4))).join('-');
+    u[em]={name:nm,salt,hash:await hash(pw,salt)};
+    try{localStorage.setItem('pm_users',JSON.stringify(u))}catch(e){msg.textContent='Could not save your account in this browser.';return}
+  }else{
+    const x=u[em];
+    if(!x||x.hash!==await hash(pw,x.salt)){msg.textContent='Wrong email or password.';return}
+  }
+  try{localStorage.setItem('pm_session',em)}catch(e){}
+  startSession(em);
+}
+function startSession(em){
+  const x=users()[em];if(!x)return;
+  me={email:em,name:x.name};recKey='pm_recs_'+em;
+  try{recs=JSON.parse(localStorage.getItem(recKey)||'[]')}catch(e){recs=[]}
+  $('auth').classList.add('hide');$('lo').classList.remove('hide');$('apass').value='';
+  drawRecs();go('home');
+}
+function logout(){
+  try{localStorage.removeItem('pm_session')}catch(e){}
+  me=null;recs=[];recKey='pm_recs';drawRecs();
+  $('lo').classList.add('hide');$('auth').classList.remove('hide');authSwitch('login');
+}
+function drawHome(){
+  if(!me)return;
+  $('hname').textContent=me.name;
+  const t=recs.reduce((a,x)=>a+x.area,0);
+  $('hcount').textContent=recs.length+(recs.length===1?' plot':' plots')+' · '+fmt(t)+' m²';
+  $('hrecent').innerHTML=recs.length?recs.slice(-3).reverse().map(x=>`<div class='rec'><span><b>${esc(x.name)}</b><br><small>${fmt(x.area)} m²</small></span></div>`).join(''):'<small>No saved plots yet. Measure one on the Land or Map tab.</small>';
+}
+$('apass').addEventListener('keydown',e=>{if(e.key==='Enter')authGo()});
+{const s=(()=>{try{return localStorage.getItem('pm_session')}catch(e){return null}})();
+if(s&&users()[s])startSession(s);else authSwitch(Object.keys(users()).length?'login':'reg')}
+</script>
+</body>
+</html>
