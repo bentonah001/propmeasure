@@ -7,46 +7,49 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 @import url(https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap);
-:root{--bg:#0f0a2a;--card:#1a1440;--text:#fff;--muted:#c4bdea;--accent:#a3e635;--accent2:#22d3ee;--line:rgba(255,255,255,.14);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--bg:#F6F5F1;--card:#fff;--text:#1B2430;--muted:#5B6672;--accent:#1F5FA8;--accent2:#315f9b;--line:#DDD9CE;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--text);font-family:Poppins,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;background-image:radial-gradient(circle at 100% 0,rgba(124,58,237,.45),transparent 45%),radial-gradient(circle at 0 100%,rgba(190,24,93,.3),transparent 45%);background-attachment:fixed}
-header{background:linear-gradient(135deg,#6d28d9,#be185d 65%,#ea580c);color:#fff;padding:24px 18px 50px;border-radius:0 0 28px 28px}
+body{background:#E9E7DF;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+header{background:#12263F;color:#fff;padding:24px 18px 50px;border-radius:0 0 28px 28px}
 header h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
 header p{margin:4px 0 0;opacity:.92;font-size:14px}
-main{max-width:640px;margin:-30px auto 40px;padding:0 14px}
-nav{display:flex;gap:6px;background:var(--card);padding:6px;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.35);margin-bottom:14px;border:1px solid var(--line)}
-nav button{font-size:12px!important;flex:1;border:0;background:none;color:var(--muted);padding:10px 2px;border-radius:12px;font-weight:600;font-family:inherit;cursor:pointer}
-nav button.on{background:var(--accent);color:#0f0a2a;font-weight:800}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
+main{max-width:640px;margin:0 auto 40px;padding:18px 14px 0}
+nav{position:sticky;top:0;z-index:100;display:flex;gap:6px;flex-wrap:wrap;background:#fff;padding:6px;border-radius:14px;box-shadow:0 4px 18px rgba(18,38,63,.10);margin-bottom:14px;border:1px solid var(--line)}
+nav button{font-size:12px!important;flex:1 1 auto;border:0;background:none;color:var(--muted);padding:10px 8px;border-radius:10px;font-weight:600;font-family:inherit;cursor:pointer}
+nav button.on{background:#12263F;color:#fff;font-weight:800}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(18,38,63,.04)}
 .card h2{margin:0 0 12px;font-size:16px;font-weight:700}
-label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;font-weight:600}
-input,select,textarea{font-family:inherit;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.06);color:var(--text);font-size:16px}
-input::placeholder,textarea::placeholder{color:#a79fd6}
+label{display:block;font-size:12px;color:#5B6672;margin:10px 0 4px;font-weight:600}
+input,select,textarea{font-family:inherit;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#1B2430;font-size:16px}
+input::placeholder,textarea::placeholder{color:#8a929c}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{width:100%;margin-top:14px;padding:14px;border:0;border-radius:16px;background:var(--accent);color:#0f0a2a;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;box-shadow:0 5px 0 #6a9a12}
-.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #6a9a12}
-.btn.alt{background:transparent;color:#fff;border:2px solid var(--line);margin-top:8px;box-shadow:none}
-.btn.alt.on{background:var(--accent);color:#0f0a2a;border-color:var(--accent)}
-.res{margin-top:14px;padding:14px;border-radius:16px;background:rgba(163,230,53,.08);border:1px dashed var(--accent)}
-.res .big{font-size:28px;font-weight:800;color:var(--accent)}
-.res small{color:var(--muted);display:block;margin-top:4px;line-height:1.5}
-.hide{display:none}.rec{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.rec button{border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer;width:auto;margin:0}.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}.chip{border:1px solid var(--line);background:transparent;color:var(--accent);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
-.auth{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,#6d28d9,#be185d 62%,#ea580c);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}.auth.hide{display:none}.auth .card{width:100%;max-width:420px;margin:0;background:#150f38}#amsg{color:#fb7185!important}#lo{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:12px;padding:8px 12px;font-weight:600;font-family:inherit;cursor:pointer}
+.btn{width:100%;margin-top:14px;padding:14px;border:0;border-radius:10px;background:#1F5FA8;color:#fff;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;box-shadow:none}
+.btn:active{transform:translateY(1px)}
+.btn.alt{background:#fff;color:#1F5FA8;border:1px solid #1F5FA8;margin-top:8px;box-shadow:none}
+.btn.alt.on{background:#1F5FA8;color:#fff;border-color:#1F5FA8}
+.res{margin-top:14px;padding:14px;border-radius:12px;background:#eef4fb;border:1px dashed #1F5FA8}
+.res .big{font-size:28px;font-weight:800;color:#1F5FA8}
+.res small{color:#5B6672;display:block;margin-top:4px;line-height:1.5}
+.hide{display:none}.rec{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.rec button{border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer;width:auto;margin:0}.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}.chip{border:1px solid var(--line);background:#fff;color:#1F5FA8;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
+.auth{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#e9eef8,#dce6f7);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}.auth.hide{display:none}.auth .auth-box{width:100%;max-width:900px;min-height:500px;background:#fff;border-radius:24px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;box-shadow:0 18px 55px rgba(18,38,63,.18)}.auth-side{background:#7894df;color:#fff;border-radius:0 42% 42% 0 / 0 50% 50% 0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:34px}.auth-side h2{font-size:30px;margin:0 0 10px}.auth-side p{font-size:14px}.auth-side button{background:transparent;border:1px solid #fff;color:#fff;border-radius:8px;padding:11px 28px;font-weight:700;margin-top:14px}.auth-form{padding:44px 42px;display:flex;flex-direction:column;justify-content:center}.auth-form h2{font-size:28px;margin:0 0 18px;color:#1B2430}.auth-form label{color:#5B6672}.auth-form input{background:#f0f0f0;border:0;border-radius:6px;margin-top:5px}.auth-form .btn{background:#7894df;border-radius:7px}.auth-form .btn.alt{background:#fff;color:#7894df;border:1px solid #7894df}.auth-social{display:flex;justify-content:center;gap:10px;margin:12px 0}.auth-social button{width:42px;height:42px;border:1px solid #ddd;background:#fff;border-radius:6px;color:#26364f;font-weight:800}#amsg{color:#b42318!important}.auth-foot{font-size:12px;color:#667085;margin-top:12px}@media(max-width:650px){.auth{padding:12px}.auth .auth-box{max-width:430px;min-height:0;grid-template-columns:1fr}.auth-side{border-radius:0 0 42% 42% / 0 0 18% 18%;padding:22px 18px;min-height:170px}.auth-side h2{font-size:24px}.auth-form{padding:26px 22px}}#lo{position:static;top:auto;right:auto;background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:12px;padding:8px 12px;font-weight:600;font-family:inherit;cursor:pointer}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.tile{border:0;border-radius:20px;padding:18px 16px;min-height:96px;justify-content:center;text-align:left;color:#fff;cursor:pointer;display:flex;flex-direction:column;gap:4px;font-size:16px;font-family:inherit}.tile span{font-size:12px;color:rgba(255,255,255,.9)}
-.tiles .tile:nth-child(1){background:linear-gradient(135deg,#6d28d9,#be185d)}.tiles .tile:nth-child(2){background:linear-gradient(135deg,#0e7490,#1d4ed8)}.tiles .tile:nth-child(3){background:linear-gradient(135deg,#047857,#0e7490)}.tiles .tile:nth-child(4){background:linear-gradient(135deg,#c2410c,#be123c)}.tiles .tile:nth-child(5){background:linear-gradient(135deg,#4338ca,#7c3aed)}.tiles .tile:nth-child(6){background:var(--accent);color:#0f0a2a}.tiles .tile:nth-child(6) span{color:#0f0a2a}
+.tiles .tile{background:#1F5FA8}.tiles .tile:nth-child(even){background:#315f9b}.tiles .tile span{color:#eaf1fb}
 .note{font-size:12px;color:var(--muted);margin-top:10px}
+.ai-chat{height:300px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#f8fafc;padding:12px;display:flex;flex-direction:column;gap:10px}.ai-message{max-width:94%;padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.55;white-space:normal}.ai-bot{background:#eaf1fb;color:#1B2430;align-self:flex-start}.ai-user{background:#1F5FA8;color:#fff;align-self:flex-end}.ai-chat b{display:inline-block;margin-bottom:4px}.note{color:#667085}.card h2{color:#12263F}select option{color:#1B2430;background:#fff}#lo{background:#fff;color:#12263F;border:1px solid #d5dce5}
 </style>
 </head>
 <body>
-<div id='auth' class='auth'><div class='card'><h2 style='font-size:22px;margin-bottom:4px'>PropMeasure</h2><p class='note' style='margin-top:0'>Measure land, value property and keep your records.</p>
-<div class='row'><button class='btn alt on' id='atg_reg' onclick="authSwitch('reg')">Register</button><button class='btn alt' id='atg_login' onclick="authSwitch('login')">Log in</button></div>
-<div id='awrap'><label>Full name</label><input id='aname' autocomplete='name'></div>
-<label>Email</label><input id='aemail' type='email' autocomplete='email'>
-<label>Password</label><input id='apass' type='password' autocomplete='current-password' placeholder='At least 8 characters'>
-<button class='btn' id='abtn' onclick='authGo()'>Create account</button><div class='note' id='amsg' style='color:#dc2626'></div>
-<p class='note'>Accounts and records are stored only in this browser on this device. There is no password recovery.</p></div></div>
-<header style='position:relative'><h1>PropMeasure</h1><p>Measure distance, area and value property.</p><button id='lo' class='hide' onclick='logout()'>Log out</button></header>
+<div id="auth" class="auth"><div class="auth-box">
+<div class="auth-side"><h2 id="authPanelTitle">Hello, Welcome!</h2><p id="authPanelSub">Already have an account?</p><button id="authPanelBtn" onclick="authSwitch('login')">Log in</button></div>
+<div class="auth-form"><h2 id="authFormTitle">Registration</h2>
+<div id="awrap"><label>Full name</label><input id="aname" autocomplete="name" placeholder="Your full name"></div>
+<label>Email</label><input id="aemail" type="email" autocomplete="email" placeholder="Email address">
+<label>Password</label><input id="apass" type="password" autocomplete="new-password" placeholder="At least 8 characters">
+<button class="btn" id="abtn" onclick="authGo()">Create account</button><div class="note" id="amsg"></div>
+<div class="auth-social" aria-label="Social sign-in options"><button type="button" onclick="socialNotice('Google')">G</button><button type="button" onclick="socialNotice('Facebook')">f</button><button type="button" onclick="socialNotice('GitHub')">⌘</button><button type="button" onclick="socialNotice('LinkedIn')">in</button></div>
+<div class="auth-foot">Social sign-in buttons are visual placeholders until provider authentication is connected. Accounts created here are stored in this browser on this device.</div>
+</div></div></div>
 <main>
 <nav id="tabs">
 <button data-t="home" class="on">Home</button>
@@ -55,6 +58,9 @@ input::placeholder,textarea::placeholder{color:#a79fd6}
 <button data-t="val">Value</button>
 <button data-t="conv">Convert</button>
 <button data-t="gps">Map</button>
+<button data-t="pro">Pro Suite</button>
+<button data-t="ai">My off AI</button>
+<button id="lo" class="hide" onclick="logout()">Log out</button>
 </nav>
 
 <section id='home'>
@@ -65,6 +71,8 @@ input::placeholder,textarea::placeholder{color:#a79fd6}
 <button class='tile' onclick="go('gps')"><b>Map</b><span>Satellite and GPS</span></button>
 <button class='tile' onclick="go('conv')"><b>Convert</b><span>Units and plots</span></button>
 <button class='tile' onclick="go('dist')"><b>Distance</b><span>Between two points</span></button>
+<button class='tile' onclick="go('pro')"><b>Pro Suite</b><span>Projects, inspections & reports</span></button>
+<button class='tile' onclick="go('ai')"><b>My off AI</b><span>Estate calculations assistant</span></button>
 <button class='tile' onclick="go('area')"><b>Saved plots</b><span id='hcount'></span></button>
 </div>
 <div class='card'><h2>Recent plots</h2><div id='hrecent'></div></div>
@@ -173,6 +181,48 @@ input::placeholder,textarea::placeholder{color:#a79fd6}
 <label>Save as plot (needs 3+ points)</label><input id='mname' placeholder='Plot name'><button class='btn' onclick='saveMap()'>Save plot</button><div class='note' id='mmsg'></div>
 <p class='note'>Tap the map to drop points. Distances are straight-line between points. Areas from tapped points are estimates, not survey-grade.</p></div></section>
 <section id='conv' class='hide'><div class='card'><h2>Unit converter</h2><div class='chips' id='chips'></div><label>Type</label><select id='ccat' onchange='fillCat()'><option value='L'>Length</option><option value='A'>Area (incl. Nigerian plots)</option></select><label>Value</label><input id='cv2' type='number' step='any' value='1' oninput='conv2()'><div class='row'><div><label>From</label><select id='cf2' onchange='conv2()'></select></div><div><label>To</label><select id='ct2' onchange='conv2()'></select></div></div><div class='res' id='cv2Res'></div><p class='note'>Plot sizes differ by state and layout (for example 50×100 ft, 60×120 ft, 450 m² or 600 m²). Check the size on your survey plan or with the local land office.</p></div></section>
+
+<section id="ai" class="hide">
+<div class="card"><h2>My off AI</h2><p class="note">Estate Management calculation assistant. Enter a calculation in ordinary words; results are calculated locally in this app.</p>
+<div class="chips"><button class="chip" onclick="aiExample('Calculate the area of a 100 by 50 feet plot')">Plot area</button><button class="chip" onclick="aiExample('Calculate rental yield: property price 50000000, annual rent 6000000, expenses 1000000')">Rental yield</button><button class="chip" onclick="aiExample('Calculate capital value: net annual income 4500000, cap rate 9 percent')">Capital value</button><button class="chip" onclick="aiExample('Convert 2 hectares to square metres and acres')">Land conversion</button></div>
+<div id="aiChat" class="ai-chat" aria-live="polite"><div class="ai-message ai-bot"><b>My off AI</b><br>Hello. I can help with land area, perimeter, unit conversion, rental yield, net income, capital value, price per square metre and straight-line depreciation. What would you like to calculate?</div></div>
+<label for="aiInput">Your calculation</label><textarea id="aiInput" rows="3" placeholder="Example: Calculate the area of a 100 by 50 feet plot"></textarea>
+<div class="row"><button class="btn" onclick="aiSend()">Calculate</button><button class="btn alt" onclick="aiClear()">Clear chat</button></div>
+<p class="note">Important: My off AI currently uses built-in calculation rules, not a connected online language model. Check inputs and have formal valuation work reviewed by a qualified Estate Surveyor and Valuer.</p></div>
+</section>
+
+<section id="pro" class="hide">
+<div class="card"><h2>Professional Valuation Suite</h2><p class="note">Manage valuation projects, survey coordinates, subdivision, inspections, investment analysis, comparable evidence and reports.</p>
+<label>Project name</label><input id="vpName" placeholder="e.g. Residential property, Minna">
+<label>Property address / location</label><input id="vpAddress" placeholder="Town, State">
+<div class="row"><button class="btn" onclick="vpCreate()">Create project</button><button class="btn alt" onclick="vpBackup()">Backup projects</button></div>
+<label>Restore project backup</label><input type="file" accept=".json" onchange="vpRestore(this)">
+<div id="vpProjects"></div></div>
+<div id="vpWork" class="hide">
+<div class="card"><div class="row"><h2 id="vpTitle">Project</h2><button class="btn alt" onclick="vpClose()">Close</button></div>
+<label>Client name</label><input id="vpClient" oninput="vpSet('client',this.value)">
+<label>Surveyor / valuer</label><input id="vpSurveyor" oninput="vpSet('surveyor',this.value)">
+<label>Survey date</label><input id="vpDate" type="date" oninput="vpSet('date',this.value)">
+<label>Plot number</label><input id="vpPlot" oninput="vpSet('plot',this.value)">
+</div>
+<div class="card"><h2>Coordinate survey</h2><p class="note">Enter Easting and Northing in metres. Add at least three valid points to calculate polygon area.</p>
+<div class="row"><input id="vpLabel" placeholder="Point label" value="BP1"><input id="vpE" type="number" step="any" placeholder="Easting (m)"><input id="vpN" type="number" step="any" placeholder="Northing (m)"></div>
+<button class="btn" onclick="vpAddPoint()">Add boundary point</button><div id="vpPoints"></div><div class="res" id="vpArea"></div>
+</div>
+<div class="card"><h2>Equal-area subdivision</h2><label>Number of plots (2–12)</label><input id="vpParts" type="number" min="2" max="12" value="4" oninput="vpSubdivide()"><div id="vpSub"></div></div>
+<div class="card"><h2>Property inspection</h2><div id="vpInspection"></div><label>General inspection notes</label><textarea id="vpNotes" oninput="vpSet('notes',this.value)"></textarea></div>
+<div class="card"><h2>Investment analysis</h2>
+<label>Purchase price (₦)</label><input id="vpPrice" type="number" oninput="vpCalcInvestment()">
+<label>Annual rent (₦)</label><input id="vpRent" type="number" oninput="vpCalcInvestment()">
+<label>Annual costs (₦)</label><input id="vpCosts" type="number" oninput="vpCalcInvestment()">
+<label>Capitalisation rate (%)</label><input id="vpCap" type="number" value="9" oninput="vpCalcInvestment()"><div class="res" id="vpInvestment"></div></div>
+<div class="card"><h2>Comparable sales evidence</h2>
+<label>Comparable property</label><input id="vpCompName" placeholder="Address / description">
+<div class="row"><input id="vpCompPrice" type="number" placeholder="Sale price (₦)"><input id="vpCompAdj" type="number" placeholder="Adjustment (%)"></div>
+<button class="btn" onclick="vpAddComp()">Add comparable</button><div id="vpComps"></div><div class="res" id="vpCompResult"></div></div>
+<div class="card"><h2>Valuation report</h2><button class="btn" onclick="vpReport()">Preview report</button><button class="btn alt" onclick="vpCSV()">Download Excel-compatible CSV</button><div id="vpReport"></div></div>
+</div></section>
+
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -181,7 +231,7 @@ const $=id=>document.getElementById(id);
 const fmt=n=>isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):"–";
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
-  ["home","dist","area","val","conv","gps"].forEach(id=>$(id).classList.toggle("hide",id!==b.dataset.t));if(b.dataset.t==="gps")openMap();if(b.dataset.t==="home")drawHome();
+  ["home","dist","area","val","conv","gps","pro","ai"].forEach(id=>$(id).classList.toggle("hide",id!==b.dataset.t));if(b.dataset.t==="gps")openMap();if(b.dataset.t==="home")drawHome();if(b.dataset.t==="pro")vpList();
 });
 function useLoc(p){
   if(!navigator.geolocation){alert("Location isn’t available on this device.");return}
@@ -325,7 +375,7 @@ async function hash(pw,salt){const b=await crypto.subtle.digest('SHA-256',enc.en
 function users(){try{return JSON.parse(localStorage.getItem('pm_users')||'{}')}catch(e){return{}}}
 let authMode='reg',recKey='pm_recs',me=null;
 function go(t){document.querySelector('#tabs [data-t="'+t+'"]').click()}
-function authSwitch(m){authMode=m;$('awrap').classList.toggle('hide',m!=='reg');$('abtn').textContent=m==='reg'?'Create account':'Log in';$('atg_reg').classList.toggle('on',m==='reg');$('atg_login').classList.toggle('on',m!=='reg');$('apass').autocomplete=m==='reg'?'new-password':'current-password';$('amsg').textContent=''}
+function authSwitch(m){authMode=m;$('awrap').classList.toggle('hide',m!=='reg');$('abtn').textContent=m==='reg'?'Create account':'Log in';$('authFormTitle').textContent=m==='reg'?'Registration':'Login';$('authPanelTitle').textContent=m==='reg'?'Hello, Welcome!':'Welcome Back!';$('authPanelSub').textContent=m==='reg'?'Already have an account?':'Don’t have an account?';$('authPanelBtn').textContent=m==='reg'?'Log in':'Register';$('authPanelBtn').onclick=()=>authSwitch(m==='reg'?'login':'reg');$('apass').autocomplete=m==='reg'?'new-password':'current-password';$('amsg').textContent=''}
 async function authGo(){
   const em=$('aemail').value.trim().toLowerCase(),pw=$('apass').value,msg=$('amsg');msg.textContent='';
   if(!/^\S+@\S+\.\S+$/.test(em)){msg.textContent='Enter a valid email.';return}
@@ -368,6 +418,57 @@ function drawHome(){
 $('apass').addEventListener('keydown',e=>{if(e.key==='Enter')authGo()});
 {const s=(()=>{try{return localStorage.getItem('pm_session')}catch(e){return null}})();
 if(s&&users()[s])startSession(s);else authSwitch(Object.keys(users()).length?'login':'reg')}
+
+// Professional Valuation Suite module
+let vpCurrent=null,vpData=null;
+function vpStore(){try{return JSON.parse(localStorage.getItem('pm_pro_'+(me?.email||'guest'))||'[]')}catch(e){return[]}}
+function vpSave(list){localStorage.setItem('pm_pro_'+(me?.email||'guest'),JSON.stringify(list))}
+function vpNew(){return{id:Date.now(),name:'',address:'',client:'',surveyor:'',date:new Date().toISOString().slice(0,10),plot:'',points:[],inspection:{},notes:'',price:'',rent:'',costs:'',cap:9,comps:[]}}
+function vpCreate(){let name=$('vpName').value.trim();if(!name){alert('Enter a project name.');return}let p=vpNew();p.name=name;p.address=$('vpAddress').value.trim();let a=vpStore();a.push(p);vpSave(a);$('vpName').value='';$('vpAddress').value='';vpList();vpOpen(p.id)}
+function vpList(){let a=vpStore();$('vpProjects').innerHTML=a.length?a.map(p=>`<div class="rec"><b>${esc(p.name)}</b><br><small>${esc(p.address||'No location')}</small><div class="row"><button class="btn alt" onclick="vpOpen(${p.id})">Open</button><button class="btn alt" onclick="vpDelete(${p.id})">Delete</button></div></div>`).join(''):'<p class="note">No valuation projects created yet.</p>'}
+function vpGet(){return vpData}
+function vpPersist(){if(!vpData)return;let a=vpStore(),i=a.findIndex(p=>p.id===vpCurrent);if(i>=0){a[i]=vpData;vpSave(a)}}
+function vpOpen(id){vpCurrent=id;vpData=vpStore().find(p=>p.id===id)||null;let p=vpGet();if(!p)return;$('vpWork').classList.remove('hide');$('vpTitle').textContent=p.name;$('vpClient').value=p.client||'';$('vpSurveyor').value=p.surveyor||'';$('vpDate').value=p.date||'';$('vpPlot').value=p.plot||'';$('vpNotes').value=p.notes||'';$('vpPrice').value=p.price||'';$('vpRent').value=p.rent||'';$('vpCosts').value=p.costs||'';$('vpCap').value=p.cap||9;$('vpParts').value=4;vpDrawPoints();vpDrawInspection();vpDrawComps();vpCalcInvestment();vpSubdivide()}
+function vpClose(){$('vpWork').classList.add('hide');vpCurrent=null;vpData=null;vpList()}
+function vpDelete(id){if(!confirm('Delete this valuation project?'))return;vpSave(vpStore().filter(p=>p.id!==id));vpList();if(vpCurrent===id)vpClose()}
+function vpSet(k,v){let p=vpGet();if(!p)return;p[k]=v;vpPersist()}
+function vpAddPoint(){let p=vpGet(),e=Number($('vpE').value),n=Number($('vpN').value),l=$('vpLabel').value.trim()||'BP'+(p.points.length+1);if(!isFinite(e)||!isFinite(n)||$('vpE').value===''||$('vpN').value===''){alert('Enter valid Easting and Northing values.');return}p.points.push({l,e,n});vpPersist();$('vpE').value='';$('vpN').value='';$('vpLabel').value='BP'+(p.points.length+1);vpDrawPoints()}
+function vpPolygon(){let pts=vpGet()?.points||[];if(pts.length<3)return null;let a=0,per=0;for(let i=0;i<pts.length;i++){let x=pts[i],y=pts[(i+1)%pts.length];a+=x.e*y.n-y.e*x.n;per+=Math.hypot(y.e-x.e,y.n-x.n)}return{area:Math.abs(a)/2,per}}
+function vpDrawPoints(){let p=vpGet();$('vpPoints').innerHTML=p.points.map((x,i)=>`<div class="row"><span>${esc(x.l)} · E ${x.e} · N ${x.n}</span><button class="btn alt" onclick="vpRemovePoint(${i})">Remove</button></div>`).join('')||'<p class="note">No boundary points added.</p>';let z=vpPolygon();$('vpArea').textContent=z?`Area: ${z.area.toFixed(2)} m² · ${(z.area*10.7639).toFixed(1)} ft² · Perimeter: ${z.per.toFixed(2)} m`:'Add 3 or more points for area and perimeter.';vpSubdivide()}
+function vpRemovePoint(i){vpGet().points.splice(i,1);vpPersist();vpDrawPoints()}
+const vpItems=['Roof','Walls and plaster','Floors','Ceiling','Doors and windows','Plumbing','Electrical','Fence and gate','Drainage'];
+function vpDrawInspection(){let p=vpGet();$('vpInspection').innerHTML=vpItems.map(n=>`<div class="row"><span>${n}</span><select onchange="vpRate('${n}',this.value)"><option value="">Not rated</option>${['Good','Fair','Poor'].map(x=>`<option ${p.inspection[n]===x?'selected':''}>${x}</option>`).join('')}</select></div>`).join('')}
+function vpRate(n,v){let p=vpGet();if(v)p.inspection[n]=v;else delete p.inspection[n];vpPersist()}
+function vpCalcInvestment(){if(!vpCurrent)return;let p=vpGet();p.price=$('vpPrice').value;p.rent=$('vpRent').value;p.costs=$('vpCosts').value;p.cap=$('vpCap').value;vpPersist();let net=Number(p.rent||0)-Number(p.costs||0),cap=Number(p.cap);$('vpInvestment').textContent=`Net annual income: ₦${net.toLocaleString('en-NG')} · Net yield: ${p.price>0?(net/Number(p.price)*100).toFixed(2)+'%':'—'} · Capital value: ${cap>0?'₦'+(net/(cap/100)).toLocaleString('en-NG',{maximumFractionDigits:0}):'—'}`}
+function vpAddComp(){let p=vpGet(),name=$('vpCompName').value.trim(),price=Number($('vpCompPrice').value),adj=Number($('vpCompAdj').value||0);if(!name||!price){alert('Enter comparable description and sale price.');return}p.comps.push({name,price,adj});vpPersist();$('vpCompName').value='';$('vpCompPrice').value='';$('vpCompAdj').value='';vpDrawComps()}
+function vpDrawComps(){let p=vpGet();$('vpComps').innerHTML=p.comps.map((c,i)=>`<div class="row"><span>${esc(c.name)} · ₦${c.price.toLocaleString('en-NG')} · adj. ${c.adj}%</span><button class="btn alt" onclick="vpRemoveComp(${i})">Remove</button></div>`).join('')||'<p class="note">No comparable sales entered.</p>';let v=p.comps.map(c=>c.price*(1+c.adj/100));$('vpCompResult').textContent=v.length?'Adjusted comparable average: ₦'+(v.reduce((a,b)=>a+b,0)/v.length).toLocaleString('en-NG',{maximumFractionDigits:0}):''}
+function vpRemoveComp(i){vpGet().comps.splice(i,1);vpPersist();vpDrawComps()}
+function vpSubdivide(){if(!vpCurrent)return;let z=vpPolygon(),n=Math.max(2,Math.min(12,Number($('vpParts').value)||2));$('vpSub').textContent=z?`Approximate equal-area target: ${(z.area/n).toFixed(2)} m² per plot (${n} plots). For legal subdivision, use a qualified surveyor's approved layout.`:'Add at least 3 coordinate points to calculate subdivision area.'}
+function vpReport(){let p=vpGet(),z=vpPolygon();$('vpReport').innerHTML=`<div class="res"><h3>${esc(p.name)}</h3><p>${esc(p.address)} · ${esc(p.date)}</p><p>Client: ${esc(p.client||'—')} · Surveyor: ${esc(p.surveyor||'—')}</p><p>Plot: ${esc(p.plot||'—')}</p><p>Boundary points: ${p.points.length}</p><p>Area: ${z?z.area.toFixed(2)+' m²':'Not calculated'} · Perimeter: ${z?z.per.toFixed(2)+' m':'—'}</p><p>Inspection: ${Object.entries(p.inspection).map(x=>esc(x[0])+': '+esc(x[1])).join('; ')||'Not recorded'}</p><p>Notes: ${esc(p.notes||'—')}</p><p>Net annual income: ₦${(Number(p.rent||0)-Number(p.costs||0)).toLocaleString('en-NG')}</p><p>Comparables: ${p.comps.length}</p><button class="btn" onclick="window.print()">Print / Save as PDF</button></div>`}
+function vpCSV(){let p=vpGet(),z=vpPolygon(),rows=[['Property valuation report'],['Project',p.name],['Address',p.address],['Client',p.client],['Surveyor',p.surveyor],['Date',p.date],['Plot number',p.plot],[],['Point','Easting (m)','Northing (m)'],...p.points.map(x=>[x.l,x.e,x.n]),['Area (m2)',z?.area||''],['Perimeter (m)',z?.per||''],[],['Inspection item','Condition'],...Object.entries(p.inspection),['Notes',p.notes],['Purchase price',p.price],['Annual rent',p.rent],['Annual costs',p.costs],['Capitalisation rate',p.cap],[],['Comparable','Sale price','Adjustment (%)'],...p.comps.map(c=>[c.name,c.price,c.adj])];let csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');let a=document.createElement('a'),u=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='PropMeasure-valuation-report.csv';a.click();URL.revokeObjectURL(u)}
+function vpBackup(){let b=new Blob([JSON.stringify(vpStore(),null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='PropMeasure-project-backup.json';a.click();URL.revokeObjectURL(u)}
+function vpRestore(el){let f=el.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d))throw 0;vpSave(d);vpList();alert('Project backup restored.')}catch(e){alert('Invalid PropMeasure backup file.')}};r.readAsText(f)}
+
+
+function socialNotice(provider){$('amsg').textContent=provider+' sign-in is not connected yet. Use your email and password to create an account or log in.'}
+function aiExample(t){$('aiInput').value=t;$('aiInput').focus()}
+function aiAdd(text,who){const d=document.createElement('div');d.className='ai-message '+(who==='user'?'ai-user':'ai-bot');d.innerHTML=who==='user'?'<b>You</b><br>'+aiEsc(text):'<b>My off AI</b><br>'+aiEsc(text).replace(/\n/g,'<br>');$('aiChat').appendChild(d);$('aiChat').scrollTop=$('aiChat').scrollHeight}
+function aiEsc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function aiNum(s){const m=String(s).replace(/,/g,'').match(/-?\d+(?:\.\d+)?/);return m?Number(m[0]):NaN}
+function aiMoney(n){return '₦'+Number(n).toLocaleString('en-NG',{maximumFractionDigits:2})}
+function aiSolve(q){const t=q.toLowerCase(),nums=(q.match(/\d[\d,]*(?:\.\d+)?/g)||[]).map(x=>Number(x.replace(/,/g,'')));
+ if(/area|plot|rectangle|square metre|square meter/.test(t)&&(/by|x|×/.test(t))&&nums.length>=2){let a=nums[0],b=nums[1],ft=/feet|foot|\bft\b/.test(t),yd=/yards|\byd\b/.test(t),factor=ft?.3048:yd?.9144:1,area=a*b*factor*factor,per=2*(a+b)*factor;return `Plot area result\nDimensions: ${fmt(a)} × ${fmt(b)} ${ft?'ft':yd?'yd':'m'}\nArea: ${fmt(area)} m²\nArea: ${fmt(area*10.7639104)} ft²\nArea: ${fmt(area/4046.8564224,4)} acres\nPerimeter: ${fmt(per)} m\nThis is a rectangle calculation.`}
+ if(/yield|rental return|rental return/.test(t)&&nums.length>=2){let price=nums[0],rent=nums[1],cost=nums[2]||0,net=rent-cost;if(price<=0)return 'Enter a purchase price greater than zero.';return `Rental investment result\nAnnual rent: ${aiMoney(rent)}\nAnnual expenses: ${aiMoney(cost)}\nNet annual income: ${aiMoney(net)}\nNet rental yield: ${fmt(net/price*100)}%\nGross rental yield: ${fmt(rent/price*100)}%`}
+ if(/capital value|capitalisation|capitalization|cap rate/.test(t)&&nums.length>=2){let net=nums[0],rate=nums[1];if(rate<=0)return 'The capitalisation rate must be greater than zero.';return `Income capitalisation result\nNet annual income: ${aiMoney(net)}\nCapitalisation rate: ${fmt(rate)}%\nIndicated capital value: ${aiMoney(net/(rate/100))}\nFormula: Net annual income ÷ capitalisation rate.`}
+ if(/depreciat/.test(t)&&nums.length>=3){let cost=nums[0],age=nums[1],life=nums[2],salvage=nums[3]||0;if(life<=0||age<0)return 'Enter a useful life above zero and a non-negative age.';let annual=(cost-salvage)/life,acc=Math.min(age,life)*annual;return `Straight-line depreciation estimate\nDepreciable amount: ${aiMoney(cost-salvage)}\nAnnual depreciation: ${aiMoney(annual)}\nAccumulated depreciation: ${aiMoney(acc)}\nEstimated book value: ${aiMoney(Math.max(salvage,cost-acc))}\nAssumes a constant annual depreciation charge.`}
+ if(/price per|rate per|per square metre|per sqm|per m2/.test(t)&&nums.length>=2){let price=nums[0],area=nums[1];if(area<=0)return 'Area must be greater than zero.';return `Land rate result\nTotal price: ${aiMoney(price)}\nArea: ${fmt(area)} m²\nRate per square metre: ${aiMoney(price/area)} /m²`}
+ if(/convert|hectare|acre|square feet|sq ft|square metre|square meter/.test(t)&&nums.length>=1){let v=nums[0];if(/hectare/.test(t))return `${fmt(v)} hectare(s) = ${fmt(v*10000)} m² = ${fmt(v*2.4710538)} acres = ${fmt(v*107639.104)} ft²`;if(/acre/.test(t))return `${fmt(v)} acre(s) = ${fmt(v*4046.8564224)} m² = ${fmt(v*0.404685642)} hectares`;if(/square feet|sq ft/.test(t))return `${fmt(v)} ft² = ${fmt(v*0.09290304)} m²`;return `${fmt(v)} m² = ${fmt(v*10.7639104)} ft² = ${fmt(v/10000)} hectares = ${fmt(v/4046.8564224,4)} acres`}
+ if(/perimeter/.test(t)&&nums.length>=2){let a=nums[0],b=nums[1],f=/feet|foot|\bft\b/.test(t)?.3048:1;return `Rectangular perimeter: ${fmt(2*(a+b)*f)} metres.`}
+ return 'I could not identify the calculation yet. Try one of these formats:\n• Area: 100 by 50 feet plot\n• Rental yield: price 50000000, annual rent 6000000, expenses 1000000\n• Capital value: net income 4500000, cap rate 9 percent\n• Depreciation: cost 10000000, age 5, life 50\n• Price per square metre: total price 30000000, area 450'}
+function aiSend(){let q=$('aiInput').value.trim();if(!q)return;aiAdd(q,'user');aiAdd(aiSolve(q),'bot');$('aiInput').value=''}
+function aiClear(){$('aiChat').innerHTML='<div class="ai-message ai-bot"><b>My off AI</b><br>Chat cleared. What estate calculation do you need?</div>'}
+$('aiInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSend()}});
+
 </script>
 </body>
 </html>
