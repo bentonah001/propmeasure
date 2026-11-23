@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#12263F">
+<title>PropMeasure</title>
+<style>
+:root{--navy:#12263F;--bg:#F6F5F1;--line:#DDD9CE;--mut:#5B6672;--link:#1F5FA8;--ink:#1B2430;--bad:#8A2A1E}
+*{box-sizing:border-box}
+body{margin:0;background:#E9E7DF;font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
+#app{max-width:480px;min-height:100vh;margin:0 auto;background:var(--bg);padding-bottom:72px;position:relative}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.auth{background:#fff;min-height:100vh;padding:20px 20px 40px;display:flex;flex-direction:column;gap:12px}
+.top{background:var(--navy);color:#fff;padding:20px 20px 14px}
+.top h1{margin:0;font-size:19px}
+.top p{margin:2px 0 0;color:#C9D3E0;font-size:13px}
+.top .bk{background:none;border:0;color:#C9D3E0;padding:0 0 6px;font-size:14px;min-height:32px}
+.c{padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+.k{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.k b{font-weight:600}
+.m{color:var(--mut);font-size:13px}
+.h{font-size:13px;color:var(--mut);font-weight:600;margin:6px 0 0}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.f{display:block}
+.f small{display:block;color:var(--mut);font-size:12px;margin-bottom:3px}
+input,select,textarea{width:100%;border:1px solid #C9C4B6;border-radius:8px;padding:11px 12px;background:#fff;min-height:46px}
+textarea{min-height:90px;resize:vertical}
+input[type=range]{padding:0;min-height:32px;accent-color:var(--navy)}
+input[type=checkbox]{width:20px;min-height:20px;accent-color:var(--navy)}
+.p,.s{border-radius:8px;padding:12px;font-weight:600;min-height:48px;width:100%;border:1px solid var(--navy)}
+.p{background:var(--navy);color:#fff}
+.s{background:#fff;color:var(--navy)}
+.ga{display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;border:1px solid #C9C4B6;border-radius:8px;min-height:48px;font-weight:600;width:100%}
+.ga b{color:#1F5FA8;font-size:18px}
+.a{color:var(--link);font-weight:600;background:none;border:0;padding:6px 0;min-height:36px}
+.L{text-align:center}
+.or{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px}
+.or i{flex:1;height:1px;background:var(--line)}
+.err{color:var(--bad);font-size:13px;min-height:18px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #E8E4D9}
+.row:last-child{border-bottom:0}
+.tile{text-align:left;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-height:76px}
+.tile b{display:block;font-weight:600}
+.tile span{color:var(--mut);font-size:13px}
+.bar{display:flex;gap:6px}.bar i{flex:1;height:6px;border-radius:3px;background:var(--line)}.bar i.on{background:var(--navy)}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;border:1px solid #C9C4B6;background:#fff;border-radius:8px;min-height:40px;font-size:13px}
+.seg .Good.on{background:#E3EFE6;color:#1F5A32;border-color:#1F5A32;font-weight:600}
+.seg .Fair.on{background:#F6EBD0;color:#6B4A0A;border-color:#6B4A0A;font-weight:600}
+.seg .Poor.on{background:#F5DEDA;color:#8A2A1E;border-color:#8A2A1E;font-weight:600}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;background:#fff;border-top:1px solid var(--line)}
+.nav button{flex:1;background:none;border:0;min-height:56px;color:var(--mut);font-size:13px}
+.nav .on{color:var(--navy);font-weight:700}
+.dots{display:flex;gap:6px;justify-content:center}.dots i{width:8px;height:8px;border-radius:4px;background:#C9C4B6}.dots i.on{background:var(--navy)}
+.big{font-size:24px;font-weight:700;color:var(--navy)}
+.warn{background:#F6EBD0;color:#6B4A0A;border-radius:8px;padding:8px 12px;font-size:13px}
+#toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;z-index:9}
+#toast.on{opacity:1}
+.rep{background:#fff;padding:20px;border:1px solid var(--line)}
+.rep h2{margin:0 0 4px;font-size:20px;color:var(--navy)}
+.rep h3{margin:16px 0 6px;font-size:15px;color:var(--navy);border-bottom:1px solid var(--line);padding-bottom:3px}
+.rep table{width:100%;border-collapse:collapse;font-size:13px}
+.rep td,.rep th{text-align:left;padding:4px 6px;border-bottom:1px solid #EEE}
+svg text{font-family:inherit}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{body{background:#fff}#app{max-width:none;padding:0}.noprint,.nav,#toast{display:none!important}.rep{border:0;padding:0}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+const APP='PropMeasure';
+const K={u:'vs_users',s:'vs_session',d:'vs_data',o:'vs_onboarded'};
+const LS=localStorage;
+const $=id=>document.getElementById(id);
+const jget=(k,d)=>{try{const v=JSON.parse(LS.getItem(k));return v==null?d:v}catch(e){return d}};
+const jset=(k,v)=>LS.setItem(k,JSON.stringify(v));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{const n=parseFloat(v);return isFinite(n)?n:NaN};
+const fmt=(n,d=1)=>isFinite(n)?n.toLocaleString('en',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+const naira=n=>isFinite(n)?'₦'+Math.round(n).toLocaleString('en'):'—';
+let DB=jget(K.d,{}),SES=null,ST={survey:1,onb:0,sent:false,rstEmail:null,tool:null};
+
+async function hash(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function getSession(){try{return JSON.parse(sessionStorage.getItem(K.s)||LS.getItem(K.s))}catch(e){return null}}
+function setSession(u,remember){const s=JSON.stringify(u);if(remember){LS.setItem(K.s,s);sessionStorage.removeItem(K.s)}else{sessionStorage.setItem(K.s,s);LS.removeItem(K.s)}}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2200)}
+function save(){jset(K.d,DB)}
+
+function U(){return DB[SES.email]||(DB[SES.email]={projects:[],cur:null})}
+function newProject(name){return{id:Date.now()+Math.random(),name,address:'',survey:{date:new Date().toISOString().slice(0,10)},points:[],sub:{n:4},insp:{},notes:'',inv:{price:'',rent:'',costs:'',g:5,y:10,cap:9},comps:[]}}
+function P(){const u=U();let p=u.projects.find(x=>x.id===u.cur);if(!p){p=u.projects[0];if(!p){p=newProject('My first project');u.projects.push(p)}u.cur=p.id;save()}return p}
+function setp(path,val){const p=P();const k=path.split('.');let o=p;for(let i=0;i<k.length-1;i++){o=o[k[i]]=o[k[i]]||{}}o[k[k.length-1]]=val;save()}
+
+/* geometry */
+const poly=p=>p.points.map(q=>({x:num(q.e),y:num(q.n)}));
+const valid=a=>a.length>=3&&a.every(q=>isFinite(q.x)&&isFinite(q.y));
+const area=a=>{let s=0;for(let i=0;i<a.length;i++){const p=a[i],q=a[(i+1)%a.length];s+=p.x*q.y-q.x*p.y}return Math.abs(s)/2};
+const perim=a=>a.reduce((s,p,i)=>{const q=a[(i+1)%a.length];return s+Math.hypot(q.x-p.x,q.y-p.y)},0);
+function clip(a,ax,v,less){const out=[];const ins=p=>less?p[ax]<=v:p[ax]>=v;for(let i=0;i<a.length;i++){const p=a[i],q=a[(i+1)%a.length],ip=ins(p),iq=ins(q);if(ip)out.push(p);if(ip!==iq){const t=(v-p[ax])/(q[ax]-p[ax]);out.push({x:p.x+t*(q.x-p.x),y:p.y+t*(q.y-p.y)})}}return out}
+function split(a,n){const xs=a.map(p=>p.x),ys=a.map(p=>p.y);const w=Math.max(...xs)-Math.min(...xs),h=Math.max(...ys)-Math.min(...ys);const ax=w>=h?'x':'y';const vs=a.map(p=>p[ax]);const lo=Math.min(...vs),hi=Math.max(...vs),A=area(a);const cuts=[lo];
+for(let k=1;k<n;k++){let l=lo,r=hi;for(let i=0;i<50;i++){const m=(l+r)/2;const ar=clip(a,ax,m,true).length>2?area(clip(a,ax,m,true)):0;if(ar<A*k/n)l=m;else r=m}cuts.push((l+r)/2)}cuts.push(hi);
+const parts=[];for(let i=0;i<n;i++){parts.push(clip(clip(a,ax,cuts[i+1],true),ax,cuts[i],false))}return parts}
+function planSVG(parts,labels,pts){const all=parts.flat();const xs=all.map(p=>p.x),ys=all.map(p=>p.y);const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);const W=340,H=250,pad=28;const s=Math.min((W-2*pad)/((x1-x0)||1),(H-2*pad)/((y1-y0)||1));const X=x=>pad+(x-x0)*s+((W-2*pad)-(x1-x0)*s)/2,Y=y=>H-pad-(y-y0)*s-((H-2*pad)-(y1-y0)*s)/2;const cols=['#12263F','#1F5FA8','#6B4A0A','#1F5A32','#8A2A1E','#5B6672'];
+let g='<rect width="340" height="250" rx="10" fill="#E4E8E1"/>';
+parts.forEach((a,i)=>{if(a.length<3)return;const c=cols[i%cols.length];g+=`<polygon points="${a.map(p=>X(p.x).toFixed(1)+','+Y(p.y).toFixed(1)).join(' ')}" fill="${c}" fill-opacity=".14" stroke="${c}" stroke-width="2"/>`;if(labels&&labels[i]){const cx=a.reduce((t,p)=>t+p.x,0)/a.length,cy=a.reduce((t,p)=>t+p.y,0)/a.length;g+=`<text x="${X(cx)}" y="${Y(cy)}" text-anchor="middle" font-size="12" font-weight="700" fill="${c}">${esc(labels[i])}</text>`}});
+if(pts)pts.forEach((p,i)=>{g+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="5" fill="#12263F"/><text x="${X(p.x)+8}" y="${Y(p.y)-7}" font-size="12" font-weight="600" fill="#12263F">${esc(pts[i].l||'')}</text>`});
+return`<svg viewBox="0 0 340 250" width="100%" role="img" aria-label="Plan of the plot">${g}</svg>`}
+
+/* ui helpers */
+const inp=(label,path,val,type='text',extra='')=>`<label class="f"><small>${label}</small><input type="${type}" value="${esc(val)}" oninput="setp('${path}',this.value);A.after()" ${extra}></label>`;
+const head=(title,sub,back='home')=>`<div class="top"><button class="bk" onclick="go('${back}')">← Back</button><h1>${title}</h1><p>${sub||''}</p></div>`;
+const nav=on=>`<div class="nav noprint"><button class="${on==='home'?'on':''}" onclick="go('home')">Home</button><button class="${on==='projects'?'on':''}" onclick="go('projects')">Projects</button><button class="${on==='settings'?'on':''}" onclick="go('settings')">Settings</button></div>`;
+const logo=s=>`<svg width="${s}" height="${s}" viewBox="0 0 96 96" role="img" aria-label="${APP} logo"><rect width="96" height="96" rx="22" fill="#12263F"/><polygon points="26,34 68,28 72,66 30,70" fill="none" stroke="#fff" stroke-width="3"/><g fill="#fff"><circle cx="26" cy="34" r="4"/><circle cx="68" cy="28" r="4"/><circle cx="72" cy="66" r="4"/><circle cx="30" cy="70" r="4"/></g></svg>`;
+const pwField=(id,label,ph)=>`<label class="f"><small>${label}</small><div style="position:relative"><input id="${id}" type="password" placeholder="${ph||''}" autocomplete="off" style="padding-right:64px"><button type="button" class="a" style="position:absolute;right:6px;top:4px" onclick="A.eye('${id}',this)">Show</button></div></label>`;
+const emailField=(id,label,ph)=>`<label class="f"><small>${label}</small><input id="${id}" type="email" placeholder="${ph||'name@example.com'}" autocomplete="email"></label>`;
+const gBtn=t=>`<button class="ga" onclick="go('google')"><b>G</b>${t}</button>`;
+const Err=m=>{$('err').textContent=m;return false};
+
+/* screens */
+const SCR={
+splash:()=>`<div class="auth" style="align-items:center;justify-content:center;text-align:center;gap:14px">${logo(96)}<div class="big" style="font-size:28px">${APP}</div><div class="m">Survey, inspect and value with confidence</div></div>`,
+onboarding:()=>{const S=[['Accurate valuations,','from plot to report','Measure plots, inspect properties and value them in one app.'],['Work on site,','even offline','Your projects are saved on this device and ready without a connection.'],['A formal report,','in one tap','Save a PDF report or download an Excel-ready file.']][ST.onb];
+return`<div class="auth"><div style="text-align:right"><button class="a" onclick="A.skip()">Skip</button></div><div class="L" style="flex:1;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center"><div class="big">${S[0]}<br><span style="color:var(--link)">${S[1]}</span></div><div class="m" style="font-size:15px;max-width:300px">${S[2]}</div>${planSVG([[{x:60,y:70},{x:240,y:60},{x:260,y:190},{x:80,y:210}]],null,[{x:60,y:70},{x:240,y:60},{x:260,y:190},{x:80,y:210}])}</div><div class="dots">${[0,1,2].map(i=>`<i class="${i===ST.onb?'on':''}"></i>`).join('')}</div><button class="p" onclick="A.next()">${ST.onb===2?'Get started':'Next'}</button></div>`},
+login:()=>`<div class="auth"><div class="L" style="margin-top:24px"><div class="big">Welcome back</div><div class="m">Sign in to continue to ${APP}</div></div>${emailField('em','Email address')}${pwField('pw','Password')}<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="rm" checked> Remember me</label><div style="text-align:right"><button class="a" onclick="ST.sent=false;go('forgot')">Forgot password?</button></div><div class="err" id="err" role="alert"></div><button class="p" onclick="A.login()">Sign in</button><div class="or"><i></i>or continue with<i></i></div>${gBtn('Continue with Google')}<div class="L m" style="margin-top:auto">Don’t have an account? <button class="a" onclick="go('register')">Register</button></div></div>`,
+register:()=>`<div class="auth"><div class="L" style="margin-top:12px"><div class="big">Create your account</div><div class="m">Register with Google or your email</div></div>${gBtn('Register with Google')}<div class="or"><i></i>or use email<i></i></div><label class="f"><small>Full name</small><input id="nm" autocomplete="name"></label>${emailField('em','Email address')}${pwField('pw','Password','At least 8 characters with a number')}<div class="err" id="err" role="alert"></div><button class="p" onclick="A.register()">Create account</button><div class="L m" style="margin-top:auto">Already registered? <button class="a" onclick="go('login')">Sign in</button></div></div>`,
+google:()=>`<div class="auth"><button class="a" style="align-self:flex-start" onclick="go('login')">← Back</button><div class="L"><div class="big">Choose your Google account</div><div class="m">Enter the Google email you want to use. This is a demo sign-in until Firebase is connected.</div></div>${emailField('em','Google email','name@gmail.com')}<div class="err" id="err" role="alert"></div><button class="p" onclick="A.google()">Continue with Google</button></div>`,
+forgot:()=>`<div class="auth"><button class="a" style="align-self:flex-start" onclick="go('login')">← Back</button><div class="L"><div class="big">Reset your password</div><div class="m" style="margin-top:6px">Enter the Google email you registered with. We’ll send a reset link to that inbox.</div></div>${emailField('em','Google email','name@gmail.com')}<div class="err" id="err" role="alert"></div><button class="p" onclick="A.send()">Send reset link</button>${ST.sent?`<div class="k L"><b>Check your inbox</b><div class="m">The link opens this app so you can choose a new password. It expires in 30 minutes.</div><button class="s" style="margin-top:10px" onclick="go('reset')">Open reset link (demo)</button></div>`:''}</div>`,
+reset:()=>`<div class="auth"><div class="L" style="margin-top:40px"><div class="big">Create a new password</div><div class="m">For ${esc(ST.rstEmail||'your account')}</div></div>${pwField('pw','New password')}${pwField('pw2','Confirm password')}<div class="m">Use at least 8 characters with a number.</div><div class="err" id="err" role="alert"></div><button class="p" onclick="A.reset()">Reset password</button></div>`,
+home:()=>{const p=P(),T=[['survey','Survey report','Client, plot and boundaries'],['coords','Coordinates','Points, area and plan'],['sub','Subdivision','Split a plot equally'],['insp','Inspection','Condition checklist'],['inv','Investment','Yield, payback, value'],['comps','Comparables','Adjusted sales'],['report','Report and export','PDF and Excel file']];
+return`${head2()}<div class="c"><div class="k" style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div><div class="m">Current project</div><b>${esc(p.name)}</b></div><button class="a" onclick="go('projects')">Change</button></div><div class="h">Valuation tools</div><div class="g">${T.map(t=>`<button class="tile" onclick="go('${t[0]}')"><b>${t[1]}</b><span>${t[2]}</span></button>`).join('')}</div><div class="h">Coming later</div><div class="g">${['AI assistant','Floor plan analysis','Market intelligence'].map(t=>`<button class="tile" onclick="toast('${t} is planned for a later update')"><b>${t}</b><span>Planned</span></button>`).join('')}</div></div>${nav('home')}`},
+projects:()=>{const u=U();P();return`${head('Projects','Choose or create a project')}<div class="c"><div class="k"><label class="f"><small>New project name</small><input id="pn" placeholder="e.g. 12 Yola Road"></label><button class="p" style="margin-top:10px" onclick="A.addProj()">Create project</button></div><div class="h">Your projects</div><div class="k" style="padding:2px 14px">${u.projects.map(p=>`<div class="row"><div><b>${esc(p.name)}</b>${p.id===u.cur?' <span class="m">(current)</span>':''}</div><div><button class="a" onclick="A.pick(${p.id})">Open</button> <button class="a" style="color:var(--bad)" onclick="A.delProj(${p.id})">Delete</button></div></div>`).join('')}</div></div>${nav('projects')}`},
+settings:()=>`${head('Settings',esc(SES.email))}<div class="c"><div class="k"><b>Backup</b><div class="m">Save all your projects to a file, or restore them on another device.</div><button class="s" style="margin:10px 0" onclick="A.backup()">Download backup</button><label class="f"><small>Restore from backup file</small><input type="file" accept=".json" onchange="A.restore(this)"></label></div><div class="k"><b>Offline use</b><div class="m" id="net"></div></div><button class="s" onclick="A.logout()">Sign out</button></div>${nav('settings')}`,
+survey:()=>{const p=P(),s=p.survey,st=ST.survey;let b='';
+if(st===1)b=inp('Client name','survey.client',s.client)+inp('Surveyor','survey.surveyor',s.surveyor)+inp('Survey date','survey.date',s.date,'date');
+if(st===2)b=inp('Property name or address','address',p.address)+inp('Plot location (town, state)','survey.location',s.location)+inp('Plot number','survey.plot',s.plot);
+if(st===3){const a=poly(p);b=valid(a)?`<div class="g"><div class="k"><div class="m">Area</div><b class="big">${fmt(area(a))} m²</b></div><div class="k"><div class="m">Perimeter</div><b class="big">${fmt(perim(a))} m</b></div></div>${planSVG([a])}`:'<div class="warn">Add at least 3 boundary points to see the area.</div>';b+='<button class="s" onclick="go(\'coords\')">Edit coordinates</button>'}
+if(st===4)b=`<div class="k">${[['Client',s.client],['Surveyor',s.surveyor],['Date',s.date],['Property',p.address],['Location',s.location],['Plot number',s.plot],['Boundary points',p.points.length]].map(r=>`<div class="row"><span class="m">${r[0]}</span><span>${esc(r[1]||'—')}</span></div>`).join('')}</div><button class="p" onclick="go('report')">Generate report</button>`;
+return`${head('Survey report','Step '+st+' of 4')}<div class="c"><div class="bar">${[1,2,3,4].map(i=>`<i class="${i<=st?'on':''}"></i>`).join('')}</div>${b}<div class="g"><button class="s" onclick="A.step(-1)">Back</button><button class="p" onclick="A.step(1)">${st===4?'Done':'Continue'}</button></div></div>`},
+coords:()=>`${head('Coordinates','Eastings and northings in metres')}<div class="c"><div id="plan"></div><div class="g" id="stats"></div><div class="k" id="pts"></div><div class="g"><button class="s" onclick="A.addPt()">Add point</button><button class="s" onclick="A.paste()">Paste CSV</button></div></div>`,
+sub:()=>{const p=P();return`${head('Subdivision','Split the plot into equal-area parts')}<div class="c"><div class="k"><div class="row" style="border:0"><span>Number of plots</span><span><button class="s" style="width:44px" onclick="A.subn(-1)" aria-label="Fewer plots">−</button> <b id="sn" style="display:inline-block;width:30px;text-align:center">${p.sub.n}</b> <button class="s" style="width:44px" onclick="A.subn(1)" aria-label="More plots">+</button></span></div></div><div id="subout"></div></div>`},
+insp:()=>{const p=P();const I=['Roof','Walls and plaster','Floors','Ceiling','Doors and windows','Plumbing','Electrical','Fence and gate','Drainage'];return`${head('Inspection',esc(p.name))}<div class="c"><div class="k" style="padding:2px 14px" id="il">${I.map(n=>`<div style="padding:10px 0;border-bottom:1px solid #E8E4D9"><div style="margin-bottom:6px">${n}</div><div class="seg">${['Good','Fair','Poor'].map(r=>`<button class="${r} ${p.insp[n]===r?'on':''}" onclick="A.rate('${n}','${r}')">${r}</button>`).join('')}</div></div>`).join('')}</div><div class="k" id="isum"></div><label class="f"><small>Notes</small><textarea oninput="setp('notes',this.value)">${esc(p.notes)}</textarea></label></div>`},
+inv:()=>{const p=P(),v=p.inv;return`${head('Investment analysis',esc(p.name))}<div class="c">${inp('Purchase price (₦)','inv.price',v.price,'number','inputmode="decimal"')}${inp('Annual rent (₦)','inv.rent',v.rent,'number','inputmode="decimal"')}${inp('Annual costs (₦)','inv.costs',v.costs,'number','inputmode="decimal"')}<label class="f"><small>Net income growth per year: <b id="gv">${v.g}</b>%</small><input type="range" min="0" max="15" step="1" value="${v.g}" oninput="setp('inv.g',this.value);A.after()"></label><label class="f"><small>Holding period: <b id="yv">${v.y}</b> years</small><input type="range" min="1" max="30" step="1" value="${v.y}" oninput="setp('inv.y',this.value);A.after()"></label>${inp('Capitalisation rate (%)','inv.cap',v.cap,'number','inputmode="decimal"')}<div class="g" id="invout"></div></div>`},
+comps:()=>`${head('Comparables','Adjust each sale to your property')}<div class="c"><div id="cl"></div><button class="s" onclick="A.addComp()">Add comparable</button><div class="g" id="cout"></div></div>`,
+report:()=>{const p=P(),s=p.survey,a=poly(p),ok=valid(a),v=p.inv,I=Object.entries(p.insp);const net=num(v.rent)-num(v.costs),pr=num(v.price);const ad=p.comps.map(c=>num(c.price)*(1+num(c.adj||0)/100)).filter(isFinite);const ind=ad.length?ad.reduce((x,y)=>x+y,0)/ad.length:NaN;
+return`${head('Report','Preview, then save or download')}<div class="c"><div class="g noprint"><button class="p" onclick="window.print()">Save as PDF</button><button class="s" onclick="A.csv()">Download Excel</button></div><div class="rep"><h2>PropMeasure report</h2><div class="m">${esc(p.name)} · ${esc(s.date||'')}</div><h3>Survey</h3><table><tr><th>Client</th><td>${esc(s.client||'—')}</td></tr><tr><th>Surveyor</th><td>${esc(s.surveyor||'—')}</td></tr><tr><th>Property</th><td>${esc(p.address||'—')}</td></tr><tr><th>Location</th><td>${esc(s.location||'—')}</td></tr><tr><th>Plot number</th><td>${esc(s.plot||'—')}</td></tr></table><h3>Boundary and area</h3>${ok?planSVG([a])+`<table><tr><th>Area</th><td>${fmt(area(a))} m² (${fmt(area(a)*10.7639,0)} ft², ${fmt(area(a)/4046.856,4)} acres)</td></tr><tr><th>Perimeter</th><td>${fmt(perim(a))} m</td></tr></table>`:'<div class="m">No boundary points added.</div>'}<table style="margin-top:6px"><tr><th>Point</th><th>Easting</th><th>Northing</th></tr>${p.points.map(q=>`<tr><td>${esc(q.l)}</td><td>${esc(q.e)}</td><td>${esc(q.n)}</td></tr>`).join('')}</table><h3>Inspection</h3>${I.length?`<table>${I.map(r=>`<tr><td>${esc(r[0])}</td><td>${r[1]}</td></tr>`).join('')}</table>`:'<div class="m">No inspection recorded.</div>'}${p.notes?`<p>${esc(p.notes)}</p>`:''}<h3>Investment</h3><table><tr><th>Purchase price</th><td>${naira(pr)}</td></tr><tr><th>Net annual income</th><td>${naira(net)}</td></tr><tr><th>Net yield</th><td>${fmt(net/pr*100,2)}%</td></tr><tr><th>Value at ${esc(v.cap)}% capitalisation</th><td>${naira(net/(num(v.cap)/100))}</td></tr></table><h3>Comparables</h3><table><tr><th>Property</th><th>Sold</th><th>Adj.</th></tr>${p.comps.map(c=>`<tr><td>${esc(c.addr)}</td><td>${naira(num(c.price))}</td><td>${esc(c.adj||0)}%</td></tr>`).join('')}<tr><th colspan="2">Indicated value</th><td><b>${naira(ind)}</b></td></tr></table></div></div>`}
+};
+function head2(){const n=(SES.name||'').split(' ')[0];return`<div class="top"><h1>Hello, ${esc(n||'there')}</h1><p>${APP}</p></div>`}
+
+/* router */
+function go(name){ST.tool=name;const app=$('app');app.innerHTML=SCR[name]();window.scrollTo(0,0);(POST[name]||(()=>{}))();A.after()}
+const POST={coords:()=>A.drawC(),sub:()=>A.drawS(),insp:()=>A.sumI(),comps:()=>A.drawComps(),inv:()=>A.calcInv(),settings:()=>A.net()};
+
+/* actions */
+const A={
+after(){const t=ST.tool;if(t==='coords')A.drawC(true);if(t==='sub')A.drawS();if(t==='inv')A.calcInv();if(t==='comps')A.calcComps()},
+eye(id,b){const i=$(id);i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'Show':'Hide'},
+start(u,rm){SES=u;setSession(u,rm);go('home')},
+async login(){const e=$('em').value.trim().toLowerCase(),pw=$('pw').value,us=jget(K.u,{});if(!/^\S+@\S+\.\S+$/.test(e))return Err('Enter a valid email address.');const u=us[e];if(!u)return Err('No account found for that email. Register first.');if(!u.hash)return Err('This account uses Google. Tap Continue with Google.');if(u.hash!==await hash(pw))return Err('Wrong password. Try again or reset it.');A.start({email:e,name:u.name},$('rm').checked)},
+async register(){const n=$('nm').value.trim(),e=$('em').value.trim().toLowerCase(),pw=$('pw').value,us=jget(K.u,{});if(!n)return Err('Enter your full name.');if(!/^\S+@\S+\.\S+$/.test(e))return Err('Enter a valid email address.');if(pw.length<8||!/\d/.test(pw))return Err('Use at least 8 characters with a number.');if(us[e]&&us[e].hash)return Err('That email is already registered. Sign in instead.');us[e]={name:n,hash:await hash(pw)};jset(K.u,us);A.start({email:e,name:n},true)},
+google(){const e=$('em').value.trim().toLowerCase(),us=jget(K.u,{});if(!/^\S+@\S+\.\S+$/.test(e))return Err('Enter a valid Google email.');if(!us[e]){us[e]={name:e.split('@')[0],google:true};jset(K.u,us)}A.start({email:e,name:us[e].name},true)},
+send(){const e=$('em').value.trim().toLowerCase(),us=jget(K.u,{});if(!/^\S+@\S+\.\S+$/.test(e))return Err('Enter a valid email address.');if(!us[e])return Err('No account uses that email. Check it or register.');ST.rstEmail=e;ST.sent=true;go('forgot');$('em').value=e},
+async reset(){const pw=$('pw').value,p2=$('pw2').value,us=jget(K.u,{});if(pw.length<8||!/\d/.test(pw))return Err('Use at least 8 characters with a number.');if(pw!==p2)return Err('The passwords don’t match.');if(!us[ST.rstEmail])return Err('This reset link has expired. Request a new one.');us[ST.rstEmail].hash=await hash(pw);jset(K.u,us);ST.sent=false;toast('Password updated. Sign in.');go('login')},
+logout(){sessionStorage.removeItem(K.s);LS.removeItem(K.s);SES=null;go('login')},
+skip(){LS.setItem(K.o,'1');go('login')},
+next(){if(ST.onb<2){ST.onb++;go('onboarding')}else A.skip()},
+addProj(){const n=$('pn').value.trim();if(!n)return toast('Enter a project name');const p=newProject(n);U().projects.push(p);U().cur=p.id;save();go('home');toast('Project created')},
+pick(id){U().cur=id;save();go('home')},
+delProj(id){const u=U();if(u.projects.length<2)return toast('Keep at least one project');if(!confirm('Delete this project and all its data?'))return;u.projects=u.projects.filter(p=>p.id!==id);if(u.cur===id)u.cur=u.projects[0].id;save();go('projects')},
+step(d){const n=ST.survey+d;if(n<1)return go('home');if(n>4){ST.survey=1;toast('Survey details saved');return go('home')}ST.survey=n;go('survey')},
+addPt(){const p=P();p.points.push({l:'BP'+(p.points.length+1),e:'',n:''});save();A.rowsC();A.drawC()},
+delPt(i){P().points.splice(i,1);save();A.rowsC();A.drawC()},
+setPt(i,k,v){P().points[i][k]=v;save();A.drawC()},
+paste(){const t=prompt('Paste one point per line as: label,easting,northing');if(!t)return;const p=P();t.split(/\n/).forEach(l=>{const c=l.split(/[,\t;]/).map(x=>x.trim());if(c.length>=3)p.points.push({l:c[0],e:c[1],n:c[2]})});save();A.rowsC();A.drawC()},
+rowsC(){const p=P();$('pts').innerHTML=p.points.length?p.points.map((q,i)=>`<div class="row" style="align-items:flex-end"><label class="f" style="width:60px"><small>Point</small><input value="${esc(q.l)}" oninput="A.setPt(${i},'l',this.value)"></label><label class="f"><small>Easting</small><input inputmode="decimal" value="${esc(q.e)}" oninput="A.setPt(${i},'e',this.value)"></label><label class="f"><small>Northing</small><input inputmode="decimal" value="${esc(q.n)}" oninput="A.setPt(${i},'n',this.value)"></label><button class="a" style="color:var(--bad)" onclick="A.delPt(${i})" aria-label="Delete point ${esc(q.l)}">×</button></div>`).join(''):'<div class="m">No points yet. Tap Add point.</div>'},
+drawC(skipRows){const p=P();if(!skipRows&&!$('pts').innerHTML)A.rowsC();const a=poly(p);if(valid(a)){const m=area(a);$('plan').innerHTML=planSVG([a],null,a.map((q,i)=>({x:q.x,y:q.y,l:p.points[i].l})));$('stats').innerHTML=`<div class="k"><div class="m">Area</div><b class="big">${fmt(m)} m²</b><div class="m">${fmt(m*10.7639,0)} ft²</div></div><div class="k"><div class="m">Perimeter</div><b class="big">${fmt(perim(a))} m</b><div class="m">${fmt(m/4046.856,4)} acres · ${fmt(m/10000,4)} ha</div></div>`}else{$('plan').innerHTML='<div class="warn">Enter at least 3 points with easting and northing to see the plan.</div>';$('stats').innerHTML=''}},
+subn(d){const p=P();p.sub.n=Math.max(2,Math.min(12,p.sub.n+d));save();$('sn').textContent=p.sub.n;A.drawS()},
+drawS(){const p=P(),a=poly(p),o=$('subout');if(!o)return;if(!valid(a)){o.innerHTML='<div class="warn">Add the plot boundary first.</div><button class="s" style="margin-top:10px" onclick="go(\'coords\')">Add coordinates</button>';return}const parts=split(a,p.sub.n),L=parts.map((q,i)=>String.fromCharCode(65+i));o.innerHTML=planSVG(parts,L)+`<div class="k" style="padding:2px 14px;margin-top:10px">${parts.map((q,i)=>`<div class="row"><b>Plot ${L[i]}</b><span>${fmt(area(q))} m² · ${fmt(area(q)*10.7639,0)} ft²</span></div>`).join('')}<div class="row"><b>Total</b><span>${fmt(area(a))} m²</span></div></div><div class="m" style="margin-top:6px">Equal-area strips. Works best for simple plot shapes.</div>`},
+rate(n,r){setp('insp.'+n,r);go('insp')},
+sumI(){const v=Object.values(P().insp);const c=r=>v.filter(x=>x===r).length;$('isum').innerHTML=`<b>Summary</b><div class="m">${v.length} of 9 rated · Good ${c('Good')} · Fair ${c('Fair')} · Poor ${c('Poor')}</div>`},
+calcInv(){const v=P().inv,o=$('invout');if(!o)return;$('gv').textContent=v.g;$('yv').textContent=v.y;const pr=num(v.price),net=num(v.rent)-num(v.costs),g=num(v.g)/100,y=+v.y;let tot=0;for(let t=0;t<y;t++)tot+=net*Math.pow(1+g,t);const cap=num(v.cap);o.innerHTML=[['Net yield',fmt(net/pr*100,2)+'%'],['Payback',fmt(pr/net,1)+' yrs'],['Net income over '+y+' yrs',naira(tot)],['Value at '+fmt(cap,1)+'% cap rate',naira(net/(cap/100))]].map(r=>`<div class="k"><div class="m">${r[0]}</div><b class="big" style="font-size:19px">${r[1]}</b></div>`).join('')},
+addComp(){P().comps.push({addr:'',price:'',adj:0});save();A.drawComps()},
+delComp(i){P().comps.splice(i,1);save();A.drawComps()},
+setComp(i,k,v){P().comps[i][k]=v;save();A.calcComps()},
+drawComps(){const p=P();$('cl').innerHTML=p.comps.length?p.comps.map((c,i)=>`<div class="k"><label class="f"><small>Property address</small><input value="${esc(c.addr)}" oninput="A.setComp(${i},'addr',this.value)"></label><div class="g" style="margin-top:8px"><label class="f"><small>Sale price (₦)</small><input type="number" inputmode="decimal" value="${esc(c.price)}" oninput="A.setComp(${i},'price',this.value)"></label><label class="f"><small>Adjustment (%)</small><input type="number" inputmode="decimal" value="${esc(c.adj)}" oninput="A.setComp(${i},'adj',this.value)"></label></div><div style="display:flex;justify-content:space-between;align-items:center"><span class="m" id="adj${i}"></span><button class="a" style="color:var(--bad)" onclick="A.delComp(${i})">Remove</button></div></div>`).join(''):'<div class="m">Add the sales you are comparing against.</div>';A.calcComps()},
+calcComps(){const p=P();const ad=p.comps.map(c=>num(c.price)*(1+num(c.adj||0)/100));p.comps.forEach((c,i)=>{const e=$('adj'+i);if(e)e.textContent='Adjusted: '+naira(ad[i])});const ok=ad.filter(isFinite),o=$('cout');if(!o)return;o.innerHTML=ok.length?`<div class="k"><div class="m">Indicated value</div><b class="big">${naira(ok.reduce((x,y)=>x+y,0)/ok.length)}</b></div><div class="k"><div class="m">Range</div><b>${naira(Math.min(...ok))} to ${naira(Math.max(...ok))}</b></div>`:''},
+csv(){const p=P(),s=p.survey,a=poly(p),v=p.inv;const q=x=>'"'+String(x==null?'':x).replace(/"/g,'""')+'"';const R=[['PropMeasure report'],['Project',p.name],['Client',s.client],['Surveyor',s.surveyor],['Date',s.date],['Property',p.address],['Location',s.location],['Plot number',s.plot],[],['Point','Easting','Northing'],...p.points.map(x=>[x.l,x.e,x.n]),['Area (m2)',valid(a)?area(a):''],['Perimeter (m)',valid(a)?perim(a):''],[],['Inspection','Rating'],...Object.entries(p.insp),['Notes',p.notes],[],['Purchase price',v.price],['Annual rent',v.rent],['Annual costs',v.costs],['Capitalisation rate (%)',v.cap],[],['Comparable','Sale price','Adjustment (%)'],...p.comps.map(c=>[c.addr,c.price,c.adj])];A.dl(R.map(r=>r.map(q).join(',')).join('\r\n'),p.name.replace(/\W+/g,'_')+'.csv','text/csv')},
+dl(t,n,m){const b=new Blob(['\ufeff'+t],{type:m+';charset=utf-8'});const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(u),500)},
+backup(){A.dl(JSON.stringify(U(),null,1),'propmeasure-backup.json','application/json');toast('Backup downloaded')},
+restore(el){const f=el.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.projects))throw 0;DB[SES.email]=d;save();toast('Backup restored');go('projects')}catch(e){toast('That file isn’t a valid backup')}};r.readAsText(f)},
+net(){const e=$('net');if(e)e.textContent=navigator.onLine?'You are online. Your work is saved on this device, so it also opens without a connection.':'You are offline. Everything still works and is saved on this device.'}
+};
+addEventListener('online',()=>{toast('Back online');A.net()});
+addEventListener('offline',()=>{toast('You are offline. Work is saved on this device.');A.net()});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+/* start */
+(function(){const s=getSession();SES=s;$('app').innerHTML=SCR.splash();setTimeout(()=>{if(s)go('home');else if(!LS.getItem(K.o))go('onboarding');else go('login')},1400)})();
+</script>
+</body>
+</html>
