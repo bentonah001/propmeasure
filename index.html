@@ -37,6 +37,68 @@ input::placeholder,textarea::placeholder{color:#8a929c}
 .tiles .tile{background:#1F5FA8}.tiles .tile:nth-child(even){background:#315f9b}.tiles .tile span{color:#eaf1fb}
 .note{font-size:12px;color:var(--muted);margin-top:10px}
 .ai-chat{height:300px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#f8fafc;padding:12px;display:flex;flex-direction:column;gap:10px}.ai-message{max-width:94%;padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.55;white-space:normal}.ai-bot{background:#eaf1fb;color:#1B2430;align-self:flex-start}.ai-user{background:#1F5FA8;color:#fff;align-self:flex-end}.ai-chat b{display:inline-block;margin-bottom:4px}.note{color:#667085}.card h2{color:#12263F}select option{color:#1B2430;background:#fff}#lo{background:#fff;color:#12263F;border:1px solid #d5dce5}
+
+
+/* ===== PropMeasure upgrade styles ===== */
+/* PropMeasure upgrade styles: modern mobile navigation, profile, graphics */
+body{background:linear-gradient(180deg,#e8eef7 0,#f6f5f1 260px)}
+main{padding-bottom:96px!important}
+
+/* top bar */
+#topbar{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:12px;height:58px;padding:0 14px;color:#fff;
+  background:linear-gradient(135deg,#12263F,#1F5FA8);box-shadow:0 4px 18px rgba(18,38,63,.25)}
+#topbar b{flex:1;font-family:Poppins,Inter,sans-serif;font-size:19px;letter-spacing:-.01em}
+#topbar button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:12px;min-width:40px;height:40px;font-size:20px;font-weight:700;cursor:pointer}
+#topUser{font-size:15px!important;font-family:Poppins,sans-serif}
+body:not(.authed) #topbar,body:not(.authed) #bbar{display:none}
+
+/* side drawer (the existing #tabs nav) */
+#tabs{position:fixed!important;top:0;left:0;bottom:0;width:78%;max-width:300px;z-index:900;flex-direction:column;flex-wrap:nowrap!important;
+  border-radius:0 24px 24px 0!important;padding:78px 12px 20px!important;gap:4px!important;margin:0!important;overflow:auto;
+  transform:translateX(-105%);transition:transform .25s ease;box-shadow:8px 0 30px rgba(18,38,63,.25)}
+#tabs.open{transform:none}
+#tabs button{text-align:left;font-size:15px!important;padding:14px 16px!important;flex:0 0 auto!important;border-radius:12px!important}
+#tabs button.on{background:linear-gradient(135deg,#12263F,#1F5FA8)!important}
+#scrim{position:fixed;inset:0;background:rgba(10,20,35,.45);z-index:850;display:none}
+#scrim.show{display:block}
+
+/* bottom bar */
+#bbar{position:fixed;left:0;right:0;bottom:0;z-index:300;display:flex;background:#fff;border-top:1px solid var(--line);
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(18,38,63,.08)}
+#bbar button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;
+  color:var(--muted);font-family:inherit;padding:6px 0;border-radius:14px;cursor:pointer}
+#bbar button i{font-style:normal;font-size:20px}
+#bbar button.on{color:#1F5FA8;background:#eef4fb}
+
+/* graphics */
+#home .card:first-child{background:linear-gradient(135deg,#12263F 0,#1F5FA8 100%);color:#fff;border:0;position:relative;overflow:hidden;padding:22px 18px}
+#home .card:first-child::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.1)}
+#home .card:first-child h2,#home .card:first-child .note{color:#fff}
+.tiles .tile{position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(31,95,168,.22);transition:transform .15s}
+.tiles .tile:active{transform:scale(.97)}
+.tiles .tile::before{font-size:26px;margin-bottom:4px}
+.tiles .tile:nth-child(1){background:linear-gradient(135deg,#1F5FA8,#3b82d6)}.tiles .tile:nth-child(1)::before{content:"📐"}
+.tiles .tile:nth-child(2){background:linear-gradient(135deg,#0f766e,#14b8a6)}.tiles .tile:nth-child(2)::before{content:"💰"}
+.tiles .tile:nth-child(3){background:linear-gradient(135deg,#7c3aed,#a78bfa)}.tiles .tile:nth-child(3)::before{content:"🗺️"}
+.tiles .tile:nth-child(4){background:linear-gradient(135deg,#c2410c,#fb923c)}.tiles .tile:nth-child(4)::before{content:"🔄"}
+.tiles .tile:nth-child(5){background:linear-gradient(135deg,#0369a1,#38bdf8)}.tiles .tile:nth-child(5)::before{content:"📏"}
+.tiles .tile:nth-child(6){background:linear-gradient(135deg,#12263F,#334e75)}.tiles .tile:nth-child(6)::before{content:"📋"}
+.tiles .tile:nth-child(7){background:linear-gradient(135deg,#be185d,#f472b6)}.tiles .tile:nth-child(7)::before{content:"🤖"}
+.tiles .tile:nth-child(8){background:linear-gradient(135deg,#4d7c0f,#84cc16)}.tiles .tile:nth-child(8)::before{content:"📁"}
+.card{border-radius:18px!important;box-shadow:0 6px 20px rgba(18,38,63,.07)!important}
+.btn{background:linear-gradient(135deg,#1F5FA8,#2f7bd1)!important;box-shadow:0 6px 14px rgba(31,95,168,.25)!important;border-radius:12px!important}
+.btn.alt{background:#fff!important;box-shadow:none!important}
+.res{background:linear-gradient(135deg,#eef4fb,#e3edfa)!important;border:1px solid #c9dcf3!important}
+input:focus,select:focus,textarea:focus{outline:2px solid #1F5FA8;outline-offset:1px}
+.auth{background:linear-gradient(135deg,#12263F,#1F5FA8 60%,#7894df)!important}
+
+/* profile */
+.prof-card{text-align:center}
+.avatar{width:84px;height:84px;margin:0 auto 10px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,#1F5FA8,#7894df);box-shadow:0 8px 20px rgba(31,95,168,.3)}
+#forgot{display:none;text-align:center;margin-top:12px;font-size:13px;color:#1F5FA8;font-weight:600;text-decoration:none}
+
+
 </style>
 </head>
 <body>
@@ -468,6 +530,215 @@ function aiSolve(q){const t=q.toLowerCase(),nums=(q.match(/\d[\d,]*(?:\.\d+)?/g)
 function aiSend(){let q=$('aiInput').value.trim();if(!q)return;aiAdd(q,'user');aiAdd(aiSolve(q),'bot');$('aiInput').value=''}
 function aiClear(){$('aiChat').innerHTML='<div class="ai-message ai-bot"><b>My off AI</b><br>Chat cleared. What estate calculation do you need?</div>'}
 $('aiInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSend()}});
+
+</script>
+
+
+<!-- ===== PropMeasure upgrade script ===== -->
+<script>
+/* PropMeasure upgrade. Load this AFTER your main <script>, just before </body>. */
+(function(){
+/* ===== FIREBASE WEB CONFIGURATION =====
+   Paste the complete config from Firebase Console > Project settings > Your apps.
+   Google and email/password sign-in will remain disabled until these values are filled in.
+*/
+const PM_FIREBASE={
+  apiKey:"",
+  authDomain:"",
+  projectId:"",
+  storageBucket:"",
+  messagingSenderId:"",
+  appId:""
+};
+const useFB=!!PM_FIREBASE.apiKey;
+let fb=null,db=null;
+
+/* ===== Inject new interface elements ===== */
+document.body.insertAdjacentHTML('afterbegin',
+ `<div id="topbar"><button id="menuBtn" aria-label="Menu">☰</button><b>PropMeasure</b><button id="topUser" aria-label="Profile">?</button></div>
+  <div id="scrim"></div>`);
+document.body.insertAdjacentHTML('beforeend',
+ `<div id="bbar">
+  <button data-g="home"><i>🏠</i>Home</button><button data-g="area"><i>📐</i>Land</button><button data-g="gps"><i>🗺️</i>Map</button>
+  <button data-g="val"><i>💰</i>Value</button><button data-g="menu"><i>☰</i>Menu</button></div>`);
+document.querySelector('main').insertAdjacentHTML('afterbegin',''); 
+$('lo').insertAdjacentHTML('beforebegin','<button data-t="prof">Profile</button>');
+document.querySelector('main').insertAdjacentHTML('beforeend',
+ `<section id="prof" class="hide">
+  <div class="card prof-card"><div class="avatar" id="pAv">?</div><h2 id="pName"></h2><p class="note" id="pMail"></p></div>
+  <div class="card"><h2>Edit profile</h2><label>Full name</label><input id="pNameIn"><button class="btn" onclick="pmSaveName()">Save name</button></div>
+  <div class="card"><h2>Change password</h2><label>New password</label><input id="pPass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button class="btn" onclick="pmChangePass()">Update password</button></div>
+  <div class="card"><h2>Account</h2><div class="note" id="pStat"></div><div class="note" id="pMsg" style="font-weight:600"></div>
+  <button class="btn alt" onclick="logout()">Log out</button><button class="btn alt" style="color:#b42318;border-color:#b42318" onclick="pmDelete()">Delete account</button></div></section>`);
+$('abtn').insertAdjacentHTML('afterend','<a id="forgot" href="#" onclick="pmForgot();return false">Forgot password?</a>');
+document.querySelectorAll('.auth-social button').forEach((b,i)=>{if(i)b.remove()});
+document.querySelector('.auth-foot').textContent=useFB?'Your account and saved plots are stored securely online.':'Online login is not set up yet: accounts are stored on this device only.';
+
+/* ===== Navigation behaviour ===== */
+const openMenu=()=>{$('tabs').classList.add('open');$('scrim').classList.add('show')};
+const closeMenu=()=>{$('tabs').classList.remove('open');$('scrim').classList.remove('show')};
+$('menuBtn').onclick=openMenu;$('scrim').onclick=closeMenu;$('topUser').onclick=()=>go('prof');
+document.querySelectorAll('#bbar button').forEach(b=>b.onclick=()=>b.dataset.g==='menu'?openMenu():go(b.dataset.g));
+document.querySelector('#tabs [data-t="prof"]').onclick=function(){
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===this));
+  ['home','dist','area','val','conv','gps','pro','ai'].forEach(id=>$(id).classList.add('hide'));
+};
+document.querySelectorAll('#tabs button[data-t]').forEach(b=>b.addEventListener('click',()=>{
+  const t=b.dataset.t;$('prof').classList.toggle('hide',t!=='prof');if(t==='prof')fillProf();
+  closeMenu();document.querySelectorAll('#bbar [data-g]').forEach(x=>x.classList.toggle('on',x.dataset.g===t));scrollTo(0,0);
+}));
+
+/* Offline-friendly mode: keep local tools accessible without a network connection. */
+if('serviceWorker' in navigator)navigator.serviceWorker.getRegistrations().then(r=>r.forEach(x=>x.unregister()));
+
+/* ===== Firebase (auth + cloud backup) ===== */
+const loadScript=src=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+const ready=(async()=>{
+  if(!useFB)return;
+  const b='https://www.gstatic.com/firebasejs/10.12.2/firebase-';
+  await loadScript(b+'app-compat.js');await loadScript(b+'auth-compat.js');await loadScript(b+'firestore-compat.js');
+  firebase.initializeApp(PM_FIREBASE);fb=firebase.auth();db=firebase.firestore();
+  await fb.setPersistence(firebase.auth.Auth.Persistence.LOCAL); // keep the signed-in session on this device
+  // Complete Google sign-in when the browser returns from Google's redirect.
+  const result=await fb.getRedirectResult();
+  if(result && result.user) await enter(result.user);
+})().catch(e=>{fb=null;console.error('PropMeasure Firebase setup:',e)});
+const FE={'auth/email-already-in-use':'That email is already registered. Switch to Log in.','auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong email or password.','auth/user-not-found':'No account found with that email.','auth/too-many-requests':'Too many attempts. Try again later.','auth/network-request-failed':'No internet connection.','auth/weak-password':'Password is too weak.','auth/requires-recent-login':'For security, log out, log in again, then retry.','auth/invalid-email':'Enter a valid email.'};
+const fe=e=>FE[e.code]||e.message||'Something went wrong.';
+let tm;
+function cloudSave(){
+  if(!db||!me||!fb||!fb.currentUser)return;clearTimeout(tm);
+  tm=setTimeout(()=>db.collection('users').doc(fb.currentUser.uid).set({recs,pro:JSON.parse(localStorage.getItem('pm_pro_'+me.email)||'[]'),updated:Date.now()},{merge:true}).catch(()=>{}),800);
+}
+async function cloudLoad(u){
+  try{const d=await db.collection('users').doc(u.uid).get();
+    if(d.exists){const x=d.data();if(x.recs)localStorage.setItem('pm_recs_'+u.email,JSON.stringify(x.recs));if(x.pro)localStorage.setItem('pm_pro_'+u.email,JSON.stringify(x.pro))}}catch(e){}
+}
+const op=persist,ovs=vpSave;
+window.persist=function(){op();cloudSave()};
+window.vpSave=function(l){ovs(l);cloudSave()};
+
+/* ===== Login / session ===== */
+function begin(email,name){
+  me={email,name};recKey='pm_recs_'+email;
+  try{recs=JSON.parse(localStorage.getItem(recKey)||'[]')}catch(e){recs=[]}
+  $('auth').classList.add('hide');$('lo').classList.remove('hide');$('apass').value='';
+  document.body.classList.add('authed');$('topUser').textContent=(name||'?')[0].toUpperCase();
+  drawRecs();go('home');
+}
+async function enter(u){await cloudLoad(u);begin(u.email,u.displayName||u.email.split('@')[0])}
+const oAuth=authGo;
+window.authGo=async function(){
+  const em=$('aemail').value.trim().toLowerCase(),pw=$('apass').value,msg=$('amsg');msg.textContent='';
+  if(!useFB){await oAuth();try{localStorage.removeItem('pm_session')}catch(e){}return}
+  if(!/^\S+@\S+\.\S+$/.test(em)){msg.textContent='Enter a valid email.';return}
+  if(pw.length<8){msg.textContent='Password must be at least 8 characters.';return}
+  msg.textContent='Please wait…';await ready;
+  if(!fb){msg.textContent='Cannot reach the server. Check your internet.';return}
+  try{
+    let c;
+    if(authMode==='reg'){
+      const nm=$('aname').value.trim();if(!nm){msg.textContent='Enter your name.';return}
+      c=await fb.createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:nm});c.user.sendEmailVerification().catch(()=>{});
+    }else c=await fb.signInWithEmailAndPassword(em,pw);
+    msg.textContent='';await enter(c.user);
+  }catch(e){msg.textContent=fe(e)}
+};
+window.socialNotice=async function(p){
+  const m=$('amsg');
+  if(p!=='Google'){m.textContent=p+' sign-in is not enabled yet. Use Google or email and password.';return}
+  if(!useFB){m.textContent='Google sign-in is not configured yet. Connect PropMeasure to Firebase first.';return}
+  m.textContent='Opening Google sign-in…';await ready;
+  if(!fb){m.textContent='Firebase could not load. Check your internet connection and Firebase configuration.';return}
+  try{
+    const provider=new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({prompt:'select_account'});
+    // Redirect is more reliable than popups inside Android app WebViews.
+    await fb.signInWithRedirect(provider);
+  }catch(e){m.textContent=fe(e)}
+};
+window.pmForgot=async function(){
+  const em=$('aemail').value.trim().toLowerCase(),m=$('amsg');
+  if(!/^\S+@\S+\.\S+$/.test(em)){m.textContent='Type your email above first, then tap Forgot password.';return}
+  if(!useFB){m.textContent='Password reset by email needs the online account setup (Firebase).';return}
+  await ready;
+  try{await fb.sendPasswordResetEmail(em);m.textContent='Reset link sent. Check your inbox and spam folder.'}catch(e){m.textContent=fe(e)}
+};
+const oSw=authSwitch;
+window.authSwitch=function(m){oSw(m);$('forgot').style.display=m==='login'?'block':'none'};
+window.logout=async function(){
+  try{localStorage.removeItem('pm_session')}catch(e){}
+  try{if(fb)await fb.signOut()}catch(e){}
+  me=null;recs=[];recKey='pm_recs';drawRecs();closeMenu();
+  document.body.classList.remove('authed');$('lo').classList.add('hide');$('auth').classList.remove('hide');
+  authSwitch('login');$('aemail').value='';$('apass').value='';
+};
+/* always start at login, and log out after 60s in the background */
+try{localStorage.removeItem('pm_session')}catch(e){}
+me=null;recs=[];recKey='pm_recs';document.body.classList.remove('authed');
+$('lo').classList.add('hide');$('auth').classList.remove('hide');
+authSwitch(useFB||Object.keys(users()).length?'login':'reg');
+let away=0;
+document.addEventListener('visibilitychange',()=>{if(document.hidden)away=Date.now();else if(me&&away&&Date.now()-away>60000)logout()});
+
+/* ===== Profile / account management ===== */
+function fillProf(){
+  if(!me)return;
+  $('pName').textContent=me.name;$('pMail').textContent=me.email;$('pNameIn').value=me.name;$('pAv').textContent=(me.name||'?')[0].toUpperCase();
+  $('pStat').textContent=useFB?'Online account · cloud backup on':'Local account on this device';$('pMsg').textContent='';
+}
+window.pmSaveName=async function(){
+  const n=$('pNameIn').value.trim(),m=$('pMsg');if(!n){m.textContent='Enter a name.';return}
+  try{
+    if(useFB)await fb.currentUser.updateProfile({displayName:n});
+    else{const u=users();u[me.email].name=n;localStorage.setItem('pm_users',JSON.stringify(u))}
+    me.name=n;$('topUser').textContent=n[0].toUpperCase();$('hname').textContent=n;fillProf();$('pMsg').textContent='Name updated.';
+  }catch(e){m.textContent=fe(e)}
+};
+window.pmChangePass=async function(){
+  const p=$('pPass').value,m=$('pMsg');if(p.length<8){m.textContent='Password must be at least 8 characters.';return}
+  try{
+    if(useFB)await fb.currentUser.updatePassword(p);
+    else{const u=users(),s=Array.from(crypto.getRandomValues(new Uint32Array(4))).join('-');u[me.email].salt=s;u[me.email].hash=await hash(p,s);localStorage.setItem('pm_users',JSON.stringify(u))}
+    $('pPass').value='';m.textContent='Password updated.';
+  }catch(e){m.textContent=fe(e)}
+};
+window.pmDelete=async function(){
+  if(!confirm('Delete your account and all saved data? This cannot be undone.'))return;
+  const em=me.email;
+  try{
+    if(useFB){await db.collection('users').doc(fb.currentUser.uid).delete().catch(()=>{});await fb.currentUser.delete()}
+    else{const u=users();delete u[em];localStorage.setItem('pm_users',JSON.stringify(u))}
+    localStorage.removeItem('pm_recs_'+em);localStorage.removeItem('pm_pro_'+em);logout();
+  }catch(e){$('pMsg').textContent=fe(e)}
+};
+
+/* ===== GPS / coordinates fix ===== */
+function getPos(ok,bad){
+  if(!navigator.geolocation){bad('Location is not supported on this device.');return}
+  navigator.geolocation.getCurrentPosition(ok,e=>bad(
+    e.code===1?'Location is blocked. Allow Location for PropMeasure: Phone Settings > Apps > PropMeasure > Permissions > Location.':
+    e.code===3?'Location timed out. Turn on GPS, go outside, and try again.':'Could not get your location. Turn on GPS and try again.'),
+    {enableHighAccuracy:true,timeout:20000,maximumAge:0});
+}
+window.useLoc=p=>getPos(pos=>{$(p+'lat').value=pos.coords.latitude.toFixed(6);$(p+'lng').value=pos.coords.longitude.toFixed(6)},alert);
+window.markHere=()=>getPos(p=>addPt(+p.coords.latitude.toFixed(6),+p.coords.longitude.toFixed(6)),alert);
+let meDot=null,meCirc=null;
+function locateMe(){
+  $('mmsg').textContent='Finding your location…';
+  getPos(p=>{
+    const ll=[p.coords.latitude,p.coords.longitude],t=ll.map(x=>x.toFixed(6)).join(', ');
+    if(meDot){gmap.removeLayer(meDot);gmap.removeLayer(meCirc)}
+    meCirc=L.circle(ll,{radius:p.coords.accuracy,weight:1}).addTo(gmap);
+    meDot=L.circleMarker(ll,{radius:8,color:'#fff',fillColor:'#1a73e8',fillOpacity:1,weight:3}).addTo(gmap);
+    gmap.setView(ll,18);
+    $('mmsg').innerHTML='Your coordinates: <b>'+t+'</b> (±'+Math.round(p.coords.accuracy)+' m)<br><a href="#" id="cpy">Copy</a> · <a target="_blank" href="https://www.google.com/maps?q='+t.replace(', ',',')+'">Open in Google Maps</a>';
+    $('cpy').onclick=e=>{e.preventDefault();navigator.clipboard&&navigator.clipboard.writeText(t);$('cpy').textContent='Copied'};
+  },m=>{$('mmsg').textContent=m});
+}
+const oOpen=openMap;
+window.openMap=function(){oOpen();if(gmap&&!gmap._pm){gmap._pm=1;$('mme').onclick=locateMe;locateMe()}};
+})();
 
 </script>
 </body>
