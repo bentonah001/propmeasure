@@ -1,917 +1,686 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>PropMeasure – Distance, Area &amp; Valuation</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PropMeasure</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap);
-:root{--bg:#F6F5F1;--card:#fff;--text:#1B2430;--muted:#5B6672;--accent:#1F5FA8;--accent2:#315f9b;--line:#DDD9CE;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box}
-html,body{margin:0}
-body{background:#E9E7DF;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
-header{background:#12263F;color:#fff;padding:24px 18px 50px;border-radius:0 0 28px 28px}
-header h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
-header p{margin:4px 0 0;opacity:.92;font-size:14px}
-main{max-width:640px;margin:0 auto 40px;padding:18px 14px 0}
-nav{position:sticky;top:0;z-index:100;display:flex;gap:6px;flex-wrap:wrap;background:#fff;padding:6px;border-radius:14px;box-shadow:0 4px 18px rgba(18,38,63,.10);margin-bottom:14px;border:1px solid var(--line)}
-nav button{font-size:12px!important;flex:1 1 auto;border:0;background:none;color:var(--muted);padding:10px 8px;border-radius:10px;font-weight:600;font-family:inherit;cursor:pointer}
-nav button.on{background:#12263F;color:#fff;font-weight:800}
-.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(18,38,63,.04)}
-.card h2{margin:0 0 12px;font-size:16px;font-weight:700}
-label{display:block;font-size:12px;color:#5B6672;margin:10px 0 4px;font-weight:600}
-input,select,textarea{font-family:inherit;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#1B2430;font-size:16px}
-input::placeholder,textarea::placeholder{color:#8a929c}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{width:100%;margin-top:14px;padding:14px;border:0;border-radius:10px;background:#1F5FA8;color:#fff;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;box-shadow:none}
-.btn:active{transform:translateY(1px)}
-.btn.alt{background:#fff;color:#1F5FA8;border:1px solid #1F5FA8;margin-top:8px;box-shadow:none}
-.btn.alt.on{background:#1F5FA8;color:#fff;border-color:#1F5FA8}
-.res{margin-top:14px;padding:14px;border-radius:12px;background:#eef4fb;border:1px dashed #1F5FA8}
-.res .big{font-size:28px;font-weight:800;color:#1F5FA8}
-.res small{color:#5B6672;display:block;margin-top:4px;line-height:1.5}
-.hide{display:none}.rec{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.rec button{border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer;width:auto;margin:0}.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}.chip{border:1px solid var(--line);background:#fff;color:#1F5FA8;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
-.auth{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#e9eef8,#dce6f7);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}.auth.hide{display:none}.auth .auth-box{width:100%;max-width:900px;min-height:500px;background:#fff;border-radius:24px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;box-shadow:0 18px 55px rgba(18,38,63,.18)}.auth-side{background:#7894df;color:#fff;border-radius:0 42% 42% 0 / 0 50% 50% 0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:34px}.auth-side h2{font-size:30px;margin:0 0 10px}.auth-side p{font-size:14px}.auth-side button{background:transparent;border:1px solid #fff;color:#fff;border-radius:8px;padding:11px 28px;font-weight:700;margin-top:14px}.auth-form{padding:44px 42px;display:flex;flex-direction:column;justify-content:center}.auth-form h2{font-size:28px;margin:0 0 18px;color:#1B2430}.auth-form label{color:#5B6672}.auth-form input{background:#f0f0f0;border:0;border-radius:6px;margin-top:5px}.auth-form .btn{background:#7894df;border-radius:7px}.auth-form .btn.alt{background:#fff;color:#7894df;border:1px solid #7894df}.auth-social{display:flex;justify-content:center;gap:10px;margin:12px 0}.auth-social button{width:42px;height:42px;border:1px solid #ddd;background:#fff;border-radius:6px;color:#26364f;font-weight:800}#amsg{color:#b42318!important}.auth-foot{font-size:12px;color:#667085;margin-top:12px}@media(max-width:650px){.auth{padding:12px}.auth .auth-box{max-width:430px;min-height:0;grid-template-columns:1fr}.auth-side{border-radius:0 0 42% 42% / 0 0 18% 18%;padding:22px 18px;min-height:170px}.auth-side h2{font-size:24px}.auth-form{padding:26px 22px}}#lo{position:static;top:auto;right:auto;background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:12px;padding:8px 12px;font-weight:600;font-family:inherit;cursor:pointer}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.tile{border:0;border-radius:20px;padding:18px 16px;min-height:96px;justify-content:center;text-align:left;color:#fff;cursor:pointer;display:flex;flex-direction:column;gap:4px;font-size:16px;font-family:inherit}.tile span{font-size:12px;color:rgba(255,255,255,.9)}
-.tiles .tile{background:#1F5FA8}.tiles .tile:nth-child(even){background:#315f9b}.tiles .tile span{color:#eaf1fb}
-.note{font-size:12px;color:var(--muted);margin-top:10px}
-.ai-chat{height:300px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#f8fafc;padding:12px;display:flex;flex-direction:column;gap:10px}.ai-message{max-width:94%;padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.55;white-space:normal}.ai-bot{background:#eaf1fb;color:#1B2430;align-self:flex-start}.ai-user{background:#1F5FA8;color:#fff;align-self:flex-end}.ai-chat b{display:inline-block;margin-bottom:4px}.note{color:#667085}.card h2{color:#12263F}select option{color:#1B2430;background:#fff}#lo{background:#fff;color:#12263F;border:1px solid #d5dce5}
-
-
-/* ===== PropMeasure upgrade styles ===== */
-/* PropMeasure upgrade styles: modern mobile navigation, profile, graphics */
-body{background:linear-gradient(180deg,#e8eef7 0,#f6f5f1 260px)}
-main{padding-bottom:96px!important}
-
-/* top bar */
-#topbar{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:12px;height:58px;padding:0 14px;color:#fff;
-  background:linear-gradient(135deg,#12263F,#1F5FA8);box-shadow:0 4px 18px rgba(18,38,63,.25)}
-#topbar b{flex:1;font-family:Poppins,Inter,sans-serif;font-size:19px;letter-spacing:-.01em}
-#topbar button{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:12px;min-width:40px;height:40px;font-size:20px;font-weight:700;cursor:pointer}
-#topUser{font-size:15px!important;font-family:Poppins,sans-serif}
-body:not(.authed) #topbar,body:not(.authed) #bbar{display:none}
-
-/* side drawer (the existing #tabs nav) */
-#tabs{position:fixed!important;top:0;left:0;bottom:0;width:78%;max-width:300px;z-index:900;flex-direction:column;flex-wrap:nowrap!important;
-  border-radius:0 24px 24px 0!important;padding:78px 12px 20px!important;gap:4px!important;margin:0!important;overflow:auto;
-  transform:translateX(-105%);transition:transform .25s ease;box-shadow:8px 0 30px rgba(18,38,63,.25)}
-#tabs.open{transform:none}
-#tabs button{text-align:left;font-size:15px!important;padding:14px 16px!important;flex:0 0 auto!important;border-radius:12px!important}
-#tabs button.on{background:linear-gradient(135deg,#12263F,#1F5FA8)!important}
-#scrim{position:fixed;inset:0;background:rgba(10,20,35,.45);z-index:850;display:none}
-#scrim.show{display:block}
-
-/* bottom bar */
-#bbar{position:fixed;left:0;right:0;bottom:0;z-index:300;display:flex;background:#fff;border-top:1px solid var(--line);
-  padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(18,38,63,.08)}
-#bbar button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;
-  color:var(--muted);font-family:inherit;padding:6px 0;border-radius:14px;cursor:pointer}
-#bbar button i{font-style:normal;font-size:20px}
-#bbar button.on{color:#1F5FA8;background:#eef4fb}
-
-/* graphics */
-#home .card:first-child{background:linear-gradient(135deg,#12263F 0,#1F5FA8 100%);color:#fff;border:0;position:relative;overflow:hidden;padding:22px 18px}
-#home .card:first-child::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.1)}
-#home .card:first-child h2,#home .card:first-child .note{color:#fff}
-.tiles .tile{position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(31,95,168,.22);transition:transform .15s}
-.tiles .tile:active{transform:scale(.97)}
-.tiles .tile::before{font-size:26px;margin-bottom:4px}
-.tiles .tile:nth-child(1){background:linear-gradient(135deg,#1F5FA8,#3b82d6)}.tiles .tile:nth-child(1)::before{content:"📐"}
-.tiles .tile:nth-child(2){background:linear-gradient(135deg,#0f766e,#14b8a6)}.tiles .tile:nth-child(2)::before{content:"💰"}
-.tiles .tile:nth-child(3){background:linear-gradient(135deg,#7c3aed,#a78bfa)}.tiles .tile:nth-child(3)::before{content:"🗺️"}
-.tiles .tile:nth-child(4){background:linear-gradient(135deg,#c2410c,#fb923c)}.tiles .tile:nth-child(4)::before{content:"🔄"}
-.tiles .tile:nth-child(5){background:linear-gradient(135deg,#0369a1,#38bdf8)}.tiles .tile:nth-child(5)::before{content:"📏"}
-.tiles .tile:nth-child(6){background:linear-gradient(135deg,#12263F,#334e75)}.tiles .tile:nth-child(6)::before{content:"📋"}
-.tiles .tile:nth-child(7){background:linear-gradient(135deg,#be185d,#f472b6)}.tiles .tile:nth-child(7)::before{content:"🤖"}
-.tiles .tile:nth-child(8){background:linear-gradient(135deg,#4d7c0f,#84cc16)}.tiles .tile:nth-child(8)::before{content:"📁"}
-.card{border-radius:18px!important;box-shadow:0 6px 20px rgba(18,38,63,.07)!important}
-.btn{background:linear-gradient(135deg,#1F5FA8,#2f7bd1)!important;box-shadow:0 6px 14px rgba(31,95,168,.25)!important;border-radius:12px!important}
-.btn.alt{background:#fff!important;box-shadow:none!important}
-.res{background:linear-gradient(135deg,#eef4fb,#e3edfa)!important;border:1px solid #c9dcf3!important}
-input:focus,select:focus,textarea:focus{outline:2px solid #1F5FA8;outline-offset:1px}
-.auth{background:linear-gradient(135deg,#12263F,#1F5FA8 60%,#7894df)!important}
-
-/* profile */
-.prof-card{text-align:center}
-.avatar{width:84px;height:84px;margin:0 auto 10px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;color:#fff;
-  background:linear-gradient(135deg,#1F5FA8,#7894df);box-shadow:0 8px 20px rgba(31,95,168,.3)}
-#forgot{display:none;text-align:center;margin-top:12px;font-size:13px;color:#1F5FA8;font-weight:600;text-decoration:none}
-
-/* online-only overlay */
-#offline-overlay{display:none;position:fixed;inset:0;z-index:99999;background:#fff;color:#111;align-items:center;justify-content:center;flex-direction:column;text-align:center;font-family:sans-serif;padding:24px}
-
-
-/* ===== Premium PropMeasure introduction + dashboard theme ===== */
-:root{--pm-purple:#7546e8;--pm-purple2:#946cff;--pm-shadow:0 12px 30px rgba(42,25,88,.10)}
-#topbar{background:linear-gradient(120deg,#21133f,#5430a6 58%,#7546e8)!important}
-#tabs{background:#fff!important;border:1px solid #eee8fb!important;box-shadow:10px 0 34px rgba(30,18,58,.20)!important}
-#tabs button{color:#5c566b!important;display:flex;align-items:center;gap:12px;min-height:46px}
-#tabs button:before{content:'•';font-size:20px;color:#aaa0bd;width:15px;text-align:center}
-#tabs button.on{background:#f0eaff!important;color:#6339d1!important;font-weight:800}
-#tabs button.on:before{color:#7546e8}
-#tabs button[data-t="prof"]:before{content:'♙'}
-#tabs button[data-t="home"]:before{content:'⌂'}
-#tabs button[data-t="dist"]:before{content:'↔'}
-#tabs button[data-t="area"]:before{content:'▦'}
-#tabs button[data-t="val"]:before{content:'₦'}
-#tabs button[data-t="conv"]:before{content:'⇄'}
-#tabs button[data-t="gps"]:before{content:'⌖'}
-#tabs button[data-t="pro"]:before{content:'▣'}
-#tabs button[data-t="ai"]:before{content:'✧'}
-.pm-drawer-brand{position:absolute;top:17px;left:18px;right:18px;display:flex;align-items:center;gap:10px;color:#251747;font-weight:800;font-family:Poppins, sans-serif;font-size:18px}
-.pm-brand-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#7546e8,#a68aff);display:grid;place-items:center;color:white;font-size:20px;box-shadow:0 6px 16px #7546e844}
-.pm-theme-row{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;margin:8px 2px 4px;border-radius:13px;background:#f5f1ff;color:#51456e;font-size:13px;font-weight:700}
-.pm-switch{border:0!important;background:#d9d0ef!important;width:48px!important;height:27px!important;min-width:48px!important;padding:3px!important;border-radius:30px!important;display:flex;align-items:center;justify-content:flex-start;cursor:pointer}
-.pm-switch span{display:block;width:21px;height:21px;border-radius:50%;background:#fff;box-shadow:0 1px 4px #0002;transition:transform .2s}
-.pm-switch[aria-pressed="true"]{background:#7546e8!important;justify-content:flex-end}
-#bbar{background:var(--card)!important;border-color:var(--line)!important}
-#bbar button.on{color:#7546e8!important;background:#f0eaff!important}
-#home .card:first-child{background:linear-gradient(125deg,#241344,#5733a8 65%,#8964ec)!important;border-radius:22px!important;box-shadow:0 12px 28px #5430a633!important}
-.tiles .tile{border-radius:20px!important;box-shadow:0 9px 22px rgba(63,40,111,.14)!important}
-.card{box-shadow:var(--pm-shadow)!important}
-.btn{background:linear-gradient(120deg,#6840d4,#9067f2)!important}
-.btn.alt{color:#7045db!important;border-color:#cfc0f5!important;background:var(--card)!important}
-#pm-intro{position:fixed;inset:0;z-index:5000;background:linear-gradient(145deg,#1c1036,#43237f 55%,#7950dc);color:white;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;overflow:auto}
-.pm-intro-inner{width:min(100%,440px);animation:pmRise .7s ease both}
-.pm-logo{width:94px;height:94px;margin:0 auto 22px;border-radius:28px;display:grid;place-items:center;font-size:48px;font-weight:900;background:linear-gradient(145deg,#fff,#d8caff);color:#643cc5;box-shadow:0 18px 45px #10082477;animation:pmPulse 1.8s ease-in-out infinite}
-.pm-wordmark{font-family:Poppins, sans-serif;font-size:32px;font-weight:800;letter-spacing:-1px}
-.pm-tagline{color:#ded3ff;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-top:7px}
-.pm-loader{width:132px;height:4px;background:#ffffff30;border-radius:20px;margin:35px auto 0;overflow:hidden}
-.pm-loader:after{content:'';display:block;height:100%;width:42%;background:#fff;border-radius:20px;animation:pmLoad 1.4s ease-in-out infinite}
-#pm-welcome{position:fixed;inset:0;z-index:5001;background:radial-gradient(circle at 80% 12%,#eee7ff 0,#f8f6ff 42%,#fff 100%);color:#24183f;display:none;align-items:center;justify-content:center;padding:25px;overflow:auto;text-align:center}
-.pm-welcome-inner{width:min(100%,470px);animation:pmRise .55s ease both}
-.pm-welcome-art{height:190px;border-radius:30px;margin:0 auto 28px;display:grid;place-items:center;background:linear-gradient(135deg,#271544,#6741c5 65%,#9b7af0);box-shadow:0 20px 40px #5734a633;position:relative;overflow:hidden}
-.pm-welcome-art:before,.pm-welcome-art:after{content:'';position:absolute;border:1px solid #ffffff38;border-radius:50%;width:220px;height:220px;right:-50px;top:-100px}
-.pm-welcome-art:after{width:150px;height:150px;right:auto;left:-35px;top:100px}
-.pm-welcome-symbol{font-size:72px;z-index:1;filter:drop-shadow(0 8px 10px #0004)}
-.pm-welcome-inner h1{font-size:30px;line-height:1.15;margin:0 0 12px;letter-spacing:-1px}
-.pm-welcome-inner p{font-size:14px;line-height:1.7;color:#746b83;margin:0 auto 24px;max-width:360px}
-.pm-start{width:100%;border:0;border-radius:15px;padding:16px 20px;color:#fff;font-size:15px;font-weight:800;background:linear-gradient(120deg,#6840d4,#9067f2);box-shadow:0 10px 22px #7546e844;cursor:pointer}
-.pm-welcome-foot{font-size:11px;color:#9a91a8;margin-top:16px}
-@keyframes pmRise{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
-@keyframes pmPulse{50%{transform:translateY(-5px) scale(1.03)}}
-@keyframes pmLoad{from{transform:translateX(-110%)}to{transform:translateX(260%)}}
-/* Light/dark theme */
-body.pm-dark{--bg:#15121d;--card:#211c2c;--text:#f2eefb;--muted:#b6adc7;--line:#393047;background:#12101a!important;color:var(--text)!important;color-scheme:dark}
-body.pm-dark main{color:var(--text)}
-body.pm-dark .card,body.pm-dark nav{background:#211c2c!important;border-color:#393047!important;color:#f2eefb}
-body.pm-dark .card h2,body.pm-dark label{color:#eee7ff!important}
-body.pm-dark input,body.pm-dark select,body.pm-dark textarea{background:#17131f!important;color:#f5f0ff!important;border-color:#49405a!important}
-body.pm-dark .note,body.pm-dark .auth-foot{color:#b6adc7!important}
-body.pm-dark #tabs{background:#211c2c!important;border-color:#393047!important}
-body.pm-dark #tabs button{color:#c8bfd8!important}
-body.pm-dark #tabs button.on{background:#38265c!important;color:#d8c5ff!important}
-body.pm-dark .pm-drawer-brand{color:#f0e8ff}
-body.pm-dark .pm-theme-row{background:#302542;color:#e8ddff}
-body.pm-dark #bbar{background:#211c2c!important;border-color:#393047!important}
-body.pm-dark #bbar button{color:#c5bbd4}
-body.pm-dark #bbar button.on{background:#38265c!important;color:#d8c5ff!important}
-body.pm-dark .res{background:#302542!important;border-color:#604b88!important}
-body.pm-dark .res .big{color:#cbb4ff}
-body.pm-dark .ai-chat{background:#17131f;border-color:#393047}
-body.pm-dark .ai-bot{background:#302542;color:#f2eefb}
-body.pm-dark .btn.alt{background:#211c2c!important;color:#d4c2ff!important;border-color:#604b88!important}
-body.pm-dark .auth{background:linear-gradient(135deg,#171222,#30204f 60%,#50348e)!important}
-body.pm-dark .auth-box{background:#211c2c!important}
-body.pm-dark .auth-form h2{color:#f2eefb!important}
-body.pm-dark .auth-form label{color:#d2c8e3!important}
-body.pm-dark .auth-form input{background:#17131f!important;color:#fff!important}
-body.pm-dark .auth-side{background:#5636a0}
-@media(max-width:650px){.pm-welcome-inner h1{font-size:27px}.pm-welcome-art{height:165px}}
-
-
-/* Consistent return navigation on every tool screen */
-.pm-back-dashboard{display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;padding:10px 15px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);font-weight:750;font-size:14px;cursor:pointer;box-shadow:0 4px 14px rgba(20,16,50,.08)}
-.pm-back-dashboard:active{transform:translateY(1px)}
-
+:root{--a:#5430a6;--b:#7546e8;--bg:#f4f2fa;--t:#1b1630;--m:#6b6480;--l:#e3def2}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;font:14px/1.45 system-ui,Roboto,sans-serif;background:var(--bg);color:var(--t);padding-bottom:72px}
+.hide{display:none!important}
+#top{position:sticky;top:0;z-index:50;display:flex;align-items:center;height:50px;padding:0 14px;color:#fff;background:linear-gradient(120deg,#21133f,var(--a) 60%,var(--b));font-weight:800;font-size:17px}
+#top span{flex:1}#top button{background:#ffffff2b;color:#fff;border:0;border-radius:10px;padding:7px 12px;font-weight:700}
+main{max-width:640px;margin:0 auto;padding:12px 10px}
+.card{background:#fff;border:1px solid var(--l);border-radius:16px;padding:13px;margin-bottom:11px;box-shadow:0 4px 14px #2a19580f}
+h2{font-size:15px;margin:0 0 9px}
+label{display:block;font-size:11px;font-weight:700;color:var(--m);margin:9px 0 3px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--l);border-radius:10px;font:inherit;font-size:14px;background:#fff;color:var(--t)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{width:100%;margin-top:10px;padding:12px;border:0;border-radius:11px;color:#fff;font-weight:800;font-size:14px;background:linear-gradient(120deg,#6840d4,#9067f2)}
+.btn.alt{background:#fff;color:var(--b);border:1px solid #cfc0f5}
+.res{margin-top:10px;padding:12px;border-radius:12px;background:#f0eaff;border:1px solid #d9ccf8}
+.big{font-size:22px;font-weight:800;color:var(--a)}.res small{display:block;color:var(--m);margin-top:3px}
+.note{font-size:12px;color:var(--m);margin-top:8px}.err{color:#b42318;font-size:12px;margin-top:8px;min-height:16px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{border:0;border-radius:16px;min-height:78px;padding:12px;text-align:left;color:#fff;font-weight:800;font-size:14px;background:linear-gradient(135deg,#5430a6,#8964ec)}
+.tile span{display:block;font-weight:400;font-size:11px;opacity:.9}
+.tile:nth-child(2){background:linear-gradient(135deg,#0f766e,#14b8a6)}.tile:nth-child(3){background:linear-gradient(135deg,#c2410c,#fb923c)}.tile:nth-child(4){background:linear-gradient(135deg,#be185d,#f472b6)}
+.rec{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--l)}
+.rec button{border:0;background:none;font-size:16px;color:var(--m)}
+#nav{position:fixed;overflow-x:auto;left:0;right:0;bottom:0;z-index:60;display:flex;background:#fff;border-top:1px solid var(--l);padding:5px 4px calc(5px + env(safe-area-inset-bottom,0px))}
+#nav button{flex:1;min-width:53px;border:0;background:none;font-size:10px;font-weight:700;color:var(--m);padding:5px 0;border-radius:12px}
+#nav button i{display:block;font-style:normal;font-size:18px}
+#nav button.on{color:var(--b);background:#f0eaff}
+#auth{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;background:linear-gradient(135deg,#21133f,var(--a) 60%,#8964ec)}
+#auth .box{width:100%;max-width:400px;background:#fff;border-radius:22px;padding:24px 20px}
+#auth h1{margin:0 0 4px;font-size:24px}#auth p{margin:0 0 12px;color:var(--m)}
+.tabs{display:flex;gap:6px;margin-bottom:6px}.tabs button{flex:1;border:1px solid var(--l);background:#fff;border-radius:10px;padding:9px;font-weight:700;color:var(--m)}
+.tabs button.on{background:var(--b);color:#fff;border-color:var(--b)}
+#forgot{display:block;text-align:center;margin-top:12px;color:var(--b);font-weight:700;text-decoration:none}
+#map{height:48vh;min-height:300px;border-radius:12px}
 </style>
-</head>
-<body>
-<div id="auth" class="auth"><div class="auth-box">
-<div class="auth-side"><h2 id="authPanelTitle">Hello, Welcome!</h2><p id="authPanelSub">Already have an account?</p><button id="authPanelBtn" onclick="authSwitch('login')">Log in</button></div>
-<div class="auth-form"><h2 id="authFormTitle">Registration</h2>
-<div id="awrap"><label>Full name</label><input id="aname" autocomplete="name" placeholder="Your full name"></div>
-<label>Email</label><input id="aemail" type="email" autocomplete="email" placeholder="Email address">
-<label>Password</label><input id="apass" type="password" autocomplete="new-password" placeholder="At least 8 characters">
-<button class="btn" id="abtn" onclick="authGo()">Create account</button><div class="note" id="amsg"></div>
-<div class="auth-social" aria-label="Social sign-in options"><button type="button" onclick="socialNotice('Google')">G</button><button type="button" onclick="socialNotice('Facebook')">f</button><button type="button" onclick="socialNotice('GitHub')">⌘</button><button type="button" onclick="socialNotice('LinkedIn')">in</button></div>
-<div class="auth-foot">Social sign-in buttons are visual placeholders until provider authentication is connected. Accounts created here are stored in this browser on this device.</div>
-</div></div></div>
-<main>
-<nav id="tabs">
-<button data-t="home" class="on">Home</button>
-<button data-t="dist">Distance</button>
-<button data-t="area">Land</button>
-<button data-t="val">Value</button>
-<button data-t="conv">Convert</button>
-<button data-t="gps">Map</button>
-<button data-t="pro">Pro Suite</button>
-<button data-t="ai">My off AI</button>
-<button id="lo" class="hide" onclick="logout()">Log out</button>
-</nav>
+<style>
+/* PropMeasure Professional additions */
+#splash{position:fixed;inset:0;z-index:300;background:radial-gradient(circle at 50% 35%,#7952d9 0,#39206e 48%,#170e2d 100%);display:flex;align-items:center;justify-content:center;color:#fff;transition:opacity .55s ease}
+#splash.fade{opacity:0;pointer-events:none}
+.splash-inner{text-align:center;width:min(90%,430px);padding:24px}
+.splash-art{width:210px;height:180px;margin:0 auto 18px;position:relative;animation:floatHouse 3s ease-in-out infinite}
+.splash-art svg{width:100%;height:100%;filter:drop-shadow(0 15px 25px #09051566)}
+.splash-orbit{position:absolute;inset:7px 12px;border:1px solid #ffffff55;border-radius:50%;animation:orbit 9s linear infinite}
+.splash-brand{font-size:30px;font-weight:900;letter-spacing:.4px}
+.splash-tag{color:#ded3ff;font-size:13px;margin-top:5px}
+.splash-loader{width:150px;height:4px;background:#ffffff30;border-radius:8px;margin:25px auto 0;overflow:hidden}
+.splash-loader:after{content:"";display:block;height:100%;width:40%;background:#fff;border-radius:8px;animation:loadbar 1.4s ease-in-out infinite}
+@keyframes floatHouse{50%{transform:translateY(-10px)}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+@keyframes loadbar{from{transform:translateX(-110%)}to{transform:translateX(360%)}}
+.pro-tag{display:inline-block;background:#21133f;color:#fff;border-radius:20px;padding:3px 9px;font-size:10px;font-weight:800;letter-spacing:.7px}
+.pro-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.pro-card{border:1px solid var(--l);background:linear-gradient(145deg,#fff,#f7f3ff);border-radius:15px;padding:13px;text-align:left;min-height:105px;color:var(--t)}
+.pro-card b{display:block;margin:7px 0 3px}
+.pro-card small{color:var(--m);line-height:1.35}
+.pro-icon{font-size:23px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.back-btn{border:1px solid var(--l);background:#fff;color:var(--a);border-radius:10px;padding:8px 11px;font-weight:800}
+.field-help{font-size:11px;color:var(--m);margin-top:4px}
+.report-paper{background:#fff;border:1px solid var(--l);border-radius:12px;padding:15px;margin-top:10px}
+.report-paper h3{margin:0 0 8px;color:#39206e}
+.report-line{padding:8px 0;border-bottom:1px solid #eee}
+.report-line b{display:block;font-size:11px;color:var(--m);text-transform:uppercase;letter-spacing:.4px}
+.report-line span{white-space:pre-wrap}
+.point-row{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;margin:7px 0}
+.point-row input{min-width:0}
+.photo-preview{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.photo-preview img{width:76px;height:76px;object-fit:cover;border-radius:9px;border:1px solid var(--l)}
+@media print{
+ body{background:#fff;padding:0}
+ #top,#nav,#auth,#splash,.no-print,button{display:none!important}
+ main{max-width:none;padding:0}
+ .v{display:none!important}#v-inspection-report{display:block!important}
+ .report-paper{border:0;padding:0}
+}
+</style>
 
-<section id='home'>
-<div class='card'><p class='note' style='margin:0'>Welcome back</p><h2 id='hname' style='font-size:22px;margin:4px 0 0'></h2></div>
-<div class='tiles'>
-<button class='tile' onclick="go('area')"><b>Land</b><span>Measure plots</span></button>
-<button class='tile' onclick="go('val')"><b>Valuation</b><span>Six methods</span></button>
-<button class='tile' onclick="go('gps')"><b>Map</b><span>Satellite and GPS</span></button>
-<button class='tile' onclick="go('conv')"><b>Convert</b><span>Units and plots</span></button>
-<button class='tile' onclick="go('dist')"><b>Distance</b><span>Between two points</span></button>
-<button class='tile' onclick="go('pro')"><b>Pro Suite</b><span>Projects, inspections & reports</span></button>
-<button class='tile' onclick="go('ai')"><b>My off AI</b><span>Estate calculations assistant</span></button>
-<button class='tile' onclick="go('area')"><b>Saved plots</b><span id='hcount'></span></button>
+
+<style>
+.password-wrap{position:relative;display:flex;align-items:center}
+.password-wrap input{padding-right:76px}
+.password-toggle{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:#f0eaff;color:#5430a6;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:800;cursor:pointer}
+body.dark-mode{--bg:#11101a;--t:#f2efff;--m:#b8b0ce;--l:#39334d;background:var(--bg);color:var(--t)}
+body.dark-mode .card,body.dark-mode .pro-card,body.dark-mode .report-paper{background:#211d2e;color:var(--t);border-color:#39334d}
+body.dark-mode input,body.dark-mode select,body.dark-mode textarea{background:#171421;color:#f2efff;border-color:#49415f}
+body.dark-mode #nav{background:#1b1727;border-color:#39334d}
+body.dark-mode #nav button{color:#c3badb}
+body.dark-mode #nav button.on{background:#34294e;color:#cbb8ff}
+body.dark-mode .back-btn,body.dark-mode .btn.alt{background:#211d2e;color:#cbb8ff;border-color:#51456f}
+body.dark-mode .res{background:#302744;border-color:#51456f}
+body.dark-mode .pro-card{background:linear-gradient(145deg,#282237,#1c1928)}
+body.dark-mode .report-line{border-color:#39334d}
+body.dark-mode .password-toggle{background:#34294e;color:#e0d5ff}
+body.dark-mode #auth .box{background:#211d2e;color:#f2efff}
+body.dark-mode #auth p{color:#b8b0ce}
+body.dark-mode .tabs button{background:#171421;color:#c3badb;border-color:#39334d}
+body.dark-mode .tabs button.on{background:#7546e8;color:#fff}
+.theme-choice{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--l);border-radius:12px}
+.theme-switch{border:0;border-radius:999px;padding:9px 14px;background:#5430a6;color:white;font-weight:800}
+</style>
+
+</head><body>
+
+
+<div id="splash">
+ <div class="splash-inner">
+  <div class="splash-art">
+   <div class="splash-orbit"></div>
+   <svg viewBox="0 0 240 200" role="img" aria-label="Animated property illustration">
+    <defs><linearGradient id="houseG" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#cfc0ff"/></linearGradient></defs>
+    <path d="M28 91 L120 20 L212 91" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M48 84 L48 171 L192 171 L192 84 L120 31 Z" fill="url(#houseG)" stroke="#fff" stroke-width="3"/>
+    <path d="M104 171 V112 Q104 101 115 101 H136 Q147 101 147 112 V171" fill="#5430a6"/>
+    <rect x="64" y="105" width="27" height="27" rx="3" fill="#8f72df"/><path d="M77.5 105v27 M64 118.5h27" stroke="#fff" stroke-width="2"/>
+    <rect x="158" y="105" width="20" height="27" rx="3" fill="#8f72df"/><path d="M168 105v27 M158 118.5h20" stroke="#fff" stroke-width="2"/>
+    <path d="M30 176 H210" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="203" cy="34" r="10" fill="#f5c76b"/><path d="M203 15v-8 M222 34h8 M203 53v8 M184 34h-8" stroke="#f5c76b" stroke-width="3" stroke-linecap="round"/>
+   </svg>
+  </div>
+  <div class="splash-brand">PropMeasure</div>
+  <div class="splash-tag">Measure smarter. Inspect better. Value with confidence.</div>
+  <div class="splash-loader"></div>
+ </div>
 </div>
-<div class='card'><h2>Recent plots</h2><div id='hrecent'></div></div>
-<button class='btn alt' onclick='logout()'>Log out</button>
+<div id="auth"><div class="box">
+  <h1>PropMeasure</h1><p>Measure, map and value property.</p>
+  <div class="tabs"><button id="tLogin" class="on" type="button">Log in</button><button id="tReg" type="button">Register</button></div>
+  <div id="nameWrap" class="hide"><label>Full name</label><input id="aName" autocomplete="name"></div>
+  <label>Email</label><input id="aEmail" type="email" autocomplete="email">
+  <label>Password</label><div class="password-wrap"><input id="aPass" type="password" autocomplete="current-password" placeholder="At least 8 characters"><button class="password-toggle" type="button" data-toggle-password="aPass">Show</button></div>
+  <button class="btn" id="aGo" type="button">Log in</button>
+  <a href="#" id="forgot">Forgot password?</a>
+  <div class="err" id="aMsg"></div>
+</div></div>
+
+<div id="top" class="hide"><span>PropMeasure</span><button id="out" type="button">Log out</button></div>
+
+<main id="app" class="hide">
+<section id="v-home" class="v">
+  <div class="card"><div class="note" style="margin:0">Welcome back</div><h2 id="hName" style="font-size:20px;margin:2px 0 0"></h2></div>
+  <div class="tiles">
+    <button class="tile" data-go="land">Land<span>Measure plots</span></button>
+    <button class="tile" data-go="val">Valuation<span>Six methods</span></button>
+    <button class="tile" data-go="map">Map<span>Satellite and GPS</span></button>
+    <button class="tile" data-go="tools">Tools<span>Distance and converter</span></button>
+  </div>
+  <div class="card" style="margin-top:11px"><h2>Saved plots</h2><div id="hPlots"></div></div>
 </section>
 
-<section id="dist" class="hide">
-<button type="button" class="pm-back-dashboard" onclick="go('home')" aria-label="Back to dashboard">← Back to Dashboard</button>
 
-<div class="card"><h2>Distance between two points</h2>
-<label>Point A (latitude, longitude)</label>
-<div class="row"><input id="alat" type="number" step="any" placeholder="Latitude"><input id="alng" type="number" step="any" placeholder="Longitude"></div>
-<button class="btn alt" onclick="useLoc('a')">Use my location for A</button>
-<label>Point B (latitude, longitude)</label>
-<div class="row"><input id="blat" type="number" step="any" placeholder="Latitude"><input id="blng" type="number" step="any" placeholder="Longitude"></div>
-<button class="btn alt" onclick="useLoc('b')">Use my location for B</button>
-<button class="btn" onclick="calcDist()">Calculate distance</button>
-<div class="res hide" id="distRes"></div>
-<p class="note">Straight-line (great-circle) distance. Road distance will be longer. Tip: in Google Maps, long-press a spot to copy its coordinates.</p></div>
-
-<div class="card"><h2>Length converter</h2>
-<div class="row"><div><label>Value</label><input id="cv" type="number" step="any" value="100"></div>
-<div><label>From</label><select id="cfrom"></select></div></div>
-<div class="res" id="cvRes"></div></div>
+<section id="v-pro" class="v hide">
+ <div class="card">
+  <div class="section-head"><div><span class="pro-tag">PROFESSIONAL WORKSPACE</span><h2 style="font-size:20px;margin:7px 0 2px">Pro Suite</h2><div class="note">Your property projects, inspections and reports.</div></div></div>
+ </div>
+ <div class="pro-grid">
+  <button class="pro-card" data-go="projects"><span class="pro-icon">🏗️</span><b>Projects</b><small>Create and manage property assignments.</small></button>
+  <button class="pro-card" data-go="inspections"><span class="pro-icon">🔎</span><b>Inspections</b><small>Record detailed property conditions.</small></button>
+  <button class="pro-card" data-go="reports"><span class="pro-icon">📑</span><b>Reports</b><small>Review, print and save inspection PDFs.</small></button>
+  <button class="pro-card" data-go="proai"><span class="pro-icon">✦</span><b>Pro AI</b><small>AI support for professional property work.</small></button>
+ </div>
+ <div class="card" style="margin-top:11px"><h2>Recent activity</h2><div id="proRecent" class="note">Your projects and inspections will appear here.</div></div>
 </section>
 
-<section id="area" class="hide">
-<button type="button" class="pm-back-dashboard" onclick="go('home')" aria-label="Back to dashboard">← Back to Dashboard</button>
-
-<div class="card"><h2>Area of a plot or room</h2>
-<div class="row"><div><label>Length</label><input id="len" type="number" step="any" placeholder="e.g. 30"></div>
-<div><label>Width</label><input id="wid" type="number" step="any" placeholder="e.g. 15"></div></div>
-<label>Unit</label><select id="aunit"><option value="1">Metres</option><option value="0.3048">Feet</option><option value="0.9144">Yards</option></select>
-<label>Shape</label><select id="shape"><option value="1">Rectangle</option><option value="0.5">Triangle</option></select>
-<button class="btn" onclick="calcArea()">Calculate area</button>
-<div class="res hide" id="areaRes"></div></div>
-
-<div class='card'><h2>Irregular land</h2><p class='note' style='margin-top:0'>Split the plot into rectangles and triangles, one per line: length width (add t for a triangle).</p><textarea id='secs' rows='4' placeholder='30 20&#10;12 10 t'></textarea><label>Unit</label><select id='sunit'><option value='1'>Metres</option><option value='0.3048'>Feet</option><option value='0.9144'>Yards</option></select><button class='btn' onclick='calcSec()'>Add up area</button><div class='res hide' id='secRes'></div></div>
-
-<div class='card'><h2>Polygon &amp; boundary marking</h2><p class='note' style='margin-top:0'>Walk to each corner and tap Mark my corner, or type coordinates. Add 3 or more corners in order around the plot.</p><button class='btn' onclick='markHere()'>Mark my corner (GPS)</button><div class='row' style='margin-top:10px'><input id='plat' type='number' step='any' placeholder='Latitude'><input id='plng' type='number' step='any' placeholder='Longitude'></div><div class='row'><button class='btn alt' onclick='addManual()'>Add corner</button><button class='btn alt' onclick='undoPt()'>Undo</button></div><button class='btn alt' onclick='clearPts()'>Clear all</button><div class='note' id='ptList'></div><svg id='polySvg' style='width:100%;max-height:260px;color:var(--text)'></svg><div class='res hide' id='polyRes'></div><p class='note'>Phone GPS is usually accurate to a few metres, so treat results as estimates, not survey-grade or legal boundaries.</p></div>
-
-<div class='card'><h2>Saved plots</h2><label>Name for the last measurement</label><input id='rname' placeholder='e.g. Plot 4, Block B'><button class='btn' onclick='saveRec()'>Save last measurement</button><div id='recList' style='margin-top:12px'></div><label>Compare two saved plots</label><div class='row'><select id='cmpA' onchange='cmpRecs()'></select><select id='cmpB' onchange='cmpRecs()'></select></div><div class='res hide' id='cmpRes'></div></div>
+<section id="v-projects" class="v hide">
+ <div class="card">
+  <div class="section-head"><h2>Projects</h2><button class="back-btn" data-go="pro">← Pro Suite</button></div>
+  <label>Project name</label><input id="prName" placeholder="e.g. Residential property assessment">
+  <div class="row"><div><label>Client / owner</label><input id="prClient" placeholder="Client name"></div><div><label>Project type</label><select id="prType"><option>Property valuation</option><option>Property inspection</option><option>Land measurement</option><option>Property management</option><option>Development project</option><option>Other</option></select></div></div>
+  <label>Property location</label><input id="prLocation" placeholder="Address, town, state">
+  <div class="row"><div><label>Start date</label><input id="prDate" type="date"></div><div><label>Budget (₦)</label><input id="prBudget" type="number" min="0" placeholder="Optional"></div></div>
+  <label>Project description / scope</label><textarea id="prScope" rows="3" placeholder="Describe the work and expected deliverables"></textarea>
+  <button class="btn" id="prSave">Save project</button><div class="note" id="prMsg"></div>
+ </div>
+ <div class="card"><h2>Saved projects</h2><div id="projectList" class="note">No projects yet.</div></div>
 </section>
 
-<section id="val" class="hide">
-<button type="button" class="pm-back-dashboard" onclick="go('home')" aria-label="Back to dashboard">← Back to Dashboard</button>
-
-<div class="card"><h2>Valuation method</h2>
-<select id="method" onchange="showMethod()">
-<option value="inv">Investment (income capitalisation)</option>
-<option value="cmp">Comparison (price per m²)</option>
-<option value="cost">Cost (depreciated replacement)</option>
-<option value="pa">Profit account (accounts) method</option>
-<option value="res">Residual method</option>
-<option value="rd">Redevelopment method</option></select></div>
-
-<div class="card" id="m_inv"><h2>Investment method</h2>
-<label>Annual gross rent</label><input id="rent" type="number" step="any" placeholder="e.g. 5000000">
-<label>Annual outgoings (management, repairs, rates)</label><input id="outg" type="number" step="any" placeholder="e.g. 800000">
-<label>Capitalisation rate (%)</label><input id="cap" type="number" step="any" placeholder="e.g. 8">
-<button class="btn" onclick="calcInv()">Calculate value</button><div class="res hide" id="invRes"></div></div>
-
-<div class="card hide" id="m_cmp"><h2>Comparison method</h2>
-<label>Comparable sale prices (one per line)</label>
-<textarea id="comps" rows="3" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-size:16px" placeholder="10000000&#10;12000000"></textarea>
-<label>Their sizes in m² (one per line, same order)</label>
-<textarea id="csz" rows="3" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-size:16px" placeholder="400&#10;450"></textarea>
-<label>Subject property size (m²)</label><input id="subsz" type="number" step="any">
-<button class="btn" onclick="calcCmp()">Calculate value</button><div class="res hide" id="vcmpRes"></div></div>
-
-<div class="card hide" id="m_cost"><h2>Cost method</h2>
-<label>Land value</label><input id="land" type="number" step="any">
-<label>Building area (m²)</label><input id="barea" type="number" step="any">
-<label>Replacement cost per m²</label><input id="rcost" type="number" step="any">
-<div class="row"><div><label>Building age (yrs)</label><input id="age" type="number" step="any"></div>
-<div><label>Economic life (yrs)</label><input id="life" type="number" step="any" value="60"></div></div>
-<button class="btn" onclick="calcCost()">Calculate value</button><div class="res hide" id="costRes"></div></div>
-<div class="card hide" id="m_pa"><h2>Profit account method</h2>
-<label>Annual gross receipts (turnover)</label><input id="pa_rev" type="number" step="any">
-<label>Cost of purchases / stock</label><input id="pa_purch" type="number" step="any">
-<label>Working expenses (staff, utilities, etc.)</label><input id="pa_exp" type="number" step="any">
-<label>Tenant’s remuneration &amp; profit (amount)</label><input id="pa_prof" type="number" step="any">
-<label>Capitalisation rate (%)</label><input id="pa_cap" type="number" step="any" placeholder="e.g. 10">
-<button class="btn" onclick="calcPA()">Calculate value</button><div class="res hide" id="paRes"></div>
-<p class="note">Used for trade-based property such as hotels, cinemas and filling stations.</p></div>
-
-<div class="card hide" id="m_res"><h2>Residual method</h2>
-<label>Gross development value (GDV)</label><input id="rs_gdv" type="number" step="any">
-<label>Construction cost</label><input id="rs_build" type="number" step="any">
-<div class="row"><div><label>Professional fees (% of build)</label><input id="rs_fees" type="number" step="any" value="10"></div>
-<div><label>Contingency (% of build)</label><input id="rs_cont" type="number" step="any" value="5"></div></div>
-<div class="row"><div><label>Finance (% of build)</label><input id="rs_fin" type="number" step="any" value="8"></div>
-<div><label>Developer’s profit (% of GDV)</label><input id="rs_prof" type="number" step="any" value="20"></div></div>
-<button class="btn" onclick="calcRes()">Calculate land value</button><div class="res hide" id="rsRes"></div></div>
-
-<div class="card hide" id="m_rd"><h2>Redevelopment method</h2>
-<label>GDV of the redeveloped property</label><input id="rd_gdv" type="number" step="any">
-<label>Demolition &amp; clearance cost</label><input id="rd_demo" type="number" step="any">
-<label>New construction cost</label><input id="rd_build" type="number" step="any">
-<div class="row"><div><label>Professional fees (% of build)</label><input id="rd_fees" type="number" step="any" value="10"></div>
-<div><label>Finance (% of build)</label><input id="rd_fin" type="number" step="any" value="8"></div></div>
-<label>Developer’s profit (% of GDV)</label><input id="rd_prof" type="number" step="any" value="20">
-<label>Value in existing use (optional, to compare)</label><input id="rd_exist" type="number" step="any">
-<button class="btn" onclick="calcRd()">Calculate value</button><div class="res hide" id="rdRes"></div></div>
-<p class="note">Estimates only. A registered valuer should confirm figures for formal valuations.</p>
-</section>
-<section id='gps' class='hide'>
-<button type="button" class="pm-back-dashboard" onclick="go('home')" aria-label="Back to dashboard">← Back to Dashboard</button>
-
-<div class='card' style='padding:0;overflow:hidden'><div id='mapdiv' style='height:52vh;min-height:320px'></div></div>
-<div class='card'><div id='mtotal' style='font-size:20px;font-weight:800'>Tap the map to add points</div><div class='note' id='mdetail'></div><div class='res hide' id='mapRes'></div>
-<div class='row' style='margin-top:12px'><button class='btn alt' id='mundo'>Undo</button><button class='btn alt' id='mclear'>Clear</button></div>
-<div class='row'><button class='btn alt' id='mme'>My location</button><button class='btn alt' id='munits'>Units</button></div>
-<label>Save as plot (needs 3+ points)</label><input id='mname' placeholder='Plot name'><button class='btn' onclick='saveMap()'>Save plot</button><div class='note' id='mmsg'></div>
-<p class='note'>Tap the map to drop points. Distances are straight-line between points. Areas from tapped points are estimates, not survey-grade.</p></div></section>
-<section id='conv' class='hide'>
-<button type="button" class="pm-back-dashboard" onclick="go('home')" aria-label="Back to dashboard">← Back to Dashboard</button>
-<div class='card'><h2>Unit converter</h2><div class='chips' id='chips'></div><label>Type</label><select id='ccat' onchange='fillCat()'><option value='L'>Length</option><option value='A'>Area (incl. Nigerian plots)</option></select><label>Value</label><input id='cv2' type='number' step='any' value='1' oninput='conv2()'><div class='row'><div><label>From</label><select id='cf2' onchange='conv2()'></select></div><div><label>To</label><select id='ct2' onchange='conv2()'></select></div></div><div class='res' id='cv2Res'></div><p class='note'>Plot sizes differ by state and layout (for example 50×100 ft, 60×120 ft, 450 m² or 600 m²). Check the size on your survey plan or with the local land office.</p></div></section>
-
-<section id="ai" class="hide">
-<button type="button" class="pm-back-dashboard" onclick="go('home')" aria-label="Back to dashboard">← Back to Dashboard</button>
-
-<div class="card"><h2>My off AI</h2><p class="note">Estate Management calculation assistant. Enter a calculation in ordinary words; results are calculated locally in this app.</p>
-<div class="chips"><button class="chip" onclick="aiExample('Calculate the area of a 100 by 50 feet plot')">Plot area</button><button class="chip" onclick="aiExample('Calculate rental yield: property price 50000000, annual rent 6000000, expenses 1000000')">Rental yield</button><button class="chip" onclick="aiExample('Calculate capital value: net annual income 4500000, cap rate 9 percent')">Capital value</button><button class="chip" onclick="aiExample('Convert 2 hectares to square metres and acres')">Land conversion</button></div>
-<div id="aiChat" class="ai-chat" aria-live="polite"><div class="ai-message ai-bot"><b>My off AI</b><br>Hello. I can help with land area, perimeter, unit conversion, rental yield, net income, capital value, price per square metre and straight-line depreciation. What would you like to calculate?</div></div>
-<label for="aiInput">Your calculation</label><textarea id="aiInput" rows="3" placeholder="Example: Calculate the area of a 100 by 50 feet plot"></textarea>
-<div class="row"><button class="btn" onclick="aiSend()">Calculate</button><button class="btn alt" onclick="aiClear()">Clear chat</button></div>
-<p class="note">Important: My off AI currently uses built-in calculation rules, not a connected online language model. Check inputs and have formal valuation work reviewed by a qualified Estate Surveyor and Valuer.</p></div>
+<section id="v-inspections" class="v hide">
+ <div class="card">
+  <div class="section-head"><h2>New property inspection</h2><button class="back-btn" data-go="pro">← Pro Suite</button></div>
+  <p class="note">Complete the sections that apply. Add clear observations; do not mark an item as satisfactory without checking it.</p>
+  <label>Inspection title</label><input id="inTitle" placeholder="e.g. Residential building condition inspection">
+  <div class="row"><div><label>Property type</label><select id="inType"><option>Residential</option><option>Commercial</option><option>Industrial</option><option>Mixed-use</option><option>Land / site</option><option>Other</option></select></div><div><label>Inspection date</label><input id="inDate" type="date"></div></div>
+  <label>Property address / location</label><input id="inAddress" placeholder="Full property location">
+  <div class="row"><div><label>Client / owner</label><input id="inClient"></div><div><label>Inspector</label><input id="inInspector"></div></div>
+  <label>Weather / site conditions</label><input id="inWeather" placeholder="e.g. Dry weather; access available">
+  <label>Purpose and scope of inspection</label><textarea id="inScope" rows="2" placeholder="State why the inspection was carried out and its limits"></textarea>
+ </div>
+ <div class="card"><h2>Building and site condition assessment</h2>
+  <div id="inspectionItems"></div>
+ </div>
+ <div class="card"><h2>General observations and findings</h2>
+  <label>Overall condition</label><select id="inOverall"><option value="">Select condition</option><option>Excellent</option><option>Good</option><option>Fair</option><option>Poor</option><option>Very poor</option><option>Not applicable / not assessed</option></select>
+  <label>Major defects / safety concerns</label><textarea id="inDefects" rows="3" placeholder="Describe location, extent, severity and possible implications"></textarea>
+  <label>Recommended repairs and actions</label><textarea id="inRecommendations" rows="3" placeholder="State recommended action and priority"></textarea>
+  <label>Limitations / inaccessible areas</label><textarea id="inLimitations" rows="2" placeholder="Mention areas not accessed or items not tested"></textarea>
+  <label>Photographs (optional)</label><input id="inPhotos" type="file" accept="image/*" multiple>
+  <div class="field-help">Photographs are included in the report where supported. Keep image sizes reasonable for backup.</div>
+  <div id="photoPreview" class="photo-preview"></div>
+  <label>Inspector's conclusion</label><textarea id="inConclusion" rows="3" placeholder="Summarise the property's condition and the main actions required"></textarea>
+  <div class="row"><button class="btn alt" id="inCancel">Cancel</button><button class="btn" id="inSave">Save inspection</button></div>
+  <div class="note" id="inMsg"></div>
+ </div>
 </section>
 
-<section id="pro" class="hide">
-<button type="button" class="pm-back-dashboard" onclick="go('home')" aria-label="Back to dashboard">← Back to Dashboard</button>
+<section id="v-reports" class="v hide">
+ <div class="card"><div class="section-head"><h2>Inspection reports</h2><button class="back-btn" data-go="pro">← Pro Suite</button></div><div id="reportList" class="note">No reports saved yet.</div></div>
+</section>
+<section id="v-inspection-report" class="v hide">
+ <div class="card no-print"><div class="section-head"><h2>Inspection report</h2><button class="back-btn" data-go="reports">← Reports</button></div>
+  <div class="row"><button class="btn" id="reportPdf">Save / Print as PDF</button><button class="btn alt" id="reportBackup">Back up report</button></div>
+  <div class="note" id="reportMsg">Use your browser's print dialog and choose "Save as PDF".</div>
+ </div>
+ <div id="reportPaper" class="report-paper"></div>
+</section>
 
-<div class="card"><h2>Professional Valuation Suite</h2><p class="note">Manage valuation projects, survey coordinates, subdivision, inspections, investment analysis, comparable evidence and reports.</p>
-<label>Project name</label><input id="vpName" placeholder="e.g. Residential property, Minna">
-<label>Property address / location</label><input id="vpAddress" placeholder="Town, State">
-<div class="row"><button class="btn" onclick="vpCreate()">Create project</button><button class="btn alt" onclick="vpBackup()">Backup projects</button></div>
-<label>Restore project backup</label><input type="file" accept=".json" onchange="vpRestore(this)">
-<div id="vpProjects"></div></div>
-<div id="vpWork" class="hide">
-<div class="card"><div class="row"><h2 id="vpTitle">Project</h2><button class="btn alt" onclick="vpClose()">Close</button></div>
-<label>Client name</label><input id="vpClient" oninput="vpSet('client',this.value)">
-<label>Surveyor / valuer</label><input id="vpSurveyor" oninput="vpSet('surveyor',this.value)">
-<label>Survey date</label><input id="vpDate" type="date" oninput="vpSet('date',this.value)">
-<label>Plot number</label><input id="vpPlot" oninput="vpSet('plot',this.value)">
-</div>
-<div class="card"><h2>Coordinate survey</h2><p class="note">Enter Easting and Northing in metres. Add at least three valid points to calculate polygon area.</p>
-<div class="row"><input id="vpLabel" placeholder="Point label" value="BP1"><input id="vpE" type="number" step="any" placeholder="Easting (m)"><input id="vpN" type="number" step="any" placeholder="Northing (m)"></div>
-<button class="btn" onclick="vpAddPoint()">Add boundary point</button><div id="vpPoints"></div><div class="res" id="vpArea"></div>
-</div>
-<div class="card"><h2>Equal-area subdivision</h2><label>Number of plots (2–12)</label><input id="vpParts" type="number" min="2" max="12" value="4" oninput="vpSubdivide()"><div id="vpSub"></div></div>
-<div class="card"><h2>Property inspection</h2><div id="vpInspection"></div><label>General inspection notes</label><textarea id="vpNotes" oninput="vpSet('notes',this.value)"></textarea></div>
-<div class="card"><h2>Investment analysis</h2>
-<label>Purchase price (₦)</label><input id="vpPrice" type="number" oninput="vpCalcInvestment()">
-<label>Annual rent (₦)</label><input id="vpRent" type="number" oninput="vpCalcInvestment()">
-<label>Annual costs (₦)</label><input id="vpCosts" type="number" oninput="vpCalcInvestment()">
-<label>Capitalisation rate (%)</label><input id="vpCap" type="number" value="9" oninput="vpCalcInvestment()"><div class="res" id="vpInvestment"></div></div>
-<div class="card"><h2>Comparable sales evidence</h2>
-<label>Comparable property</label><input id="vpCompName" placeholder="Address / description">
-<div class="row"><input id="vpCompPrice" type="number" placeholder="Sale price (₦)"><input id="vpCompAdj" type="number" placeholder="Adjustment (%)"></div>
-<button class="btn" onclick="vpAddComp()">Add comparable</button><div id="vpComps"></div><div class="res" id="vpCompResult"></div></div>
-<div class="card"><h2>Valuation report</h2><button class="btn" onclick="vpReport()">Preview report</button><button class="btn alt" onclick="vpCSV()">Download Excel-compatible CSV</button><div id="vpReport"></div></div>
-</div></section>
+<section id="v-proai" class="v hide">
+ <div class="card"><div class="section-head"><div><span class="pro-tag">PROP MEASURE AI</span><h2 style="font-size:20px;margin:6px 0">Pro AI</h2></div><button class="back-btn" data-go="pro">← Pro Suite</button></div>
+  <p class="note">Ask questions about property practice, measurements, valuation methods, inspection findings, building maintenance and report writing.</p>
+  <label>What do you need help with?</label><select id="aiMode"><option>Property and estate management assistant</option><option>Explain a valuation calculation</option><option>Analyse inspection findings</option><option>Draft a professional property report</option><option>Land measurement and surveying</option><option>Building maintenance recommendations</option></select>
+  <label>Your question / details</label><textarea id="aiPrompt" rows="5" placeholder="Describe the property, figures, inspection observations or question..."></textarea>
+  <button class="btn" id="aiAsk">Ask Pro AI</button><div id="aiStatus" class="note"></div>
+  <div id="aiAnswer" class="report-paper" style="white-space:pre-wrap">Pro AI responses will appear here.</div>
+  <p class="field-help">AI connection requires a secure backend endpoint. Your private API key must never be placed in this HTML file.</p>
+ </div>
+</section>
 
+<section id="v-land" class="v hide">
+  <div class="card"><h2>Area of a plot</h2>
+    <div class="row"><div><label>Length</label><input id="len" type="number" step="any"></div><div><label>Width</label><input id="wid" type="number" step="any"></div></div>
+    <div class="row"><div><label>Unit</label><select id="lu"><option value="1">Metres</option><option value="0.3048">Feet</option><option value="0.9144">Yards</option></select></div>
+    <div><label>Shape</label><select id="ls"><option value="1">Rectangle</option><option value="0.5">Triangle</option></select></div></div>
+    <button class="btn" id="calcLand" type="button">Calculate area</button><div id="landRes"></div></div>
+  <div class="card"><h2>Irregular land</h2><p class="note" style="margin-top:0">One section per line: length width (add t for a triangle).</p>
+    <textarea id="secs" rows="3" placeholder="30 20&#10;12 10 t"></textarea>
+    <button class="btn" id="calcSecs" type="button">Add up area</button><div id="secRes"></div></div>
+  <div class="card"><h2>Save last result</h2><input id="pName" placeholder="Plot name">
+    <button class="btn" id="savePlot" type="button">Save plot</button><div class="note" id="pMsg"></div><div id="plots"></div></div>
+</section>
+
+<section id="v-val" class="v hide">
+  <div class="card"><h2>Valuation method</h2><select id="method"></select></div>
+  <div class="card"><div id="mFields"></div><button class="btn" id="calcVal" type="button">Calculate value</button><div id="valRes"></div>
+  <p class="note">Estimates only. A registered valuer should confirm formal valuations.</p></div>
+</section>
+
+<section id="v-map" class="v hide">
+  <div class="card" style="padding:6px"><div id="map"></div></div>
+  <div class="card"><div id="mTotal" style="font-size:18px;font-weight:800">Tap the map to add points</div><div class="note" id="mDet"></div><div id="mRes"></div>
+    <div class="row"><button class="btn alt" id="mUndo" type="button">Undo</button><button class="btn alt" id="mClear" type="button">Clear</button></div>
+    <div class="row"><button class="btn alt" id="mMe" type="button">My location</button><button class="btn alt" id="mSave" type="button">Save as plot</button></div>
+    <div class="note" id="mMsg"></div></div>
+</section>
+
+<section id="v-tools" class="v hide">
+  <div class="card"><h2>Distance between two points</h2>
+    <label>Point A</label><div class="row"><input id="alat" type="number" step="any" placeholder="Latitude"><input id="alng" type="number" step="any" placeholder="Longitude"></div>
+    <button class="btn alt" data-loc="a" type="button">Use my location for A</button>
+    <label>Point B</label><div class="row"><input id="blat" type="number" step="any" placeholder="Latitude"><input id="blng" type="number" step="any" placeholder="Longitude"></div>
+    <button class="btn alt" data-loc="b" type="button">Use my location for B</button>
+    <button class="btn" id="calcDist" type="button">Calculate distance</button><div id="distRes"></div></div>
+  <div class="card"><h2>Unit converter</h2>
+    <label>Type</label><select id="ct"><option value="L">Length</option><option value="A">Area (incl. Nigerian plots)</option></select>
+    <label>Value</label><input id="cv" type="number" step="any" value="1">
+    <div class="row"><div><label>From</label><select id="cf"></select></div><div><label>To</label><select id="cto"></select></div></div>
+    <div class="res" id="cRes"></div></div>
+</section>
+
+<section id="v-me" class="v hide">
+  <div class="card"><h2>Profile</h2><div class="note" id="meMail" style="margin:0 0 6px"></div>
+    <label>Full name</label><input id="meName"><button class="btn" id="saveName" type="button">Save name</button>
+    <label>New password</label><div class="password-wrap"><input id="mePass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button class="password-toggle" type="button" data-toggle-password="mePass">Show</button></div>
+    <button class="btn alt" id="savePass" type="button">Update password</button><div class="err" id="meMsg"></div></div>
+  
+  <div class="card"><h2>Appearance</h2>
+   <div class="theme-choice"><div><b id="themeLabel">Bright mode</b><div class="note" style="margin:2px 0 0">Switch between bright and dark display.</div></div><button class="theme-switch" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+  <div class="card"><button class="btn alt" id="out2" type="button">Log out</button>
+    <button class="btn alt" id="del" type="button" style="color:#b42318;border-color:#b42318">Delete account</button></div>
+</section>
 </main>
 
+<div id="nav" class="hide">
+  <button data-go="home" class="on"><i>🏠</i>Home</button><button data-go="land"><i>📐</i>Land</button><button data-go="val"><i>💰</i>Value</button>
+  <button data-go="map"><i>🗺️</i>Map</button><button data-go="tools"><i>🧰</i>Tools</button><button data-go="pro"><i>✦</i>Pro</button><button data-go="me"><i>👤</i>Me</button>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+"use strict";
 const $=id=>document.getElementById(id);
-const fmt=n=>isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):"–";
-document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
-  ["home","dist","area","val","conv","gps","pro","ai"].forEach(id=>$(id).classList.toggle("hide",id!==b.dataset.t));if(b.dataset.t==="gps")openMap();if(b.dataset.t==="home")drawHome();if(b.dataset.t==="pro")vpList();
+const fmt=(n,d=2)=>isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:d}):"–";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const big=(x,u="")=>`<div class="big">${x}${u}</div>`;
+
+/* ---------- Firebase ---------- */
+firebase.initializeApp({
+  apiKey:"AIzaSyCYGk73Cd9AfK7r2ULuKnh5DS4dFI9ux7I",
+  authDomain:"propmeasure-83ca0.firebaseapp.com",
+  projectId:"propmeasure-83ca0",
+  storageBucket:"propmeasure-83ca0.firebasestorage.app",
+  messagingSenderId:"271658713289",
+  appId:"1:271658713289:web:74f3460f9a817faea78d18"
 });
-function useLoc(p){
-  if(!navigator.geolocation){alert("Location isn’t available on this device.");return}
-  navigator.geolocation.getCurrentPosition(pos=>{$(p+"lat").value=pos.coords.latitude.toFixed(6);$(p+"lng").value=pos.coords.longitude.toFixed(6)},()=>alert("Couldn’t get your location. Enter coordinates manually."));
-}
-function calcDist(){
-  const v=["alat","alng","blat","blng"].map(i=>parseFloat($(i).value));
-  const r=$("distRes");r.classList.remove("hide");
-  if(v.some(isNaN)){r.innerHTML="Please fill in both points.";return}
-  const R=6371008.8,rad=x=>x*Math.PI/180;
-  const dLat=rad(v[2]-v[0]),dLng=rad(v[3]-v[1]);
-  const h=Math.sin(dLat/2)**2+Math.cos(rad(v[0]))*Math.cos(rad(v[2]))*Math.sin(dLng/2)**2;
-  const m=2*R*Math.asin(Math.sqrt(h));
-  r.innerHTML=`<div class="big">${fmt(m/1000)} km</div><small>${fmt(m)} m · ${fmt(m*3.28084)} ft · ${fmt(m/1609.344)} miles</small>`;
-}
-const U={"Metres":1,"Kilometres":1000,"Feet":0.3048,"Yards":0.9144,"Miles":1609.344};
-$("cfrom").innerHTML=Object.keys(U).map(k=>`<option>${k}</option>`).join("");
-function conv(){
-  const m=parseFloat($("cv").value)*U[$("cfrom").value];
-  $("cvRes").innerHTML=isNaN(m)?"Enter a value.":Object.keys(U).map(k=>`${fmt(m/U[k])} ${k.toLowerCase()}`).join("<br>");
-}
-$("cv").oninput=conv;$("cfrom").onchange=conv;conv();
-function calcArea(){
-  const l=parseFloat($("len").value),w=parseFloat($("wid").value),f=parseFloat($("aunit").value),s=parseFloat($("shape").value);
-  const r=$("areaRes");r.classList.remove("hide");
-  if(isNaN(l)||isNaN(w)){r.innerHTML="Enter length and width.";return}
-  const a=l*f*w*f*s;
-  show('areaRes',a,s==1?2*(l+w)*f:null);
-}
-function showMethod(){const m=$("method").value;["inv","cmp","cost","pa","res","rd"].forEach(k=>$("m_"+k).classList.toggle("hide",k!==m))}
-function calcInv(){
-  const rent=parseFloat($("rent").value),o=parseFloat($("outg").value)||0,c=parseFloat($("cap").value);
-  const r=$("invRes");r.classList.remove("hide");
-  if(isNaN(rent)||isNaN(c)||c<=0){r.innerHTML="Enter rent and a cap rate above 0.";return}
-  const noi=rent-o;
-  r.innerHTML=`<div class="big">${fmt(noi/(c/100))}</div><small>Net income: ${fmt(noi)} ÷ ${c}% cap rate (years’ purchase: ${fmt(100/c)})</small>`;
-}
-function lines(id){return $(id).value.split(/\n/).map(x=>parseFloat(x.replace(/,/g,""))).filter(x=>!isNaN(x))}
-function calcCmp(){
-  const p=lines("comps"),s=lines("csz"),sub=parseFloat($("subsz").value);
-  const r=$("vcmpRes");r.classList.remove("hide");
-  if(!p.length||p.length!==s.length||isNaN(sub)){r.innerHTML="Give matching prices and sizes, plus the subject size.";return}
-  const pp=p.map((x,i)=>x/s[i]),avg=pp.reduce((a,b)=>a+b,0)/pp.length;
-  r.innerHTML=`<div class="big">${fmt(avg*sub)}</div><small>Average rate ${fmt(avg)} per m² (range ${fmt(Math.min(...pp))}–${fmt(Math.max(...pp))}) × ${fmt(sub)} m²</small>`;
-}
-function calcCost(){
-  const land=parseFloat($("land").value)||0,a=parseFloat($("barea").value),rc=parseFloat($("rcost").value),age=parseFloat($("age").value)||0,life=parseFloat($("life").value);
-  const r=$("costRes");r.classList.remove("hide");
-  if(isNaN(a)||isNaN(rc)||isNaN(life)||life<=0){r.innerHTML="Enter building area, cost and life.";return}
-  const gross=a*rc,dep=Math.min(1,age/life),net=gross*(1-dep);
-  r.innerHTML=`<div class="big">${fmt(land+net)}</div><small>Land ${fmt(land)} + building ${fmt(net)} (replacement ${fmt(gross)} less ${fmt(dep*100)}% depreciation)</small>`;
-}
-const n=id=>parseFloat($(id).value)||0;
-function calcPA(){
-  const cap=n("pa_cap"),r=$("paRes");r.classList.remove("hide");
-  if(!n("pa_rev")||cap<=0){r.innerHTML="Enter gross receipts and a cap rate above 0.";return}
-  const div=n("pa_rev")-n("pa_purch")-n("pa_exp")-n("pa_prof");
-  if(div<=0){r.innerHTML="No divisible balance: costs and tenant’s profit use up all receipts.";return}
-  r.innerHTML=`<div class="big">${fmt(div/(cap/100))}</div><small>Divisible balance (rent): ${fmt(div)} ÷ ${cap}% cap rate</small>`;
-}
-function calcRes(){
-  const g=n("rs_gdv"),b=n("rs_build"),r=$("rsRes");r.classList.remove("hide");
-  if(!g||!b){r.innerHTML="Enter GDV and construction cost.";return}
-  const f=b*n("rs_fees")/100,c=b*n("rs_cont")/100,fin=b*n("rs_fin")/100,p=g*n("rs_prof")/100;
-  const land=g-b-f-c-fin-p;
-  r.innerHTML=`<div class="big">${fmt(land)}</div><small>Residual land value = GDV ${fmt(g)} − build ${fmt(b)} − fees ${fmt(f)} − contingency ${fmt(c)} − finance ${fmt(fin)} − profit ${fmt(p)}${land<=0?"<br><b>Negative: the scheme isn’t viable as set out.</b>":""}</small>`;
-}
-function calcRd(){
-  const g=n("rd_gdv"),b=n("rd_build"),r=$("rdRes");r.classList.remove("hide");
-  if(!g||!b){r.innerHTML="Enter GDV and construction cost.";return}
-  const d=n("rd_demo"),f=b*n("rd_fees")/100,fin=b*n("rd_fin")/100,p=g*n("rd_prof")/100;
-  const v=g-d-b-f-fin-p,ex=n("rd_exist");
-  let cmp="";
-  if(ex)cmp=`<br>Existing use: ${fmt(ex)}. <b>${v>ex?"Redevelopment gives the higher value.":"Existing use is worth more."}</b>`;
-  r.innerHTML=`<div class="big">${fmt(v)}</div><small>GDV ${fmt(g)} − demolition ${fmt(d)} − build ${fmt(b)} − fees ${fmt(f)} − finance ${fmt(fin)} − profit ${fmt(p)}${cmp}</small>`;
-}
-const fm=x=>isFinite(x)?(+x.toPrecision(8)).toLocaleString(undefined,{maximumFractionDigits:8}):'–';
-const CAT={L:{Metres:1,Kilometres:1000,Feet:.3048,Yards:.9144,Miles:1609.344,Centimetres:.01,Inches:.0254},A:{'Square metres':1,'Square feet':.09290304,'Square yards':.83612736,Hectares:1e4,Acres:4046.8564224,'Square kilometres':1e6,'Plot (50×100 ft)':464.5152,'Plot (60×120 ft)':668.9019,'Plot (450 m²)':450,'Plot (600 m²)':600}};
-const Q=[['L','Metres','Feet','m → ft'],['L','Feet','Metres','ft → m'],['A','Square metres','Square feet','m² → ft²'],['A','Acres','Hectares','ac → ha'],['A','Hectares','Acres','ha → ac'],['A','Square feet','Acres','ft² → ac'],['A','Square metres','Hectares','m² → ha'],['L','Kilometres','Metres','km → m'],['L','Miles','Kilometres','mi → km']];
-function fillCat(f,t){const u=Object.keys(CAT[$('ccat').value]),o=u.map(k=>`<option>${k}</option>`).join('');$('cf2').innerHTML=o;$('ct2').innerHTML=o;$('cf2').value=f||u[0];$('ct2').value=t||u[1];conv2()}
-function conv2(){const C=CAT[$('ccat').value],v=parseFloat($('cv2').value),r=$('cv2Res');if(isNaN(v)){r.innerHTML='Enter a value.';return}const b=v*C[$('cf2').value];r.innerHTML=`<div class='big'>${fm(b/C[$('ct2').value])} ${$('ct2').value.toLowerCase()}</div><small>${Object.keys(C).map(k=>fm(b/C[k])+' '+k.toLowerCase()).join('<br>')}</small>`}
-let last=null;
-const PL=[['50×100 ft plots',464.5152],['60×120 ft plots',668.9019],['450 m² plots',450],['600 m² plots',600]];
-function show(id,a,p,note){last={area:a,perim:p};const r=$(id);r.classList.remove('hide');r.innerHTML=`<div class='big'>${fmt(a)} m²</div><small>${fmt(a*10.7639)} sq ft · ${fmt(a/10000)} ha · ${fmt(a/4046.856)} acres${p?`<br>Perimeter: ${fmt(p)} m (${fmt(p*3.28084)} ft)`:''}<br>≈ ${PL.map(x=>fmt(a/x[1])+' '+x[0]).join(' · ')}${note?'<br>'+note:''}</small>`}
-function calcSec(){const f=parseFloat($('sunit').value);let a=0,c=0;$('secs').value.split('\n').forEach(l=>{const t=l.trim().split(/[\s,x×]+/),L=parseFloat(t[0]),W=parseFloat(t[1]);if(!isNaN(L)&&!isNaN(W)){a+=L*f*W*f*(/^t/i.test(t[2]||'')?.5:1);c++}});if(!c){const r=$('secRes');r.classList.remove('hide');r.innerHTML='Add at least one line, e.g. 30 20';return}show('secRes',a,null,c+' section(s) added')}
-let pts=[];
-function addPt(la,lo){if(isNaN(la)||isNaN(lo)){alert('Enter latitude and longitude.');return}pts.push([la,lo]);drawPoly()}
-function addManual(){addPt(parseFloat($('plat').value),parseFloat($('plng').value));$('plat').value='';$('plng').value=''}
-function markHere(){if(!navigator.geolocation){alert('Location isn’t available on this device.');return}navigator.geolocation.getCurrentPosition(p=>addPt(+p.coords.latitude.toFixed(6),+p.coords.longitude.toFixed(6)),()=>alert('Couldn’t get your location. Enter coordinates manually.'),{enableHighAccuracy:true})}
-function undoPt(){pts.pop();drawPoly()}
-function clearPts(){pts=[];drawPoly()}
-function drawPoly(){$('ptList').innerHTML=pts.map((p,i)=>(i+1)+'. '+p[0]+', '+p[1]).join('<br>')||'No corners marked yet.';const r=$('polyRes'),s=$('polySvg');if(pts.length<3){r.classList.add('hide');s.innerHTML='';return}const lat0=pts.reduce((a,p)=>a+p[0],0)/pts.length,k=111320,xs=pts.map(p=>[(p[1]-pts[0][1])*k*Math.cos(lat0*Math.PI/180),(p[0]-pts[0][0])*k]);let A=0,per=0;xs.forEach((p,i)=>{const q=xs[(i+1)%xs.length];A+=p[0]*q[1]-q[0]*p[1];per+=Math.hypot(q[0]-p[0],q[1]-p[1])});const X=xs.map(p=>p[0]),Y=xs.map(p=>p[1]),mx=Math.min(...X),my=Math.max(...Y),w=Math.max(...X)-mx,h=my-Math.min(...Y),sc=180/Math.max(w,h,1e-9),pd=20,pp=xs.map(p=>[pd+(p[0]-mx)*sc,pd+(my-p[1])*sc]);s.setAttribute('viewBox',`0 0 ${w*sc+2*pd} ${h*sc+2*pd}`);s.innerHTML=`<polygon points='${pp.map(p=>p.join(',')).join(' ')}' fill='var(--accent)' fill-opacity='.18' stroke='var(--accent)' stroke-width='2'/>`+pp.map((p,i)=>`<circle cx='${p[0]}' cy='${p[1]}' r='5' fill='var(--accent2)'/><text x='${p[0]+7}' y='${p[1]-7}' font-size='12' fill='currentColor'>${i+1}</text>`).join('');show('polyRes',Math.abs(A)/2,per,pts.length+' corners')}
-let recs=[];
-function persist(){try{localStorage.setItem(recKey,JSON.stringify(recs))}catch(e){}}
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function saveRec(){if(!last){alert('Measure a plot first.');return}recs.push({name:$('rname').value.trim()||'Plot '+(recs.length+1),area:last.area,perim:last.perim});$('rname').value='';persist();drawRecs()}
-function delRec(i){recs.splice(i,1);persist();drawRecs()}
-function drawRecs(){$('recList').innerHTML=recs.length?recs.map((x,i)=>`<div class='rec'><span><b>${esc(x.name)}</b><br><small>${fmt(x.area)} m²${x.perim?' · perimeter '+fmt(x.perim)+' m':''}</small></span><button onclick='delRec(${i})'>✕</button></div>`).join('')+`<div class='rec'><b>Total (${recs.length})</b><b>${fmt(recs.reduce((a,x)=>a+x.area,0))} m²</b></div>`:'<small>No saved plots yet.</small>';const o=recs.map((x,i)=>`<option value='${i}'>${esc(x.name)}</option>`).join('');$('cmpA').innerHTML=o;$('cmpB').innerHTML=o;if(recs.length>1)$('cmpB').value=1;cmpRecs()}
-function cmpRecs(){const r=$('cmpRes');if(recs.length<2){r.classList.add('hide');return}r.classList.remove('hide');const a=recs[$('cmpA').value],b=recs[$('cmpB').value],d=a.area-b.area;r.innerHTML=`<div class='big'>${fmt(Math.abs(d))} m²</div><small>${d===0?'Same size.':esc(d>0?a.name:b.name)+' is larger by '+fmt(Math.abs(d)/Math.min(a.area,b.area)*100)+'%'}<br>${esc(a.name)}: ${fmt(a.area)} m² · ${esc(b.name)}: ${fmt(b.area)} m²${a.perim&&b.perim?'<br>Perimeter: '+fmt(a.perim)+' m vs '+fmt(b.perim)+' m':''}</small>`}
-Q.forEach(q=>{const b=document.createElement('button');b.className='chip';b.textContent=q[3];b.onclick=()=>{$('ccat').value=q[0];fillCat(q[1],q[2])};$('chips').appendChild(b)});
-fillCat();drawRecs();drawPoly();
-let gmap=null,mpts=[],mdots=[],mline=null,mpoly=null,mmetric=true;
-function mdist(a,b){const R=6371008.8,r=x=>x*Math.PI/180,dl=r(b.lat-a.lat),dg=r(b.lng-a.lng),h=Math.sin(dl/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
-function mfmt(m){if(mmetric)return m<1000?Math.round(m)+' m':(m/1000).toFixed(m<10000?2:1)+' km';const ft=m*3.28084,mi=m/1609.344;return mi<0.25?Math.round(ft)+' ft':mi.toFixed(mi<10?2:1)+' mi'}
-function mArea(){const lat0=mpts.reduce((s,p)=>s+p.lat,0)/mpts.length,k=111320,xs=mpts.map(p=>[(p.lng-mpts[0].lng)*k*Math.cos(lat0*Math.PI/180),(p.lat-mpts[0].lat)*k]);let A=0,per=0;xs.forEach((p,i)=>{const q=xs[(i+1)%xs.length];A+=p[0]*q[1]-q[0]*p[1];per+=Math.hypot(q[0]-p[0],q[1]-p[1])});return{area:Math.abs(A)/2,perim:per}}
-function openMap(){
-  if(typeof L==='undefined'){$('mtotal').textContent='The map library did not load. Check your internet connection.';return}
-  if(gmap){setTimeout(()=>gmap.invalidateSize(),50);return}
-  gmap=L.map('mapdiv').setView([20,0],2);
-  const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:21,maxNativeZoom:19,attribution:'Imagery &copy; Esri, Maxar, Earthstar Geographics'});
-  const lab=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:21,maxNativeZoom:19});
-  const st=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:21,maxNativeZoom:19,attribution:'&copy; OpenStreetMap contributors'});
-  sat.addTo(gmap);lab.addTo(gmap);
-  L.control.layers({'Satellite':sat,'Streets':st},{'Place names':lab}).addTo(gmap);
-  gmap.on('click',e=>{mpts.push(e.latlng);mdots.push(L.circleMarker(e.latlng,{radius:6,fillOpacity:1}).addTo(gmap));mrefresh()});
-  gmap.on('locationerror',()=>{$('mmsg').textContent='Could not get your location. Check location permission.'});
-  $('mundo').onclick=()=>{if(!mpts.length)return;mpts.pop();gmap.removeLayer(mdots.pop());mrefresh()};
-  $('mclear').onclick=()=>{mpts.length=0;mdots.forEach(d=>gmap.removeLayer(d));mdots.length=0;mrefresh()};
-  $('munits').onclick=()=>{mmetric=!mmetric;mrefresh()};
-  $('mme').onclick=()=>gmap.locate({setView:true,maxZoom:18});
-  mrefresh();
-}
-function mrefresh(){
-  if(mline){gmap.removeLayer(mline);mline=null}
-  if(mpoly){gmap.removeLayer(mpoly);mpoly=null}
-  if(mpts.length>=2)mline=L.polyline(mpts,{weight:5}).addTo(gmap);
-  if(mpts.length>=3)mpoly=L.polygon(mpts,{weight:0,fillOpacity:.2}).addTo(gmap);
-  const t=$('mtotal'),d=$('mdetail'),r=$('mapRes');$('mmsg').textContent='';
-  if(mpts.length<3)r.classList.add('hide');
-  if(mpts.length<2){t.textContent='Tap the map to add points';d.textContent='Points: '+mpts.length;return}
-  let sum=0;for(let i=1;i<mpts.length;i++)sum+=mdist(mpts[i-1],mpts[i]);
-  const n=mpts.length;
-  t.textContent='Total: '+mfmt(sum);
-  d.textContent='Points: '+n+' • Last leg: '+mfmt(mdist(mpts[n-2],mpts[n-1]))+' • Start to end: '+mfmt(mdist(mpts[0],mpts[n-1]));
-  if(n>=3){const P=mArea();show('mapRes',P.area,P.perim,'Shape closes from the last point back to the first.')}
-}
-function saveMap(){if(mpts.length<3){$('mmsg').textContent='Add at least 3 points to save a plot.';return}const P=mArea();recs.push({name:$('mname').value.trim()||'Map plot '+(recs.length+1),area:P.area,perim:P.perim});$('mname').value='';persist();drawRecs();$('mmsg').textContent='Saved. Find it under Saved plots on the Land tab.'}
+const auth=firebase.auth();
+const FE={"auth/email-already-in-use":"That email is already registered. Use Log in.","auth/invalid-credential":"Wrong email or password.","auth/wrong-password":"Wrong email or password.","auth/user-not-found":"No account found with that email.","auth/invalid-email":"Enter a valid email.","auth/weak-password":"Password is too weak.","auth/too-many-requests":"Too many attempts. Try again later.","auth/network-request-failed":"No internet connection.","auth/requires-recent-login":"Log out, log in again, then retry.","auth/unauthorized-domain":"This website is not in Firebase Authorized domains."};
+const fe=e=>FE[e.code]||(e.code?e.code:"Something went wrong.");
 
-const enc=new TextEncoder();
-async function hash(pw,salt){const b=await crypto.subtle.digest('SHA-256',enc.encode(salt+pw));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
-function users(){try{return JSON.parse(localStorage.getItem('pm_users')||'{}')}catch(e){return{}}}
-let authMode='reg',recKey='pm_recs',me=null;
-function go(t){document.querySelector('#tabs [data-t="'+t+'"]').click()}
-function authSwitch(m){authMode=m;$('awrap').classList.toggle('hide',m!=='reg');$('abtn').textContent=m==='reg'?'Create account':'Log in';$('authFormTitle').textContent=m==='reg'?'Registration':'Login';$('authPanelTitle').textContent=m==='reg'?'Hello, Welcome!':'Welcome Back!';$('authPanelSub').textContent=m==='reg'?'Already have an account?':'Don’t have an account?';$('authPanelBtn').textContent=m==='reg'?'Log in':'Register';$('authPanelBtn').onclick=()=>authSwitch(m==='reg'?'login':'reg');$('apass').autocomplete=m==='reg'?'new-password':'current-password';$('amsg').textContent=''}
-async function authGo(){
-  const em=$('aemail').value.trim().toLowerCase(),pw=$('apass').value,msg=$('amsg');msg.textContent='';
-  if(!/^\S+@\S+\.\S+$/.test(em)){msg.textContent='Enter a valid email.';return}
-  if(pw.length<8){msg.textContent='Password must be at least 8 characters.';return}
-  if(!window.crypto||!crypto.subtle){msg.textContent='This browser cannot secure passwords here. Open the app over https or localhost.';return}
-  const u=users();
-  if(authMode==='reg'){
-    const nm=$('aname').value.trim();
-    if(!nm){msg.textContent='Enter your name.';return}
-    if(u[em]){msg.textContent='That email is already registered. Switch to Log in.';return}
-    const salt=Array.from(crypto.getRandomValues(new Uint32Array(4))).join('-');
-    u[em]={name:nm,salt,hash:await hash(pw,salt)};
-    try{localStorage.setItem('pm_users',JSON.stringify(u))}catch(e){msg.textContent='Could not save your account in this browser.';return}
-  }else{
-    const x=u[em];
-    if(!x||x.hash!==await hash(pw,x.salt)){msg.textContent='Wrong email or password.';return}
-  }
-  try{localStorage.setItem('pm_session',em)}catch(e){}
-  startSession(em);
-}
-function startSession(em){
-  const x=users()[em];if(!x)return;
-  me={email:em,name:x.name};recKey='pm_recs_'+em;
-  try{recs=JSON.parse(localStorage.getItem(recKey)||'[]')}catch(e){recs=[]}
-  $('auth').classList.add('hide');$('lo').classList.remove('hide');$('apass').value='';
-  drawRecs();go('home');
-}
-function logout(){
-  try{localStorage.removeItem('pm_session')}catch(e){}
-  me=null;recs=[];recKey='pm_recs';drawRecs();
-  $('lo').classList.add('hide');$('auth').classList.remove('hide');authSwitch('login');
-}
-function drawHome(){
-  if(!me)return;
-  $('hname').textContent=me.name;
-  const t=recs.reduce((a,x)=>a+x.area,0);
-  $('hcount').textContent=recs.length+(recs.length===1?' plot':' plots')+' · '+fmt(t)+' m²';
-  $('hrecent').innerHTML=recs.length?recs.slice(-3).reverse().map(x=>`<div class='rec'><span><b>${esc(x.name)}</b><br><small>${fmt(x.area)} m²</small></span></div>`).join(''):'<small>No saved plots yet. Measure one on the Land or Map tab.</small>';
-}
-$('apass').addEventListener('keydown',e=>{if(e.key==='Enter')authGo()});
-{const s=(()=>{try{return localStorage.getItem('pm_session')}catch(e){return null}})();
-if(s&&users()[s])startSession(s);else authSwitch(Object.keys(users()).length?'login':'reg')}
-
-// Professional Valuation Suite module
-let vpCurrent=null,vpData=null;
-function vpStore(){try{return JSON.parse(localStorage.getItem('pm_pro_'+(me?.email||'guest'))||'[]')}catch(e){return[]}}
-function vpSave(list){localStorage.setItem('pm_pro_'+(me?.email||'guest'),JSON.stringify(list))}
-function vpNew(){return{id:Date.now(),name:'',address:'',client:'',surveyor:'',date:new Date().toISOString().slice(0,10),plot:'',points:[],inspection:{},notes:'',price:'',rent:'',costs:'',cap:9,comps:[]}}
-function vpCreate(){let name=$('vpName').value.trim();if(!name){alert('Enter a project name.');return}let p=vpNew();p.name=name;p.address=$('vpAddress').value.trim();let a=vpStore();a.push(p);vpSave(a);$('vpName').value='';$('vpAddress').value='';vpList();vpOpen(p.id)}
-function vpList(){let a=vpStore();$('vpProjects').innerHTML=a.length?a.map(p=>`<div class="rec"><b>${esc(p.name)}</b><br><small>${esc(p.address||'No location')}</small><div class="row"><button class="btn alt" onclick="vpOpen(${p.id})">Open</button><button class="btn alt" onclick="vpDelete(${p.id})">Delete</button></div></div>`).join(''):'<p class="note">No valuation projects created yet.</p>'}
-function vpGet(){return vpData}
-function vpPersist(){if(!vpData)return;let a=vpStore(),i=a.findIndex(p=>p.id===vpCurrent);if(i>=0){a[i]=vpData;vpSave(a)}}
-function vpOpen(id){vpCurrent=id;vpData=vpStore().find(p=>p.id===id)||null;let p=vpGet();if(!p)return;$('vpWork').classList.remove('hide');$('vpTitle').textContent=p.name;$('vpClient').value=p.client||'';$('vpSurveyor').value=p.surveyor||'';$('vpDate').value=p.date||'';$('vpPlot').value=p.plot||'';$('vpNotes').value=p.notes||'';$('vpPrice').value=p.price||'';$('vpRent').value=p.rent||'';$('vpCosts').value=p.costs||'';$('vpCap').value=p.cap||9;$('vpParts').value=4;vpDrawPoints();vpDrawInspection();vpDrawComps();vpCalcInvestment();vpSubdivide()}
-function vpClose(){$('vpWork').classList.add('hide');vpCurrent=null;vpData=null;vpList()}
-function vpDelete(id){if(!confirm('Delete this valuation project?'))return;vpSave(vpStore().filter(p=>p.id!==id));vpList();if(vpCurrent===id)vpClose()}
-function vpSet(k,v){let p=vpGet();if(!p)return;p[k]=v;vpPersist()}
-function vpAddPoint(){let p=vpGet(),e=Number($('vpE').value),n=Number($('vpN').value),l=$('vpLabel').value.trim()||'BP'+(p.points.length+1);if(!isFinite(e)||!isFinite(n)||$('vpE').value===''||$('vpN').value===''){alert('Enter valid Easting and Northing values.');return}p.points.push({l,e,n});vpPersist();$('vpE').value='';$('vpN').value='';$('vpLabel').value='BP'+(p.points.length+1);vpDrawPoints()}
-function vpPolygon(){let pts=vpGet()?.points||[];if(pts.length<3)return null;let a=0,per=0;for(let i=0;i<pts.length;i++){let x=pts[i],y=pts[(i+1)%pts.length];a+=x.e*y.n-y.e*x.n;per+=Math.hypot(y.e-x.e,y.n-x.n)}return{area:Math.abs(a)/2,per}}
-function vpDrawPoints(){let p=vpGet();$('vpPoints').innerHTML=p.points.map((x,i)=>`<div class="row"><span>${esc(x.l)} · E ${x.e} · N ${x.n}</span><button class="btn alt" onclick="vpRemovePoint(${i})">Remove</button></div>`).join('')||'<p class="note">No boundary points added.</p>';let z=vpPolygon();$('vpArea').textContent=z?`Area: ${z.area.toFixed(2)} m² · ${(z.area*10.7639).toFixed(1)} ft² · Perimeter: ${z.per.toFixed(2)} m`:'Add 3 or more points for area and perimeter.';vpSubdivide()}
-function vpRemovePoint(i){vpGet().points.splice(i,1);vpPersist();vpDrawPoints()}
-const vpItems=['Roof','Walls and plaster','Floors','Ceiling','Doors and windows','Plumbing','Electrical','Fence and gate','Drainage'];
-function vpDrawInspection(){let p=vpGet();$('vpInspection').innerHTML=vpItems.map(n=>`<div class="row"><span>${n}</span><select onchange="vpRate('${n}',this.value)"><option value="">Not rated</option>${['Good','Fair','Poor'].map(x=>`<option ${p.inspection[n]===x?'selected':''}>${x}</option>`).join('')}</select></div>`).join('')}
-function vpRate(n,v){let p=vpGet();if(v)p.inspection[n]=v;else delete p.inspection[n];vpPersist()}
-function vpCalcInvestment(){if(!vpCurrent)return;let p=vpGet();p.price=$('vpPrice').value;p.rent=$('vpRent').value;p.costs=$('vpCosts').value;p.cap=$('vpCap').value;vpPersist();let net=Number(p.rent||0)-Number(p.costs||0),cap=Number(p.cap);$('vpInvestment').textContent=`Net annual income: ₦${net.toLocaleString('en-NG')} · Net yield: ${p.price>0?(net/Number(p.price)*100).toFixed(2)+'%':'—'} · Capital value: ${cap>0?'₦'+(net/(cap/100)).toLocaleString('en-NG',{maximumFractionDigits:0}):'—'}`}
-function vpAddComp(){let p=vpGet(),name=$('vpCompName').value.trim(),price=Number($('vpCompPrice').value),adj=Number($('vpCompAdj').value||0);if(!name||!price){alert('Enter comparable description and sale price.');return}p.comps.push({name,price,adj});vpPersist();$('vpCompName').value='';$('vpCompPrice').value='';$('vpCompAdj').value='';vpDrawComps()}
-function vpDrawComps(){let p=vpGet();$('vpComps').innerHTML=p.comps.map((c,i)=>`<div class="row"><span>${esc(c.name)} · ₦${c.price.toLocaleString('en-NG')} · adj. ${c.adj}%</span><button class="btn alt" onclick="vpRemoveComp(${i})">Remove</button></div>`).join('')||'<p class="note">No comparable sales entered.</p>';let v=p.comps.map(c=>c.price*(1+c.adj/100));$('vpCompResult').textContent=v.length?'Adjusted comparable average: ₦'+(v.reduce((a,b)=>a+b,0)/v.length).toLocaleString('en-NG',{maximumFractionDigits:0}):''}
-function vpRemoveComp(i){vpGet().comps.splice(i,1);vpPersist();vpDrawComps()}
-function vpSubdivide(){if(!vpCurrent)return;let z=vpPolygon(),n=Math.max(2,Math.min(12,Number($('vpParts').value)||2));$('vpSub').textContent=z?`Approximate equal-area target: ${(z.area/n).toFixed(2)} m² per plot (${n} plots). For legal subdivision, use a qualified surveyor's approved layout.`:'Add at least 3 coordinate points to calculate subdivision area.'}
-function vpReport(){let p=vpGet(),z=vpPolygon();$('vpReport').innerHTML=`<div class="res"><h3>${esc(p.name)}</h3><p>${esc(p.address)} · ${esc(p.date)}</p><p>Client: ${esc(p.client||'—')} · Surveyor: ${esc(p.surveyor||'—')}</p><p>Plot: ${esc(p.plot||'—')}</p><p>Boundary points: ${p.points.length}</p><p>Area: ${z?z.area.toFixed(2)+' m²':'Not calculated'} · Perimeter: ${z?z.per.toFixed(2)+' m':'—'}</p><p>Inspection: ${Object.entries(p.inspection).map(x=>esc(x[0])+': '+esc(x[1])).join('; ')||'Not recorded'}</p><p>Notes: ${esc(p.notes||'—')}</p><p>Net annual income: ₦${(Number(p.rent||0)-Number(p.costs||0)).toLocaleString('en-NG')}</p><p>Comparables: ${p.comps.length}</p><button class="btn" onclick="window.print()">Print / Save as PDF</button></div>`}
-function vpCSV(){let p=vpGet(),z=vpPolygon(),rows=[['Property valuation report'],['Project',p.name],['Address',p.address],['Client',p.client],['Surveyor',p.surveyor],['Date',p.date],['Plot number',p.plot],[],['Point','Easting (m)','Northing (m)'],...p.points.map(x=>[x.l,x.e,x.n]),['Area (m2)',z?.area||''],['Perimeter (m)',z?.per||''],[],['Inspection item','Condition'],...Object.entries(p.inspection),['Notes',p.notes],['Purchase price',p.price],['Annual rent',p.rent],['Annual costs',p.costs],['Capitalisation rate',p.cap],[],['Comparable','Sale price','Adjustment (%)'],...p.comps.map(c=>[c.name,c.price,c.adj])];let csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');let a=document.createElement('a'),u=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='PropMeasure-valuation-report.csv';a.click();URL.revokeObjectURL(u)}
-function vpBackup(){let b=new Blob([JSON.stringify(vpStore(),null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='PropMeasure-project-backup.json';a.click();URL.revokeObjectURL(u)}
-function vpRestore(el){let f=el.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d))throw 0;vpSave(d);vpList();alert('Project backup restored.')}catch(e){alert('Invalid PropMeasure backup file.')}};r.readAsText(f)}
-
-
-function socialNotice(provider){$('amsg').textContent=provider+' sign-in is not connected yet. Use your email and password to create an account or log in.'}
-function aiExample(t){$('aiInput').value=t;$('aiInput').focus()}
-function aiAdd(text,who){const d=document.createElement('div');d.className='ai-message '+(who==='user'?'ai-user':'ai-bot');d.innerHTML=who==='user'?'<b>You</b><br>'+aiEsc(text):'<b>My off AI</b><br>'+aiEsc(text).replace(/\n/g,'<br>');$('aiChat').appendChild(d);$('aiChat').scrollTop=$('aiChat').scrollHeight}
-function aiEsc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function aiNum(s){const m=String(s).replace(/,/g,'').match(/-?\d+(?:\.\d+)?/);return m?Number(m[0]):NaN}
-function aiMoney(n){return '₦'+Number(n).toLocaleString('en-NG',{maximumFractionDigits:2})}
-function aiSolve(q){const t=q.toLowerCase(),nums=(q.match(/\d[\d,]*(?:\.\d+)?/g)||[]).map(x=>Number(x.replace(/,/g,'')));
- if(/area|plot|rectangle|square metre|square meter/.test(t)&&(/by|x|×/.test(t))&&nums.length>=2){let a=nums[0],b=nums[1],ft=/feet|foot|\bft\b/.test(t),yd=/yards|\byd\b/.test(t),factor=ft?.3048:yd?.9144:1,area=a*b*factor*factor,per=2*(a+b)*factor;return `Plot area result\nDimensions: ${fmt(a)} × ${fmt(b)} ${ft?'ft':yd?'yd':'m'}\nArea: ${fmt(area)} m²\nArea: ${fmt(area*10.7639104)} ft²\nArea: ${fmt(area/4046.8564224,4)} acres\nPerimeter: ${fmt(per)} m\nThis is a rectangle calculation.`}
- if(/yield|rental return|rental return/.test(t)&&nums.length>=2){let price=nums[0],rent=nums[1],cost=nums[2]||0,net=rent-cost;if(price<=0)return 'Enter a purchase price greater than zero.';return `Rental investment result\nAnnual rent: ${aiMoney(rent)}\nAnnual expenses: ${aiMoney(cost)}\nNet annual income: ${aiMoney(net)}\nNet rental yield: ${fmt(net/price*100)}%\nGross rental yield: ${fmt(rent/price*100)}%`}
- if(/capital value|capitalisation|capitalization|cap rate/.test(t)&&nums.length>=2){let net=nums[0],rate=nums[1];if(rate<=0)return 'The capitalisation rate must be greater than zero.';return `Income capitalisation result\nNet annual income: ${aiMoney(net)}\nCapitalisation rate: ${fmt(rate)}%\nIndicated capital value: ${aiMoney(net/(rate/100))}\nFormula: Net annual income ÷ capitalisation rate.`}
- if(/depreciat/.test(t)&&nums.length>=3){let cost=nums[0],age=nums[1],life=nums[2],salvage=nums[3]||0;if(life<=0||age<0)return 'Enter a useful life above zero and a non-negative age.';let annual=(cost-salvage)/life,acc=Math.min(age,life)*annual;return `Straight-line depreciation estimate\nDepreciable amount: ${aiMoney(cost-salvage)}\nAnnual depreciation: ${aiMoney(annual)}\nAccumulated depreciation: ${aiMoney(acc)}\nEstimated book value: ${aiMoney(Math.max(salvage,cost-acc))}\nAssumes a constant annual depreciation charge.`}
- if(/price per|rate per|per square metre|per sqm|per m2/.test(t)&&nums.length>=2){let price=nums[0],area=nums[1];if(area<=0)return 'Area must be greater than zero.';return `Land rate result\nTotal price: ${aiMoney(price)}\nArea: ${fmt(area)} m²\nRate per square metre: ${aiMoney(price/area)} /m²`}
- if(/convert|hectare|acre|square feet|sq ft|square metre|square meter/.test(t)&&nums.length>=1){let v=nums[0];if(/hectare/.test(t))return `${fmt(v)} hectare(s) = ${fmt(v*10000)} m² = ${fmt(v*2.4710538)} acres = ${fmt(v*107639.104)} ft²`;if(/acre/.test(t))return `${fmt(v)} acre(s) = ${fmt(v*4046.8564224)} m² = ${fmt(v*0.404685642)} hectares`;if(/square feet|sq ft/.test(t))return `${fmt(v)} ft² = ${fmt(v*0.09290304)} m²`;return `${fmt(v)} m² = ${fmt(v*10.7639104)} ft² = ${fmt(v/10000)} hectares = ${fmt(v/4046.8564224,4)} acres`}
- if(/perimeter/.test(t)&&nums.length>=2){let a=nums[0],b=nums[1],f=/feet|foot|\bft\b/.test(t)?.3048:1;return `Rectangular perimeter: ${fmt(2*(a+b)*f)} metres.`}
- return 'I could not identify the calculation yet. Try one of these formats:\n• Area: 100 by 50 feet plot\n• Rental yield: price 50000000, annual rent 6000000, expenses 1000000\n• Capital value: net income 4500000, cap rate 9 percent\n• Depreciation: cost 10000000, age 5, life 50\n• Price per square metre: total price 30000000, area 450'}
-function aiSend(){let q=$('aiInput').value.trim();if(!q)return;aiAdd(q,'user');aiAdd(aiSolve(q),'bot');$('aiInput').value=''}
-function aiClear(){$('aiChat').innerHTML='<div class="ai-message ai-bot"><b>My off AI</b><br>Chat cleared. What estate calculation do you need?</div>'}
-$('aiInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSend()}});
-
-</script>
-
-
-<!-- ===== PropMeasure upgrade script ===== -->
-<script>
-/* PropMeasure premium navigation, welcome sequence and theme controls. */
-(function(){
-  const auth=document.getElementById('auth');
-  const nav=document.getElementById('tabs');
-  if(!auth||!nav)return;
-  // Premium drawer branding and theme control.
-  nav.insertAdjacentHTML('afterbegin','<div class="pm-drawer-brand"><span class="pm-brand-mark">⌂</span><span>PropMeasure</span></div>');
-  const logout=document.getElementById('lo');
-  if(logout)logout.insertAdjacentHTML('beforebegin','<div class="pm-theme-row"><span>☾ &nbsp; Dark mode</span><button class="pm-switch" id="pmThemeToggle" type="button" aria-label="Toggle dark mode" aria-pressed="false"><span></span></button></div>');
-  const toggle=document.getElementById('pmThemeToggle');
-  function setTheme(dark){document.body.classList.toggle('pm-dark',dark);if(toggle)toggle.setAttribute('aria-pressed',dark?'true':'false');try{localStorage.setItem('pm_theme',dark?'dark':'light')}catch(e){}}
-  let dark=false;try{dark=localStorage.getItem('pm_theme')==='dark'}catch(e){}
-  setTheme(dark);if(toggle)toggle.addEventListener('click',()=>setTheme(!document.body.classList.contains('pm-dark')));
-  // Intro sequence: animated brand screen, then welcome screen, then the existing auth/dashboard flow.
-  document.body.insertAdjacentHTML('afterbegin',`
-    <div id="pm-intro"><div class="pm-intro-inner"><div class="pm-logo">P</div><div class="pm-wordmark">PropMeasure</div><div class="pm-tagline">Measure · Manage · Value</div><div class="pm-loader"></div></div></div>
-    <div id="pm-welcome"><div class="pm-welcome-inner"><div class="pm-welcome-art"><div class="pm-welcome-symbol">⌂</div></div><h1>Welcome to PropMeasure</h1><p>Your professional workspace for land measurement, property valuation, mapping and estate management.</p><button class="pm-start" id="pmContinue">Get Started&nbsp; →</button><div class="pm-welcome-foot">A smarter way to measure and manage property</div></div></div>`);
-  const intro=document.getElementById('pm-intro'),welcome=document.getElementById('pm-welcome');
-  setTimeout(()=>{intro.style.display='none';welcome.style.display='flex'},1900);
-  document.getElementById('pmContinue').addEventListener('click',()=>{
-    welcome.style.display='none';
-    // If there is no active session, show the original PropMeasure registration/login unchanged.
-    if(!document.body.classList.contains('authed') && !auth.classList.contains('hide'))auth.style.display='flex';
-    else auth.style.display='';
-  });
-  // Keep original logout/login behavior; remove the temporary inline display override when session changes.
-  const obs=new MutationObserver(()=>{if(auth.classList.contains('hide'))auth.style.display='';});
-  obs.observe(auth,{attributes:true,attributeFilter:['class']});
-})();
-</script>
-
-</body>. */
-(function(){
-/* ===== FIREBASE WEB CONFIGURATION =====
-   Paste the complete config from Firebase Console > Project settings > Your apps.
-   Google and email/password sign-in will remain disabled until these values are filled in.
-*/
-const PM_FIREBASE={
-  apiKey:"",
-  authDomain:"",
-  projectId:"",
-  storageBucket:"",
-  messagingSenderId:"",
-  appId:""
-};
-const useFB=!!PM_FIREBASE.apiKey;
-let fb=null,db=null;
-
-/* ===== Inject new interface elements ===== */
-document.body.insertAdjacentHTML('afterbegin',
- `<div id="offline-overlay"><h2>No internet connection</h2><p>PropMeasure needs internet to work. Please connect and try again.</p><button class="btn" style="max-width:200px" onclick="pmCheckNet()">Retry</button></div>
-  <div id="topbar"><button id="menuBtn" aria-label="Menu">☰</button><b>PropMeasure</b><button id="topUser" aria-label="Profile">?</button></div>
-  <div id="scrim"></div>`);
-document.body.insertAdjacentHTML('beforeend',
- `<div id="bbar">
-  <button data-g="home"><i>🏠</i>Home</button><button data-g="area"><i>📐</i>Land</button><button data-g="gps"><i>🗺️</i>Map</button>
-  <button data-g="val"><i>💰</i>Value</button><button data-g="menu"><i>☰</i>Menu</button></div>`);
-document.querySelector('main').insertAdjacentHTML('afterbegin',''); 
-$('lo').insertAdjacentHTML('beforebegin','<button data-t="prof">Profile</button>');
-document.querySelector('main').insertAdjacentHTML('beforeend',
- `<section id="prof" class="hide">
-<button type="button" class="pm-back-dashboard" onclick="go('home')" aria-label="Back to dashboard">← Back to Dashboard</button>
-
-  <div class="card prof-card"><div class="avatar" id="pAv">?</div><h2 id="pName"></h2><p class="note" id="pMail"></p></div>
-  <div class="card"><h2>Edit profile</h2><label>Full name</label><input id="pNameIn"><button class="btn" onclick="pmSaveName()">Save name</button></div>
-  <div class="card"><h2>Change password</h2><label>New password</label><input id="pPass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><button class="btn" onclick="pmChangePass()">Update password</button></div>
-  <div class="card"><h2>Account</h2><div class="note" id="pStat"></div><div class="note" id="pMsg" style="font-weight:600"></div>
-  <button class="btn alt" onclick="logout()">Log out</button><button class="btn alt" style="color:#b42318;border-color:#b42318" onclick="pmDelete()">Delete account</button></div></section>`);
-$('abtn').insertAdjacentHTML('afterend','<a id="forgot" href="#" onclick="pmForgot();return false">Forgot password?</a>');
-document.querySelectorAll('.auth-social button').forEach((b,i)=>{if(i)b.remove()});
-document.querySelector('.auth-foot').textContent=useFB?'Your account and saved plots are stored securely online.':'Online login is not set up yet: accounts are stored on this device only.';
-
-/* ===== Navigation behaviour ===== */
-const openMenu=()=>{$('tabs').classList.add('open');$('scrim').classList.add('show')};
-const closeMenu=()=>{$('tabs').classList.remove('open');$('scrim').classList.remove('show')};
-$('menuBtn').onclick=openMenu;$('scrim').onclick=closeMenu;$('topUser').onclick=()=>go('prof');
-document.querySelectorAll('#bbar button').forEach(b=>b.onclick=()=>b.dataset.g==='menu'?openMenu():go(b.dataset.g));
-document.querySelector('#tabs [data-t="prof"]').onclick=function(){
-  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===this));
-  ['home','dist','area','val','conv','gps','pro','ai'].forEach(id=>$(id).classList.add('hide'));
-};
-document.querySelectorAll('#tabs button[data-t]').forEach(b=>b.addEventListener('click',()=>{
-  const t=b.dataset.t;$('prof').classList.toggle('hide',t!=='prof');if(t==='prof')fillProf();
-  closeMenu();document.querySelectorAll('#bbar [data-g]').forEach(x=>x.classList.toggle('on',x.dataset.g===t));scrollTo(0,0);
-}));
-
-/* ===== Online-only ===== */
-window.pmCheckNet=async function(){
-  let ok=navigator.onLine;
-  if(ok){try{await fetch(location.origin+'/?ping='+Date.now(),{method:'HEAD',cache:'no-store'})}catch(e){ok=false}}
-  $('offline-overlay').style.display=ok?'none':'flex';
-};
-addEventListener('online',pmCheckNet);addEventListener('offline',pmCheckNet);setInterval(pmCheckNet,15000);pmCheckNet();
-if('serviceWorker' in navigator)navigator.serviceWorker.getRegistrations().then(r=>r.forEach(x=>x.unregister()));
-
-/* ===== Firebase (auth + cloud backup) ===== */
-const loadScript=src=>new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)});
-const ready=(async()=>{
-  if(!useFB)return;
-  const b='https://www.gstatic.com/firebasejs/10.12.2/firebase-';
-  await loadScript(b+'app-compat.js');await loadScript(b+'auth-compat.js');await loadScript(b+'firestore-compat.js');
-  firebase.initializeApp(PM_FIREBASE);fb=firebase.auth();db=firebase.firestore();
-  await fb.setPersistence(firebase.auth.Auth.Persistence.LOCAL); // keep the signed-in session on this device
-  // Complete Google sign-in when the browser returns from Google's redirect.
-  const result=await fb.getRedirectResult();
-  if(result && result.user) await enter(result.user);
-})().catch(e=>{fb=null;console.error('PropMeasure Firebase setup:',e)});
-const FE={'auth/email-already-in-use':'That email is already registered. Switch to Log in.','auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong email or password.','auth/user-not-found':'No account found with that email.','auth/too-many-requests':'Too many attempts. Try again later.','auth/network-request-failed':'No internet connection.','auth/weak-password':'Password is too weak.','auth/requires-recent-login':'For security, log out, log in again, then retry.','auth/invalid-email':'Enter a valid email.'};
-const fe=e=>FE[e.code]||e.message||'Something went wrong.';
-let tm;
-function cloudSave(){
-  if(!db||!me||!fb||!fb.currentUser)return;clearTimeout(tm);
-  tm=setTimeout(()=>db.collection('users').doc(fb.currentUser.uid).set({recs,pro:JSON.parse(localStorage.getItem('pm_pro_'+me.email)||'[]'),updated:Date.now()},{merge:true}).catch(()=>{}),800);
-}
-async function cloudLoad(u){
-  try{const d=await db.collection('users').doc(u.uid).get();
-    if(d.exists){const x=d.data();if(x.recs)localStorage.setItem('pm_recs_'+u.email,JSON.stringify(x.recs));if(x.pro)localStorage.setItem('pm_pro_'+u.email,JSON.stringify(x.pro))}}catch(e){}
-}
-const op=persist,ovs=vpSave;
-window.persist=function(){op();cloudSave()};
-window.vpSave=function(l){ovs(l);cloudSave()};
-
-/* ===== Login / session ===== */
-function begin(email,name){
-  me={email,name};recKey='pm_recs_'+email;
-  try{recs=JSON.parse(localStorage.getItem(recKey)||'[]')}catch(e){recs=[]}
-  $('auth').classList.add('hide');$('lo').classList.remove('hide');$('apass').value='';
-  document.body.classList.add('authed');$('topUser').textContent=(name||'?')[0].toUpperCase();
-  drawRecs();go('home');
-}
-async function enter(u){await cloudLoad(u);begin(u.email,u.displayName||u.email.split('@')[0])}
-const oAuth=authGo;
-window.authGo=async function(){
-  const em=$('aemail').value.trim().toLowerCase(),pw=$('apass').value,msg=$('amsg');msg.textContent='';
-  if(!useFB){await oAuth();try{localStorage.removeItem('pm_session')}catch(e){}return}
-  if(!/^\S+@\S+\.\S+$/.test(em)){msg.textContent='Enter a valid email.';return}
-  if(pw.length<8){msg.textContent='Password must be at least 8 characters.';return}
-  msg.textContent='Please wait…';await ready;
-  if(!fb){msg.textContent='Cannot reach the server. Check your internet.';return}
+let mode="login",user=null;
+function setMode(m){mode=m;$("tLogin").classList.toggle("on",m==="login");$("tReg").classList.toggle("on",m==="reg");
+  $("nameWrap").classList.toggle("hide",m!=="reg");$("aGo").textContent=m==="reg"?"Create account":"Log in";
+  $("forgot").classList.toggle("hide",m!=="login");$("aMsg").textContent="";
+  $("aPass").autocomplete=m==="reg"?"new-password":"current-password"}
+$("tLogin").onclick=()=>setMode("login");$("tReg").onclick=()=>setMode("reg");
+$("aGo").onclick=async()=>{
+  const em=$("aEmail").value.trim(),pw=$("aPass").value,msg=$("aMsg");msg.style.color="";msg.textContent="";
+  if(!/^\S+@\S+\.\S+$/.test(em)){msg.textContent="Enter a valid email.";return}
+  if(pw.length<8){msg.textContent="Password must be at least 8 characters.";return}
   try{
-    let c;
-    if(authMode==='reg'){
-      const nm=$('aname').value.trim();if(!nm){msg.textContent='Enter your name.';return}
-      c=await fb.createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:nm});c.user.sendEmailVerification().catch(()=>{});
-    }else c=await fb.signInWithEmailAndPassword(em,pw);
-    msg.textContent='';await enter(c.user);
+    msg.textContent="Please wait…";
+    if(mode==="reg"){
+      const nm=$("aName").value.trim();if(!nm){msg.textContent="Enter your name.";return}
+      const c=await auth.createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:nm});
+    }else await auth.signInWithEmailAndPassword(em,pw);
+    msg.textContent="";
   }catch(e){msg.textContent=fe(e)}
 };
-window.socialNotice=async function(p){
-  const m=$('amsg');
-  if(p!=='Google'){m.textContent=p+' sign-in is not enabled yet. Use Google or email and password.';return}
-  if(!useFB){m.textContent='Google sign-in is not configured yet. Connect PropMeasure to Firebase first.';return}
-  m.textContent='Opening Google sign-in…';await ready;
-  if(!fb){m.textContent='Firebase could not load. Check your internet connection and Firebase configuration.';return}
-  try{
-    const provider=new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({prompt:'select_account'});
-    // Redirect is more reliable than popups inside Android app WebViews.
-    await fb.signInWithRedirect(provider);
-  }catch(e){m.textContent=fe(e)}
+$("forgot").onclick=async ev=>{
+  ev.preventDefault();const em=$("aEmail").value.trim(),msg=$("aMsg");msg.style.color="";
+  if(!/^\S+@\S+\.\S+$/.test(em)){msg.textContent="Type your email above first, then tap Forgot password.";return}
+  try{await auth.sendPasswordResetEmail(em);msg.style.color="#0f766e";msg.textContent="Reset link sent. Check your inbox and spam folder."}
+  catch(e){msg.textContent=fe(e)}
 };
-window.pmForgot=async function(){
-  const em=$('aemail').value.trim().toLowerCase(),m=$('amsg');
-  if(!/^\S+@\S+\.\S+$/.test(em)){m.textContent='Type your email above first, then tap Forgot password.';return}
-  if(!useFB){m.textContent='Password reset by email needs the online account setup (Firebase).';return}
-  await ready;
-  try{await fb.sendPasswordResetEmail(em);m.textContent='Reset link sent. Check your inbox and spam folder.'}catch(e){m.textContent=fe(e)}
-};
-const oSw=authSwitch;
-window.authSwitch=function(m){oSw(m);$('forgot').style.display=m==='login'?'block':'none'};
-window.logout=async function(){
-  try{localStorage.removeItem('pm_session')}catch(e){}
-  try{if(fb)await fb.signOut()}catch(e){}
-  me=null;recs=[];recKey='pm_recs';drawRecs();closeMenu();
-  document.body.classList.remove('authed');$('lo').classList.add('hide');$('auth').classList.remove('hide');
-  authSwitch('login');$('aemail').value='';$('apass').value='';
-};
-/* always start at login, and log out after 60s in the background */
-try{localStorage.removeItem('pm_session')}catch(e){}
-me=null;recs=[];recKey='pm_recs';document.body.classList.remove('authed');
-$('lo').classList.add('hide');$('auth').classList.remove('hide');
-authSwitch(useFB||Object.keys(users()).length?'login':'reg');
-let away=0;
-document.addEventListener('visibilitychange',()=>{if(document.hidden)away=Date.now();else if(me&&away&&Date.now()-away>60000)logout()});
+const logout=()=>auth.signOut();$("out").onclick=logout;$("out2").onclick=logout;
 
-/* ===== Profile / account management ===== */
-function fillProf(){
-  if(!me)return;
-  $('pName').textContent=me.name;$('pMail').textContent=me.email;$('pNameIn').value=me.name;$('pAv').textContent=(me.name||'?')[0].toUpperCase();
-  $('pStat').textContent=useFB?'Online account · cloud backup on':'Local account on this device';$('pMsg').textContent='';
+auth.onAuthStateChanged(u=>{
+  user=u;const on=!!u;
+  ["top","app","nav"].forEach(i=>$(i).classList.toggle("hide",!on));$("auth").classList.toggle("hide",on);
+  if(on){plots=loadPlots();$("hName").textContent=u.displayName||u.email;$("meMail").textContent=u.email;$("meName").value=u.displayName||"";go("home");drawPlots()}
+  else{plots=[];$("aPass").value="";setMode("login")}
+  showEntry();
+});
+
+/* ---------- Navigation ---------- */
+function go(v){
+  document.querySelectorAll(".v").forEach(s=>s.classList.toggle("hide",s.id!=="v-"+v));
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.go===v));
+  scrollTo(0,0);if(v==="map")openMap();if(v==="home")drawPlots();
 }
-window.pmSaveName=async function(){
-  const n=$('pNameIn').value.trim(),m=$('pMsg');if(!n){m.textContent='Enter a name.';return}
-  try{
-    if(useFB)await fb.currentUser.updateProfile({displayName:n});
-    else{const u=users();u[me.email].name=n;localStorage.setItem('pm_users',JSON.stringify(u))}
-    me.name=n;$('topUser').textContent=n[0].toUpperCase();$('hname').textContent=n;fillProf();$('pMsg').textContent='Name updated.';
-  }catch(e){m.textContent=fe(e)}
-};
-window.pmChangePass=async function(){
-  const p=$('pPass').value,m=$('pMsg');if(p.length<8){m.textContent='Password must be at least 8 characters.';return}
-  try{
-    if(useFB)await fb.currentUser.updatePassword(p);
-    else{const u=users(),s=Array.from(crypto.getRandomValues(new Uint32Array(4))).join('-');u[me.email].salt=s;u[me.email].hash=await hash(p,s);localStorage.setItem('pm_users',JSON.stringify(u))}
-    $('pPass').value='';m.textContent='Password updated.';
-  }catch(e){m.textContent=fe(e)}
-};
-window.pmDelete=async function(){
-  if(!confirm('Delete your account and all saved data? This cannot be undone.'))return;
-  const em=me.email;
-  try{
-    if(useFB){await db.collection('users').doc(fb.currentUser.uid).delete().catch(()=>{});await fb.currentUser.delete()}
-    else{const u=users();delete u[em];localStorage.setItem('pm_users',JSON.stringify(u))}
-    localStorage.removeItem('pm_recs_'+em);localStorage.removeItem('pm_pro_'+em);logout();
-  }catch(e){$('pMsg').textContent=fe(e)}
-};
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
 
-/* ===== GPS / coordinates fix ===== */
+/* ---------- Saved plots (kept on this device per account) ---------- */
+let plots=[],last=null;
+const pkey=()=>"pm_plots_"+(user?user.uid:"x");
+function loadPlots(){try{return JSON.parse(localStorage.getItem(pkey())||"[]")}catch(e){return[]}}
+function savePlots(){try{localStorage.setItem(pkey(),JSON.stringify(plots))}catch(e){}}
+function drawPlots(){
+  const h=plots.length?plots.map((p,i)=>`<div class="rec"><span><b>${esc(p.name)}</b><br><small>${fmt(p.area)} m²</small></span><button data-del="${i}" type="button">✕</button></div>`).join("")
+    +`<div class="rec"><b>Total (${plots.length})</b><b>${fmt(plots.reduce((a,p)=>a+p.area,0))} m²</b></div>`:'<div class="note">No saved plots yet.</div>';
+  $("plots").innerHTML=h;$("hPlots").innerHTML=h;
+  document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{plots.splice(+b.dataset.del,1);savePlots();drawPlots()});
+}
+function addPlot(name,area){plots.push({name:name||"Plot "+(plots.length+1),area});savePlots();drawPlots()}
+
+/* ---------- Land ---------- */
+const PL=[["50×100 ft plots",464.5152],["60×120 ft plots",668.9019],["450 m² plots",450],["600 m² plots",600]];
+function showArea(el,a,p,note){
+  last=a;$(el).innerHTML=`<div class="res">${big(fmt(a)," m²")}<small>${fmt(a*10.7639)} sq ft · ${fmt(a/10000,4)} ha · ${fmt(a/4046.856,4)} acres${p?`<br>Perimeter: ${fmt(p)} m`:""}<br>≈ ${PL.map(x=>fmt(a/x[1])+" "+x[0]).join(" · ")}${note?"<br>"+note:""}</small></div>`}
+$("calcLand").onclick=()=>{
+  const l=parseFloat($("len").value),w=parseFloat($("wid").value),f=+$("lu").value,s=+$("ls").value;
+  if(!(l>0&&w>0)){$("landRes").innerHTML='<div class="res">Enter length and width.</div>';return}
+  showArea("landRes",l*f*w*f*s,s===1?2*(l+w)*f:0)};
+$("calcSecs").onclick=()=>{
+  let a=0,c=0;$("secs").value.split("\n").forEach(r=>{const t=r.trim().split(/[\s,x×]+/),L=parseFloat(t[0]),W=parseFloat(t[1]);
+    if(L>0&&W>0){a+=L*W*(/^t/i.test(t[2]||"")?.5:1);c++}});
+  if(!c){$("secRes").innerHTML='<div class="res">Add at least one line, e.g. 30 20</div>';return}
+  showArea("secRes",a,0,c+" section(s) in metres")};
+$("savePlot").onclick=()=>{
+  if(last==null){$("pMsg").textContent="Measure a plot first.";return}
+  addPlot($("pName").value.trim(),last);$("pName").value="";$("pMsg").textContent="Saved."};
+
+/* ---------- Valuation ---------- */
+const lines=s=>s.split("\n").map(x=>parseFloat(x.replace(/,/g,""))).filter(x=>!isNaN(x));
+const M={
+ inv:{n:"Investment (income capitalisation)",f:[["rent","Annual gross rent"],["out","Annual outgoings"],["cap","Capitalisation rate (%)"]],
+  c:v=>{if(!v.rent||v.cap<=0)return"Enter rent and a cap rate above 0.";const n=v.rent-v.out;return big(fmt(n/(v.cap/100)))+`<small>Net income ${fmt(n)} ÷ ${v.cap}% (years' purchase ${fmt(100/v.cap)})</small>`}},
+ cmp:{n:"Comparison (price per m²)",f:[["prices","Comparable sale prices (one per line)","ta"],["sizes","Their sizes in m² (same order)","ta"],["sub","Subject size (m²)"]],
+  c:(v,r)=>{const p=lines(r.prices),s=lines(r.sizes);if(!p.length||p.length!==s.length||!v.sub)return"Give matching prices and sizes, plus the subject size.";
+   const pp=p.map((x,i)=>x/s[i]),a=pp.reduce((x,y)=>x+y,0)/pp.length;return big(fmt(a*v.sub))+`<small>Average ${fmt(a)} per m² (range ${fmt(Math.min(...pp))}–${fmt(Math.max(...pp))})</small>`}},
+ cost:{n:"Cost (depreciated replacement)",f:[["land","Land value"],["area","Building area (m²)"],["rate","Replacement cost per m²"],["age","Building age (years)"],["life","Economic life (years)",60]],
+  c:v=>{if(!v.area||!v.rate||v.life<=0)return"Enter building area, cost and life.";const g=v.area*v.rate,d=Math.min(1,v.age/v.life),b=g*(1-d);
+   return big(fmt(v.land+b))+`<small>Land ${fmt(v.land)} + building ${fmt(b)} (replacement ${fmt(g)} less ${fmt(d*100)}% depreciation)</small>`}},
+ pa:{n:"Profit account method",f:[["rev","Annual gross receipts"],["pur","Cost of purchases / stock"],["exp","Working expenses"],["tp","Tenant's remuneration & profit"],["cap","Capitalisation rate (%)"]],
+  c:v=>{if(!v.rev||v.cap<=0)return"Enter receipts and a cap rate above 0.";const d=v.rev-v.pur-v.exp-v.tp;
+   if(d<=0)return"No divisible balance: costs and tenant's profit use up all receipts.";return big(fmt(d/(v.cap/100)))+`<small>Divisible balance ${fmt(d)} ÷ ${v.cap}%</small>`}},
+ res:{n:"Residual method",f:[["gdv","Gross development value"],["bld","Construction cost"],["fee","Professional fees (% of build)",10],["con","Contingency (% of build)",5],["fin","Finance (% of build)",8],["pro","Developer's profit (% of GDV)",20]],
+  c:v=>{if(!v.gdv||!v.bld)return"Enter GDV and construction cost.";const x=v.bld*(v.fee+v.con+v.fin)/100,p=v.gdv*v.pro/100,l=v.gdv-v.bld-x-p;
+   return big(fmt(l))+`<small>GDV ${fmt(v.gdv)} − build ${fmt(v.bld)} − fees, contingency and finance ${fmt(x)} − profit ${fmt(p)}${l<=0?"<br><b>Negative: not viable as set out.</b>":""}</small>`}},
+ rd:{n:"Redevelopment method",f:[["gdv","GDV of redeveloped property"],["dem","Demolition & clearance"],["bld","New construction cost"],["fee","Professional fees (% of build)",10],["fin","Finance (% of build)",8],["pro","Developer's profit (% of GDV)",20],["ex","Existing use value (optional)"]],
+  c:v=>{if(!v.gdv||!v.bld)return"Enter GDV and construction cost.";const x=v.bld*(v.fee+v.fin)/100,p=v.gdv*v.pro/100,r=v.gdv-v.dem-v.bld-x-p;
+   return big(fmt(r))+`<small>GDV ${fmt(v.gdv)} − demolition ${fmt(v.dem)} − build ${fmt(v.bld)} − fees and finance ${fmt(x)} − profit ${fmt(p)}${v.ex?`<br><b>${r>v.ex?"Redevelopment gives the higher value.":"Existing use is worth more."}</b>`:""}</small>`}}
+};
+$("method").innerHTML=Object.keys(M).map(k=>`<option value="${k}">${M[k].n}</option>`).join("");
+function drawFields(){
+  const m=M[$("method").value];$("valRes").innerHTML="";
+  $("mFields").innerHTML=`<h2>${m.n}</h2>`+m.f.map(f=>`<label>${f[1]}</label>`+(f[2]==="ta"?`<textarea id="f_${f[0]}" rows="3"></textarea>`:`<input id="f_${f[0]}" type="number" step="any" value="${f[3]!==undefined?f[3]:f[2]!==undefined?f[2]:""}">`)).join("")}
+$("method").onchange=drawFields;drawFields();
+$("calcVal").onclick=()=>{
+  const m=M[$("method").value],v={},r={};
+  m.f.forEach(f=>{const e=$("f_"+f[0]);r[f[0]]=e.value;v[f[0]]=parseFloat(e.value)||0});
+  const out=m.c(v,r);$("valRes").innerHTML=`<div class="res">${out}</div>`};
+
+/* ---------- Tools: distance + converter ---------- */
+const hav=(a,b)=>{const R=6371008.8,q=x=>x*Math.PI/180,dl=q(b.lat-a.lat),dg=q(b.lng-a.lng),
+  h=Math.sin(dl/2)**2+Math.cos(q(a.lat))*Math.cos(q(b.lat))*Math.sin(dg/2)**2;return 2*R*Math.asin(Math.sqrt(h))};
 function getPos(ok,bad){
-  if(!navigator.geolocation){bad('Location is not supported on this device.');return}
-  navigator.geolocation.getCurrentPosition(ok,e=>bad(
-    e.code===1?'Location is blocked. Allow Location for PropMeasure: Phone Settings > Apps > PropMeasure > Permissions > Location.':
-    e.code===3?'Location timed out. Turn on GPS, go outside, and try again.':'Could not get your location. Turn on GPS and try again.'),
-    {enableHighAccuracy:true,timeout:20000,maximumAge:0});
+  if(!navigator.geolocation){bad("Location is not supported on this device.");return}
+  navigator.geolocation.getCurrentPosition(ok,e=>bad(e.code===1?"Location is blocked. Allow Location for this app in phone settings.":e.code===3?"Location timed out. Turn on GPS and try again.":"Could not get your location."),{enableHighAccuracy:true,timeout:20000,maximumAge:0})}
+document.querySelectorAll("[data-loc]").forEach(b=>b.onclick=()=>{const p=b.dataset.loc;
+  getPos(x=>{$(p+"lat").value=x.coords.latitude.toFixed(6);$(p+"lng").value=x.coords.longitude.toFixed(6)},alert)});
+$("calcDist").onclick=()=>{
+  const v=["alat","alng","blat","blng"].map(i=>parseFloat($(i).value));
+  if(v.some(isNaN)){$("distRes").innerHTML='<div class="res">Please fill in both points.</div>';return}
+  const m=hav({lat:v[0],lng:v[1]},{lat:v[2],lng:v[3]});
+  $("distRes").innerHTML=`<div class="res">${big(fmt(m/1000)," km")}<small>${fmt(m)} m · ${fmt(m*3.28084)} ft · ${fmt(m/1609.344)} miles<br>Straight-line distance; roads will be longer.</small></div>`};
+const CAT={L:{Metres:1,Kilometres:1000,Feet:.3048,Yards:.9144,Miles:1609.344,Centimetres:.01,Inches:.0254},
+ A:{"Square metres":1,"Square feet":.09290304,"Square yards":.83612736,Hectares:1e4,Acres:4046.8564224,"Square kilometres":1e6,"Plot (50×100 ft)":464.5152,"Plot (60×120 ft)":668.9019,"Plot (450 m²)":450,"Plot (600 m²)":600}};
+function fillCat(){const k=Object.keys(CAT[$("ct").value]),o=k.map(x=>`<option>${x}</option>`).join("");$("cf").innerHTML=o;$("cto").innerHTML=o;$("cto").value=k[1];conv()}
+function conv(){
+  const C=CAT[$("ct").value],v=parseFloat($("cv").value);if(isNaN(v)){$("cRes").textContent="Enter a value.";return}
+  const b=v*C[$("cf").value];$("cRes").innerHTML=big(fmt(b/C[$("cto").value],6)," "+$("cto").value.toLowerCase())+"<small>"+Object.keys(C).map(k=>fmt(b/C[k],6)+" "+k.toLowerCase()).join("<br>")+"</small>"}
+$("ct").onchange=fillCat;$("cv").oninput=conv;$("cf").onchange=conv;$("cto").onchange=conv;fillCat();
+
+/* ---------- Map ---------- */
+let gmap=null,mp=[],dots=[],line=null,poly=null,meDot=null;
+const polyArea=P=>{const la=P.reduce((s,p)=>s+p.lat,0)/P.length,k=111320,
+  xs=P.map(p=>[(p.lng-P[0].lng)*k*Math.cos(la*Math.PI/180),(p.lat-P[0].lat)*k]);let A=0,per=0;
+  xs.forEach((p,i)=>{const q=xs[(i+1)%xs.length];A+=p[0]*q[1]-q[0]*p[1];per+=Math.hypot(q[0]-p[0],q[1]-p[1])});return{area:Math.abs(A)/2,per}};
+const mf=m=>m<1000?Math.round(m)+" m":(m/1000).toFixed(2)+" km";
+function openMap(){
+  if(typeof L==="undefined"){$("mTotal").textContent="Map library did not load. Check your internet.";return}
+  if(gmap){setTimeout(()=>gmap.invalidateSize(),60);return}
+  gmap=L.map("map").setView([9.9,8.9],6);
+  const sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:21,maxNativeZoom:19,attribution:"Imagery © Esri"}).addTo(gmap);
+  const st=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:21,maxNativeZoom:19,attribution:"© OpenStreetMap"});
+  L.control.layers({Satellite:sat,Streets:st}).addTo(gmap);
+  gmap.on("click",e=>{mp.push(e.latlng);dots.push(L.circleMarker(e.latlng,{radius:6,fillOpacity:1}).addTo(gmap));refresh()});
 }
-window.useLoc=p=>getPos(pos=>{$(p+'lat').value=pos.coords.latitude.toFixed(6);$(p+'lng').value=pos.coords.longitude.toFixed(6)},alert);
-window.markHere=()=>getPos(p=>addPt(+p.coords.latitude.toFixed(6),+p.coords.longitude.toFixed(6)),alert);
-let meDot=null,meCirc=null;
-function locateMe(){
-  $('mmsg').textContent='Finding your location…';
-  getPos(p=>{
-    const ll=[p.coords.latitude,p.coords.longitude],t=ll.map(x=>x.toFixed(6)).join(', ');
-    if(meDot){gmap.removeLayer(meDot);gmap.removeLayer(meCirc)}
-    meCirc=L.circle(ll,{radius:p.coords.accuracy,weight:1}).addTo(gmap);
-    meDot=L.circleMarker(ll,{radius:8,color:'#fff',fillColor:'#1a73e8',fillOpacity:1,weight:3}).addTo(gmap);
-    gmap.setView(ll,18);
-    $('mmsg').innerHTML='Your coordinates: <b>'+t+'</b> (±'+Math.round(p.coords.accuracy)+' m)<br><a href="#" id="cpy">Copy</a> · <a target="_blank" href="https://www.google.com/maps?q='+t.replace(', ',',')+'">Open in Google Maps</a>';
-    $('cpy').onclick=e=>{e.preventDefault();navigator.clipboard&&navigator.clipboard.writeText(t);$('cpy').textContent='Copied'};
-  },m=>{$('mmsg').textContent=m});
+function refresh(){
+  if(line){gmap.removeLayer(line);line=null}if(poly){gmap.removeLayer(poly);poly=null}
+  if(mp.length>1)line=L.polyline(mp,{weight:4}).addTo(gmap);
+  if(mp.length>2)poly=L.polygon(mp,{weight:0,fillOpacity:.2}).addTo(gmap);
+  $("mMsg").textContent="";$("mRes").innerHTML="";
+  if(mp.length<2){$("mTotal").textContent="Tap the map to add points";$("mDet").textContent="Points: "+mp.length;return}
+  let s=0;for(let i=1;i<mp.length;i++)s+=hav(mp[i-1],mp[i]);
+  $("mTotal").textContent="Total: "+mf(s);$("mDet").textContent="Points: "+mp.length;
+  if(mp.length>2){const r=polyArea(mp);showArea("mRes",r.area,r.per,"Closes from last point to first.")}
 }
-const oOpen=openMap;
-window.openMap=function(){oOpen();if(gmap&&!gmap._pm){gmap._pm=1;$('mme').onclick=locateMe;locateMe()}};
-})();
+$("mUndo").onclick=()=>{if(!mp.length)return;mp.pop();gmap.removeLayer(dots.pop());refresh()};
+$("mClear").onclick=()=>{mp=[];dots.forEach(d=>gmap.removeLayer(d));dots=[];refresh()};
+$("mMe").onclick=()=>{$("mMsg").textContent="Finding your location…";
+  getPos(p=>{const ll=[p.coords.latitude,p.coords.longitude],t=ll.map(x=>x.toFixed(6)).join(", ");
+    if(meDot)gmap.removeLayer(meDot);meDot=L.circleMarker(ll,{radius:8,color:"#fff",fillColor:"#1a73e8",fillOpacity:1,weight:3}).addTo(gmap);
+    gmap.setView(ll,18);$("mMsg").textContent="Your coordinates: "+t+" (±"+Math.round(p.coords.accuracy)+" m)"},m=>{$("mMsg").textContent=m})};
+$("mSave").onclick=()=>{if(mp.length<3){$("mMsg").textContent="Add at least 3 points to save a plot.";return}
+  addPlot("Map plot "+(plots.length+1),polyArea(mp).area);$("mMsg").textContent="Saved. See it under Land or Home."};
+
+/* ---------- Profile ---------- */
+$("saveName").onclick=async()=>{const n=$("meName").value.trim(),m=$("meMsg");m.style.color="";if(!n){m.textContent="Enter a name.";return}
+  try{await user.updateProfile({displayName:n});$("hName").textContent=n;m.style.color="#0f766e";m.textContent="Name updated."}catch(e){m.textContent=fe(e)}};
+$("savePass").onclick=async()=>{const p=$("mePass").value,m=$("meMsg");m.style.color="";if(p.length<8){m.textContent="Password must be at least 8 characters.";return}
+  try{await user.updatePassword(p);$("mePass").value="";m.style.color="#0f766e";m.textContent="Password updated."}catch(e){m.textContent=fe(e)}};
+$("del").onclick=async()=>{if(!confirm("Delete your account and saved plots? This cannot be undone."))return;
+  try{const k=pkey();await user.delete();try{localStorage.removeItem(k)}catch(e){}}catch(e){$("meMsg").style.color="";$("meMsg").textContent=fe(e)}};
+
+/* ---------- Pro Suite: projects, inspections and reports ---------- */
+const INSPECTION_SECTIONS = [
+ ["Site and external areas",["Site access and drainage","Boundary walls / fencing / gates","External paving and parking","Landscaping and vegetation","External walls and finishes","Dampness / visible water penetration"]],
+ ["Structural elements",["Foundation (visible evidence only)","Columns and beams","Walls and partitions","Floors and floor finishes","Roof structure and covering","Ceilings"]],
+ ["Building components",["Doors and frames","Windows and glazing","Staircases / handrails","Balconies / terraces","Painting and decoration"]],
+ ["Building services",["Electrical installations (visual check)","Plumbing and water supply","Sanitary fittings and drainage","Ventilation / air conditioning","Fire safety equipment / exits"]],
+ ["Other observations",["Evidence of cracks or movement","Pest / termite activity","Signs of leakage","General cleanliness and maintenance"]]
+];
+const projectsKey=()=>"pm_projects_"+(user?user.uid:"guest");
+const inspectionsKey=()=>"pm_inspections_"+(user?user.uid:"guest");
+let projects=[],inspections=[],activeReport=null,inspectionPhotos=[];
+function safeLoad(k){try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(e){return[]}}
+function safeSave(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+function loadProData(){projects=safeLoad(projectsKey());inspections=safeLoad(inspectionsKey());}
+function renderInspectionFields(){
+ $("inspectionItems").innerHTML=INSPECTION_SECTIONS.map((sec,si)=>`<div class="report-line"><b>${esc(sec[0])}</b>${sec[1].map((item,i)=>`<div style="padding:7px 0;border-bottom:1px solid #f1eef7"><label>${esc(item)}</label><select data-ins-status="${si}-${i}"><option value="Not assessed">Not assessed</option><option value="Satisfactory">Satisfactory</option><option value="Minor defect">Minor defect</option><option value="Major defect">Major defect</option><option value="Not applicable">Not applicable</option></select><textarea data-ins-note="${si}-${i}" rows="2" placeholder="Observation / evidence / location (if applicable)"></textarea></div>`).join("")}</div>`).join("");
+}
+function getInspectionForm(){
+ const v=id=>$(id).value.trim();
+ const items=[];
+ document.querySelectorAll("[data-ins-status]").forEach(sel=>{
+  const key=sel.dataset.insStatus, note=document.querySelector(`[data-ins-note="${key}"]`).value.trim();
+  const [si,i]=key.split("-").map(Number);items.push({section:INSPECTION_SECTIONS[si][0],item:INSPECTION_SECTIONS[si][1][i],status:sel.value,note});
+ });
+ return {id:"insp_"+Date.now(),title:v("inTitle"),type:v("inType"),date:v("inDate"),address:v("inAddress"),client:v("inClient"),inspector:v("inInspector"),weather:v("inWeather"),scope:v("inScope"),items,overall:v("inOverall"),defects:v("inDefects"),recommendations:v("inRecommendations"),limitations:v("inLimitations"),conclusion:v("inConclusion"),photos:inspectionPhotos.slice(0,8),createdAt:new Date().toISOString()};
+}
+function resetInspection(){
+ ["inTitle","inAddress","inClient","inInspector","inWeather","inScope","inDefects","inRecommendations","inLimitations","inConclusion"].forEach(id=>$(id).value="");
+ $("inDate").value=new Date().toISOString().slice(0,10);$("inOverall").value="";
+ document.querySelectorAll("[data-ins-status]").forEach(x=>x.value="Not assessed");
+ document.querySelectorAll("[data-ins-note]").forEach(x=>x.value="");
+ inspectionPhotos=[];$("inPhotos").value="";$("photoPreview").innerHTML="";
+}
+function renderProjects(){
+ $("projectList").innerHTML=projects.length?projects.map(p=>`<div class="rec"><span><b>${esc(p.name)}</b><br><small>${esc(p.type)} · ${esc(p.location||"No location")}</small></span><button type="button" data-pr-del="${p.id}">✕</button></div>`).join(""):'<div class="note">No projects yet. Create your first project above.</div>';
+ document.querySelectorAll("[data-pr-del]").forEach(b=>b.onclick=()=>{if(confirm("Delete this project?")){projects=projects.filter(p=>p.id!==b.dataset.prDel);safeSave(projectsKey(),projects);renderProjects();renderProSummary()}});
+}
+function renderReports(){
+ $("reportList").innerHTML=inspections.length?inspections.slice().reverse().map(r=>`<div class="rec"><span><b>${esc(r.title||"Property inspection")}</b><br><small>${esc(r.address||"No address")} · ${esc(r.date||"No date")}</small></span><button type="button" data-report="${r.id}">Open</button></div>`).join(""):'<div class="note">No inspection reports saved yet.</div>';
+ document.querySelectorAll("[data-report]").forEach(b=>b.onclick=()=>openReport(b.dataset.report));
+}
+function renderProSummary(){
+ const bits=[];if(projects.length)bits.push(`${projects.length} project(s)`);if(inspections.length)bits.push(`${inspections.length} inspection report(s)`);
+ $("proRecent").textContent=bits.length?bits.join(" · "):"No projects or inspections yet.";
+}
+function openReport(id){
+ activeReport=inspections.find(r=>r.id===id);if(!activeReport)return;
+ const r=activeReport,groups={};r.items.forEach(x=>(groups[x.section]??=[]).push(x));
+ const field=(label,value)=>`<div class="report-line"><b>${label}</b><span>${esc(value||"Not provided")}</span></div>`;
+ $("reportPaper").innerHTML=`<div style="text-align:center;border-bottom:3px solid #5430a6;padding-bottom:14px;margin-bottom:14px"><div style="font-size:12px;letter-spacing:2px;color:#6b6480;font-weight:800">PROP MEASURE PROFESSIONAL</div><h2 style="font-size:23px;margin:7px 0">PROPERTY INSPECTION REPORT</h2><div>${esc(r.title||"Property condition inspection")}</div></div>
+ <h3>1. Property and inspection particulars</h3>${field("Property address",r.address)}${field("Property type",r.type)}${field("Client / owner",r.client)}${field("Inspection date",r.date)}${field("Inspector",r.inspector)}${field("Weather / site conditions",r.weather)}
+ <h3 style="margin-top:17px">2. Purpose and scope</h3>${field("Purpose and scope",r.scope)}
+ <h3 style="margin-top:17px">3. Detailed condition assessment</h3>${Object.keys(groups).map(g=>`<h4 style="margin:13px 0 5px;color:#5430a6">${esc(g)}</h4>${groups[g].map(x=>`<div class="report-line"><b>${esc(x.item)} — ${esc(x.status)}</b><span>${esc(x.note||"No additional observation recorded.")}</span></div>`).join("")}`).join("")}
+ <h3 style="margin-top:17px">4. Overall condition</h3>${field("Assessment",r.overall)}
+ <h3 style="margin-top:17px">5. Defects and safety concerns</h3>${field("Findings",r.defects)}
+ <h3 style="margin-top:17px">6. Recommendations and remedial actions</h3>${field("Recommended actions",r.recommendations)}
+ <h3 style="margin-top:17px">7. Limitations</h3>${field("Limitations / inaccessible areas",r.limitations)}
+ <h3 style="margin-top:17px">8. Photographic record</h3><div style="display:flex;flex-wrap:wrap;gap:8px">${(r.photos||[]).map(src=>`<img src="${src}" style="width:140px;max-height:120px;object-fit:cover;border:1px solid #ddd;border-radius:5px">`).join("")||"No photographs attached."}</div>
+ <h3 style="margin-top:17px">9. Inspector's conclusion</h3>${field("Conclusion",r.conclusion)}
+ <p style="font-size:10px;color:#777;margin-top:22px;border-top:1px solid #ddd;padding-top:9px">Prepared using PropMeasure Professional. This report records visible observations within the stated inspection scope. Concealed elements and specialist tests are not confirmed unless expressly stated. Professional judgement and any required specialist investigation should be applied before relying on the findings.</p>`;
+ go("inspection-report");
+}
+$("prSave").onclick=()=>{
+ const name=$("prName").value.trim();if(!name){$("prMsg").textContent="Enter a project name.";return}
+ projects.push({id:"pr_"+Date.now(),name,client:$("prClient").value.trim(),type:$("prType").value,location:$("prLocation").value.trim(),date:$("prDate").value,budget:$("prBudget").value,scope:$("prScope").value.trim()});
+ safeSave(projectsKey(),projects);["prName","prClient","prLocation","prDate","prBudget","prScope"].forEach(id=>$(id).value="");$("prMsg").textContent="Project saved on this device.";renderProjects();renderProSummary();
+};
+$("inPhotos").onchange=async e=>{
+ inspectionPhotos=[];const files=[...e.target.files].slice(0,8);
+ for(const f of files){if(!f.type.startsWith("image/"))continue;
+  const data=await new Promise(resolve=>{const rd=new FileReader();rd.onload=()=>resolve(rd.result);rd.readAsDataURL(f)});
+  inspectionPhotos.push(data);
+ }
+ $("photoPreview").innerHTML=inspectionPhotos.map(x=>`<img src="${x}" alt="Inspection photograph">`).join("");
+};
+$("inSave").onclick=()=>{
+ const r=getInspectionForm();if(!r.title||!r.address||!r.date){$("inMsg").textContent="Inspection title, property address and date are required.";return}
+ inspections.push(r);
+ if(!safeSave(inspectionsKey(),inspections)){$("inMsg").textContent="Storage is full. Reduce photographs and try again.";inspections.pop();return}
+ $("inMsg").textContent="Inspection saved on this device. Open Reports to review or export it.";
+ renderReports();renderProSummary();resetInspection();
+};
+$("inCancel").onclick=()=>{if(confirm("Discard this inspection form?")){resetInspection();go("pro")}};
+$("reportPdf").onclick=()=>window.print();
+$("reportBackup").onclick=async()=>{
+ if(!activeReport)return;
+ const msg=$("reportMsg");msg.textContent="Preparing backup…";
+ try{
+  if(typeof firebase.firestore==="function"){
+   const db=firebase.firestore();
+   await db.collection("users").doc(user.uid).collection("inspectionReports").doc(activeReport.id).set(activeReport);
+   msg.textContent="Cloud backup completed successfully.";
+  }else throw new Error("Firestore is not available");
+ }catch(e){
+  const blob=new Blob([JSON.stringify(activeReport,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=(activeReport.title||"inspection-report").replace(/[^a-z0-9-_]/gi,"_")+".json";a.click();URL.revokeObjectURL(url);
+  msg.textContent="Cloud backup is not configured. A local JSON backup has been downloaded instead. Enable Firestore and configure secure rules for cloud backup.";
+ }
+};
+/* Multi-point distance survey using GPS fixes or manually entered coordinates. */
+let surveyPoints=[];
+function renderSurveyPoints(){
+ const el=$("surveyPoints");if(!el)return;
+ el.innerHTML=surveyPoints.map((p,i)=>`<div class="point-row"><div><b>Point ${i+1}</b><div class="field-help">${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}</div></div><div class="field-help">${p.source||"Manual point"}</div><button type="button" class="back-btn" data-point-remove="${i}">×</button></div>`).join("");
+ el.querySelectorAll("[data-point-remove]").forEach(b=>b.onclick=()=>{surveyPoints.splice(+b.dataset.pointRemove,1);renderSurveyPoints();calculateSurvey()});
+}
+function calculateSurvey(){
+ if(surveyPoints.length<2){$("surveyResult").innerHTML='<div class="note">Add at least two points to calculate distance.</div>';return}
+ let total=0,rows=[];for(let i=1;i<surveyPoints.length;i++){const d=hav(surveyPoints[i-1],surveyPoints[i]);total+=d;rows.push(`Point ${i} → ${i+1}: ${fmt(d)} m`)}
+ $("surveyResult").innerHTML=`<div class="res">${big(fmt(total/1000)+" km")}<small>${fmt(total)} metres · ${fmt(total*3.28084)} feet<br>${rows.join("<br>")}<br><br>Straight-line segment distances between recorded GPS points.</small></div>`;
+}
+function addSurveyGps(){
+ $("surveyMsg").textContent="Acquiring current GPS location…";
+ getPos(p=>{surveyPoints.push({lat:p.coords.latitude,lng:p.coords.longitude,source:"GPS ±"+Math.round(p.coords.accuracy)+" m"});renderSurveyPoints();calculateSurvey();$("surveyMsg").textContent="GPS point added. Move to the next point and repeat."},m=>$("surveyMsg").textContent=m);
+}
+function addSurveyManual(){
+ const lat=parseFloat($("surveyLat").value),lng=parseFloat($("surveyLng").value);
+ if(!isFinite(lat)||!isFinite(lng)||Math.abs(lat)>90||Math.abs(lng)>180){$("surveyMsg").textContent="Enter valid latitude and longitude.";return}
+ surveyPoints.push({lat,lng,source:"Manual coordinate"});$("surveyLat").value="";$("surveyLng").value="";renderSurveyPoints();calculateSurvey();$("surveyMsg").textContent="Coordinate added.";
+}
+function installSurveyUI(){
+ const tools=$("v-tools"),old=$("multiSurvey");if(old)return;
+ const card=document.createElement("div");card.className="card";card.id="multiSurvey";
+ card.innerHTML=`<h2>Multi-point GPS distance survey</h2><p class="note">Stand at the first location and tap Add current GPS point. Move to each next location and repeat. The app calculates every segment and the cumulative straight-line distance.</p><button class="btn" id="addGpsPoint">＋ Add current GPS point</button><label>Add coordinates manually (optional)</label><div class="row"><input id="surveyLat" type="number" step="any" placeholder="Latitude"><input id="surveyLng" type="number" step="any" placeholder="Longitude"></div><button class="btn alt" id="addManualPoint">Add coordinate</button><div id="surveyPoints"></div><div id="surveyResult"></div><div class="note" id="surveyMsg"></div><div class="row"><button class="btn alt" id="undoSurvey">Undo last</button><button class="btn alt" id="clearSurvey">Clear points</button></div>`;
+ tools.appendChild(card);
+ $("addGpsPoint").onclick=addSurveyGps;$("addManualPoint").onclick=addSurveyManual;
+ $("undoSurvey").onclick=()=>{surveyPoints.pop();renderSurveyPoints();calculateSurvey()};
+ $("clearSurvey").onclick=()=>{surveyPoints=[];renderSurveyPoints();calculateSurvey();$("surveyMsg").textContent="Points cleared."};
+}
+const oldGo=go;
+go=function(v){if(v==="tools")installSurveyUI();if(v==="projects")renderProjects();if(v==="reports")renderReports();if(v==="pro")renderProSummary();oldGo(v)};
+renderInspectionFields();
+$("inDate").value=new Date().toISOString().slice(0,10);
+$("prDate").value=new Date().toISOString().slice(0,10);
+
+/* Pro AI calls a secure server endpoint; never expose a provider API key in browser code. */
+const PRO_AI_ENDPOINT=""; // Set to your deployed HTTPS backend endpoint.
+$("aiAsk").onclick=async()=>{
+ const prompt=$("aiPrompt").value.trim(),status=$("aiStatus"),answer=$("aiAnswer");
+ if(!prompt){status.textContent="Enter a question or property details first.";return}
+ if(!PRO_AI_ENDPOINT){status.textContent="Pro AI is ready for connection, but its secure backend endpoint has not been configured. Do not paste an AI API key into this file.";answer.textContent="To activate Pro AI, deploy a small secure backend that authenticates the signed-in user and calls your chosen AI provider. Then set PRO_AI_ENDPOINT to that HTTPS endpoint. This protects your API key and allows usage limits and access control.";return}
+ status.textContent="Pro AI is thinking…";$("aiAsk").disabled=true;
+ try{
+  const response=await fetch(PRO_AI_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+await user.getIdToken()},body:JSON.stringify({mode:$("aiMode").value,prompt})});
+  if(!response.ok)throw new Error("AI service returned "+response.status);
+  const data=await response.json();answer.textContent=data.answer||data.output||"The AI service returned no answer.";status.textContent="Response received.";
+ }catch(e){status.textContent="Could not reach Pro AI: "+e.message}finally{$("aiAsk").disabled=false}
+};
+
+/* Entry animation and re-authentication when the app is backgrounded.
+   Browsers cannot detect every app-exit scenario; visibility changes are used where supported. */
+let splashTimer=null;
+function showEntry(){
+ const sp=$("splash");sp.classList.remove("hide","fade");
+ clearTimeout(splashTimer);splashTimer=setTimeout(()=>{sp.classList.add("fade");setTimeout(()=>sp.classList.add("hide"),600)},1900);
+}
+const originalAuthState=auth.onAuthStateChanged.bind(auth);
+originalAuthState(u=>{
+ if(u){loadProData();renderProjects();renderReports();renderProSummary()}
+});
+document.addEventListener("visibilitychange",()=>{
+ if(document.visibilityState==="hidden"&&user){
+  auth.signOut().catch(()=>{});
+ }else if(document.visibilityState==="visible"){
+  showEntry();
+ }
+});
+window.addEventListener("pageshow",()=>showEntry());
+
+
+/* Password visibility: toggle between visible and hidden text. */
+document.querySelectorAll("[data-toggle-password]").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  const field=document.getElementById(btn.dataset.togglePassword);
+  const reveal=field.type==="password";
+  field.type=reveal?"text":"password";
+  btn.textContent=reveal?"Hide":"Show";
+  btn.setAttribute("aria-label",reveal?"Hide password":"Show password");
+ });
+});
+
+/* Bright / dark appearance preference, saved on this device. */
+function applyTheme(mode){
+ const dark=mode==="dark";
+ document.body.classList.toggle("dark-mode",dark);
+ const label=document.getElementById("themeLabel"),toggle=document.getElementById("themeToggle");
+ if(label)label.textContent=dark?"Dark mode":"Bright mode";
+ if(toggle)toggle.textContent=dark?"☀️ Bright":"🌙 Dark";
+}
+let savedTheme="bright";
+try{savedTheme=localStorage.getItem("pm_theme")||"bright"}catch(e){}
+applyTheme(savedTheme);
+document.addEventListener("click",e=>{
+ if(e.target&&e.target.id==="themeToggle"){
+  const next=document.body.classList.contains("dark-mode")?"bright":"dark";
+  try{localStorage.setItem("pm_theme",next)}catch(err){}
+  applyTheme(next);
+ }
+});
 
 </script>
-
-<script>
-(function(){
-  const auth=document.getElementById('auth');
-  const nav=document.getElementById('tabs');
-  if(!auth||!nav)return;
-  // Premium drawer branding and theme control.
-  nav.insertAdjacentHTML('afterbegin','<div class="pm-drawer-brand"><span class="pm-brand-mark">⌂</span><span>PropMeasure</span></div>');
-  const logout=document.getElementById('lo');
-  if(logout)logout.insertAdjacentHTML('beforebegin','<div class="pm-theme-row"><span>☾ &nbsp; Dark mode</span><button class="pm-switch" id="pmThemeToggle" type="button" aria-label="Toggle dark mode" aria-pressed="false"><span></span></button></div>');
-  const toggle=document.getElementById('pmThemeToggle');
-  function setTheme(dark){document.body.classList.toggle('pm-dark',dark);if(toggle)toggle.setAttribute('aria-pressed',dark?'true':'false');try{localStorage.setItem('pm_theme',dark?'dark':'light')}catch(e){}}
-  let dark=false;try{dark=localStorage.getItem('pm_theme')==='dark'}catch(e){}
-  setTheme(dark);if(toggle)toggle.addEventListener('click',()=>setTheme(!document.body.classList.contains('pm-dark')));
-  // Intro sequence: animated brand screen, then welcome screen, then the existing auth/dashboard flow.
-  document.body.insertAdjacentHTML('afterbegin',`
-    <div id="pm-intro"><div class="pm-intro-inner"><div class="pm-logo">P</div><div class="pm-wordmark">PropMeasure</div><div class="pm-tagline">Measure · Manage · Value</div><div class="pm-loader"></div></div></div>
-    <div id="pm-welcome"><div class="pm-welcome-inner"><div class="pm-welcome-art"><div class="pm-welcome-symbol">⌂</div></div><h1>Welcome to PropMeasure</h1><p>Your professional workspace for land measurement, property valuation, mapping and estate management.</p><button class="pm-start" id="pmContinue">Get Started&nbsp; →</button><div class="pm-welcome-foot">A smarter way to measure and manage property</div></div></div>`);
-  const intro=document.getElementById('pm-intro'),welcome=document.getElementById('pm-welcome');
-  setTimeout(()=>{intro.style.display='none';welcome.style.display='flex'},1900);
-  document.getElementById('pmContinue').addEventListener('click',()=>{
-    welcome.style.display='none';
-    // If there is no active session, show the original PropMeasure registration/login unchanged.
-    if(!document.body.classList.contains('authed') && !auth.classList.contains('hide'))auth.style.display='flex';
-    else auth.style.display='';
-  });
-  // Keep original logout/login behavior; remove the temporary inline display override when session changes.
-  const obs=new MutationObserver(()=>{if(auth.classList.contains('hide'))auth.style.display='';});
-  obs.observe(auth,{attributes:true,attributeFilter:['class']});
-})();
-</script>
-
-</body>
-</html>
+</body></html>
