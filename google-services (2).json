@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "271658713289",
+    "project_id": "propmeasure-83ca0",
+    "storage_bucket": "propmeasure-83ca0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271658713289:android:ab71352436594742a78d18",
+        "android_client_info": {
+          "package_name": "co.median.android.zpaxwdp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPOpxWUBspgp0NH3jQz3JTD-DFZVV10jw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271658713289:android:8a4c4ef2faa51b3fa78d18",
+        "android_client_info": {
+          "package_name": "com.propmeasure"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPOpxWUBspgp0NH3jQz3JTD-DFZVV10jw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
