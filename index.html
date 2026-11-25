@@ -85,6 +85,10 @@ input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--l);bor
 
 <style>
 .password-wrap{position:relative;display:flex;align-items:center}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--m);font-size:11px;font-weight:700}
+.auth-divider:before,.auth-divider:after{content:"";height:1px;background:var(--l);flex:1}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff!important;color:#302b3f!important;border:1px solid #dadce0!important;box-shadow:0 1px 2px #00000012}
+.google-g{font-size:18px;font-weight:900;color:#4285f4;background:conic-gradient(from -45deg,#4285f4 0 25%,#34a853 0 50%,#fbbc05 0 75%,#ea4335 0);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .password-wrap input{padding-right:76px}
 .password-toggle{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:0;background:#f0eaff;color:#5430a6;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:800;cursor:pointer}
 body.dark-mode{--bg:#11101a;--t:#f2efff;--m:#b8b0ce;--l:#39334d;background:var(--bg);color:var(--t)}
@@ -135,8 +139,11 @@ body.dark-mode .tabs button.on{background:#7546e8;color:#fff}
   <div id="nameWrap" class="hide"><label>Full name</label><input id="aName" autocomplete="name"></div>
   <label>Email</label><input id="aEmail" type="email" autocomplete="email">
   <label>Password</label><div class="password-wrap"><input id="aPass" type="password" autocomplete="current-password" placeholder="At least 8 characters"><button class="password-toggle" type="button" data-toggle-password="aPass">Show</button></div>
+  <div id="confirmWrap" class="hide"><label>Confirm password</label><div class="password-wrap"><input id="aConfirm" type="password" autocomplete="new-password" placeholder="Re-enter your password"><button class="password-toggle" type="button" data-toggle-password="aConfirm">Show</button></div></div>
   <button class="btn" id="aGo" type="button">Log in</button>
   <a href="#" id="forgot">Forgot password?</a>
+  <div class="auth-divider"><span>OR</span></div>
+  <button class="btn google-btn" id="googleSignIn" type="button"><span class="google-g">G</span> Continue with Google</button>
   <div class="err" id="aMsg"></div>
 </div></div>
 
@@ -254,8 +261,11 @@ body.dark-mode .tabs button.on{background:#7546e8;color:#fff}
   <div class="card" style="padding:6px"><div id="map"></div></div>
   <div class="card"><div id="mTotal" style="font-size:18px;font-weight:800">Tap the map to add points</div><div class="note" id="mDet"></div><div id="mRes"></div>
     <div class="row"><button class="btn alt" id="mUndo" type="button">Undo</button><button class="btn alt" id="mClear" type="button">Clear</button></div>
-    <div class="row"><button class="btn alt" id="mMe" type="button">My location</button><button class="btn alt" id="mSave" type="button">Save as plot</button></div>
-    <div class="note" id="mMsg"></div></div>
+    <div class="row"><button class="btn alt" id="mMe" type="button">Capture my GPS point</button><button class="btn alt" id="mSave" type="button">Save as plot</button></div>
+    <div class="row"><div><label>Latitude (decimal degrees)</label><input id="mapLatManual" inputmode="decimal" placeholder="e.g. 9.0765"></div><div><label>Longitude (decimal degrees)</label><input id="mapLngManual" inputmode="decimal" placeholder="e.g. 7.3986"></div></div>
+    <button class="btn alt" id="mapAddManual" type="button">Add coordinate point</button>
+    <button class="btn alt" id="mapExportCsv" type="button">Export coordinates (CSV)</button>
+    <div id="mapPointList" class="field-help"></div><div class="note" id="mMsg"></div></div>
 </section>
 
 <section id="v-tools" class="v hide">
@@ -299,6 +309,8 @@ body.dark-mode .tabs button.on{background:#7546e8;color:#fff}
 "use strict";
 const $=id=>document.getElementById(id);
 const fmt=(n,d=2)=>isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:d}):"–";
+/* Allow comma-grouped numeric input while keeping calculations numeric. */
+const nativeParseFloat=window.parseFloat.bind(window);window.parseFloat=value=>nativeParseFloat(String(value??"").replace(/,/g,""));
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const big=(x,u="")=>`<div class="big">${x}${u}</div>`;
 
@@ -312,27 +324,56 @@ firebase.initializeApp({
   appId:"1:271658713289:web:74f3460f9a817faea78d18"
 });
 const auth=firebase.auth();
-const FE={"auth/email-already-in-use":"That email is already registered. Use Log in.","auth/invalid-credential":"Wrong email or password.","auth/wrong-password":"Wrong email or password.","auth/user-not-found":"No account found with that email.","auth/invalid-email":"Enter a valid email.","auth/weak-password":"Password is too weak.","auth/too-many-requests":"Too many attempts. Try again later.","auth/network-request-failed":"No internet connection.","auth/requires-recent-login":"Log out, log in again, then retry.","auth/unauthorized-domain":"This website is not in Firebase Authorized domains."};
+const FE={"auth/email-already-in-use":"That email is already registered. Use Log in.","auth/invalid-credential":"Wrong email or password.","auth/wrong-password":"Wrong email or password.","auth/user-not-found":"No account found with that email.","auth/invalid-email":"Enter a valid email.","auth/weak-password":"Password is too weak.","auth/too-many-requests":"Too many attempts. Try again later.","auth/network-request-failed":"No internet connection.","auth/requires-recent-login":"Log out, log in again, then retry.","auth/unauthorized-domain":"This website is not in Firebase Authorized domains.","auth/account-exists-with-different-credential":"This email already has an account using another sign-in method. Log in with that method first."};
 const fe=e=>FE[e.code]||(e.code?e.code:"Something went wrong.");
 
 let mode="login",user=null;
+const emailPattern=/^\S+@\S+\.\S+$/;
+function setAuthMessage(message,success=false){const msg=$("aMsg");msg.style.color=success?"#0f766e":"";msg.textContent=message}
 function setMode(m){mode=m;$("tLogin").classList.toggle("on",m==="login");$("tReg").classList.toggle("on",m==="reg");
-  $("nameWrap").classList.toggle("hide",m!=="reg");$("aGo").textContent=m==="reg"?"Create account":"Log in";
-  $("forgot").classList.toggle("hide",m!=="login");$("aMsg").textContent="";
+  $("nameWrap").classList.toggle("hide",m!=="reg");$("confirmWrap").classList.toggle("hide",m!=="reg");
+  $("aGo").textContent=m==="reg"?"Create account":"Log in";
+  $("forgot").classList.toggle("hide",m!=="login");setAuthMessage("");
   $("aPass").autocomplete=m==="reg"?"new-password":"current-password"}
 $("tLogin").onclick=()=>setMode("login");$("tReg").onclick=()=>setMode("reg");
 $("aGo").onclick=async()=>{
-  const em=$("aEmail").value.trim(),pw=$("aPass").value,msg=$("aMsg");msg.style.color="";msg.textContent="";
-  if(!/^\S+@\S+\.\S+$/.test(em)){msg.textContent="Enter a valid email.";return}
-  if(pw.length<8){msg.textContent="Password must be at least 8 characters.";return}
+  const em=$("aEmail").value.trim(),pw=$("aPass").value;
+  setAuthMessage("");
+  if(!emailPattern.test(em)){setAuthMessage("Enter a valid email address.");return}
+  if(pw.length<8){setAuthMessage("Password must be at least 8 characters.");return}
+  if(mode==="reg"&&pw!==$("aConfirm").value){setAuthMessage("The passwords do not match.");return}
   try{
-    msg.textContent="Please wait…";
+    $("aGo").disabled=true;setAuthMessage(mode==="reg"?"Creating account…":"Signing in…");
     if(mode==="reg"){
-      const nm=$("aName").value.trim();if(!nm){msg.textContent="Enter your name.";return}
-      const c=await auth.createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:nm});
-    }else await auth.signInWithEmailAndPassword(em,pw);
-    msg.textContent="";
-  }catch(e){msg.textContent=fe(e)}
+      const nm=$("aName").value.trim();if(!nm){setAuthMessage("Enter your full name.");return}
+      const credential=await auth.createUserWithEmailAndPassword(em,pw);
+      await credential.user.updateProfile({displayName:nm});
+      let verificationSent=true;
+      try{await credential.user.sendEmailVerification()}catch(_){verificationSent=false}
+      await auth.signOut();
+      $("aPass").value="";$("aConfirm").value="";setMode("login");
+      setAuthMessage(verificationSent?"Account created. We sent a verification link to your email. Verify it, then log in.":"Account created, but the verification email could not be sent. Log in once more to request a new link.",verificationSent);
+    }else{
+      const credential=await auth.signInWithEmailAndPassword(em,pw);
+      if(!credential.user.emailVerified){
+        try{await credential.user.sendEmailVerification()}catch(_){ }
+        await auth.signOut();
+        setAuthMessage("Please verify your email before logging in. We sent a new verification link.");
+        return;
+      }
+      setAuthMessage("");
+    }
+  }catch(e){setAuthMessage(fe(e))}
+  finally{$("aGo").disabled=false}
+};
+const googleProvider=new firebase.auth.GoogleAuthProvider();
+$("googleSignIn").onclick=async()=>{
+  setAuthMessage("");$("googleSignIn").disabled=true;
+  try{await auth.signInWithPopup(googleProvider)}
+  catch(e){
+    const map={"auth/popup-closed-by-user":"Google sign-in was cancelled.","auth/popup-blocked":"Your browser blocked the Google sign-in window. Allow pop-ups and try again.","auth/unauthorized-domain":"Add this website's domain to Firebase Authorized domains."};
+    setAuthMessage(map[e.code]||fe(e));
+  }finally{$("googleSignIn").disabled=false}
 };
 $("forgot").onclick=async ev=>{
   ev.preventDefault();const em=$("aEmail").value.trim(),msg=$("aMsg");msg.style.color="";
@@ -343,6 +384,11 @@ $("forgot").onclick=async ev=>{
 const logout=()=>auth.signOut();$("out").onclick=logout;$("out2").onclick=logout;
 
 auth.onAuthStateChanged(u=>{
+  if(u&&!u.emailVerified&&u.providerData.some(p=>p.providerId==="password")){
+    auth.signOut().catch(()=>{});
+    setAuthMessage("Please verify your email before using PropMeasure. Log in to request a verification link.");
+    return;
+  }
   user=u;const on=!!u;
   ["top","app","nav"].forEach(i=>$(i).classList.toggle("hide",!on));$("auth").classList.toggle("hide",on);
   if(on){plots=loadPlots();$("hName").textContent=u.displayName||u.email;$("meMail").textContent=u.email;$("meName").value=u.displayName||"";go("home");drawPlots()}
@@ -398,7 +444,7 @@ const M={
    const pp=p.map((x,i)=>x/s[i]),a=pp.reduce((x,y)=>x+y,0)/pp.length;return big(fmt(a*v.sub))+`<small>Average ${fmt(a)} per m² (range ${fmt(Math.min(...pp))}–${fmt(Math.max(...pp))})</small>`}},
  cost:{n:"Cost (depreciated replacement)",f:[["land","Land value"],["area","Building area (m²)"],["rate","Replacement cost per m²"],["age","Building age (years)"],["life","Economic life (years)",60]],
   c:v=>{if(!v.area||!v.rate||v.life<=0)return"Enter building area, cost and life.";const g=v.area*v.rate,d=Math.min(1,v.age/v.life),b=g*(1-d);
-   return big(fmt(v.land+b))+`<small>Land ${fmt(v.land)} + building ${fmt(b)} (replacement ${fmt(g)} less ${fmt(d*100)}% depreciation)</small>`}},
+   return big(fmt(v.land+b))+`<small>Land ₦${fmt(v.land)} + building ₦${fmt(b)} (replacement ₦${fmt(g)} less ${fmt(d*100)}% depreciation)</small>`}},
  pa:{n:"Profit account method",f:[["rev","Annual gross receipts"],["pur","Cost of purchases / stock"],["exp","Working expenses"],["tp","Tenant's remuneration & profit"],["cap","Capitalisation rate (%)"]],
   c:v=>{if(!v.rev||v.cap<=0)return"Enter receipts and a cap rate above 0.";const d=v.rev-v.pur-v.exp-v.tp;
    if(d<=0)return"No divisible balance: costs and tenant's profit use up all receipts.";return big(fmt(d/(v.cap/100)))+`<small>Divisible balance ${fmt(d)} ÷ ${v.cap}%</small>`}},
@@ -412,12 +458,13 @@ const M={
 $("method").innerHTML=Object.keys(M).map(k=>`<option value="${k}">${M[k].n}</option>`).join("");
 function drawFields(){
   const m=M[$("method").value];$("valRes").innerHTML="";
-  $("mFields").innerHTML=`<h2>${m.n}</h2>`+m.f.map(f=>`<label>${f[1]}</label>`+(f[2]==="ta"?`<textarea id="f_${f[0]}" rows="3"></textarea>`:`<input id="f_${f[0]}" type="number" step="any" value="${f[3]!==undefined?f[3]:f[2]!==undefined?f[2]:""}">`)).join("")}
+  const nonMoney=new Set(["area","age","life","cap","fee","con","fin","pro","sub"]);
+  $("mFields").innerHTML=`<h2>${m.n}</h2>`+m.f.map(f=>`<label>${f[1]}${nonMoney.has(f[0])?"":" (₦)"}</label>`+(f[2]==="ta"?`<textarea id="f_${f[0]}" rows="3"></textarea>`:`<input id="f_${f[0]}" type="text" inputmode="decimal" data-number="true" value="${f[3]!==undefined?f[3]:f[2]!==undefined?f[2]:""}">`)).join("")}
 $("method").onchange=drawFields;drawFields();
 $("calcVal").onclick=()=>{
   const m=M[$("method").value],v={},r={};
   m.f.forEach(f=>{const e=$("f_"+f[0]);r[f[0]]=e.value;v[f[0]]=parseFloat(e.value)||0});
-  const out=m.c(v,r);$("valRes").innerHTML=`<div class="res">${out}</div>`};
+  let out=m.c(v,r);if(typeof out==="string")out=out.replace('<div class="big">','<div class="big">₦');$("valRes").innerHTML=`<div class="res">${out}</div>`};
 
 /* ---------- Tools: distance + converter ---------- */
 const hav=(a,b)=>{const R=6371008.8,q=x=>x*Math.PI/180,dl=q(b.lat-a.lat),dg=q(b.lng-a.lng),
@@ -455,7 +502,13 @@ function openMap(){
   L.control.layers({Satellite:sat,Streets:st}).addTo(gmap);
   gmap.on("click",e=>{mp.push(e.latlng);dots.push(L.circleMarker(e.latlng,{radius:6,fillOpacity:1}).addTo(gmap));refresh()});
 }
+function renderMapPoints(){
+  const el=$("mapPointList");if(!el)return;
+  el.innerHTML=mp.length?`<b>Recorded coordinates (${mp.length})</b><br>`+mp.map((p,i)=>`<div class="rec"><span>Point ${i+1}: ${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}</span><button type="button" data-map-remove="${i}">Remove</button></div>`).join(""):'No points recorded yet. Tap the map or capture GPS to add a point.';
+  el.querySelectorAll("[data-map-remove]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.mapRemove);mp.splice(i,1);if(dots[i])gmap.removeLayer(dots[i]);dots.splice(i,1);refresh()});
+}
 function refresh(){
+  renderMapPoints();
   if(line){gmap.removeLayer(line);line=null}if(poly){gmap.removeLayer(poly);poly=null}
   if(mp.length>1)line=L.polyline(mp,{weight:4}).addTo(gmap);
   if(mp.length>2)poly=L.polygon(mp,{weight:0,fillOpacity:.2}).addTo(gmap);
@@ -470,7 +523,10 @@ $("mClear").onclick=()=>{mp=[];dots.forEach(d=>gmap.removeLayer(d));dots=[];refr
 $("mMe").onclick=()=>{$("mMsg").textContent="Finding your location…";
   getPos(p=>{const ll=[p.coords.latitude,p.coords.longitude],t=ll.map(x=>x.toFixed(6)).join(", ");
     if(meDot)gmap.removeLayer(meDot);meDot=L.circleMarker(ll,{radius:8,color:"#fff",fillColor:"#1a73e8",fillOpacity:1,weight:3}).addTo(gmap);
-    gmap.setView(ll,18);$("mMsg").textContent="Your coordinates: "+t+" (±"+Math.round(p.coords.accuracy)+" m)"},m=>{$("mMsg").textContent=m})};
+    gmap.setView(ll,18);mp.push(L.latLng(ll[0],ll[1]));dots.push(L.circleMarker(ll,{radius:6,fillOpacity:1,color:"#5430a6"}).addTo(gmap));refresh();
+    $("mMsg").textContent="GPS point captured: latitude "+ll[0].toFixed(6)+", longitude "+ll[1].toFixed(6)+" (accuracy ±"+Math.round(p.coords.accuracy)+" m)"},m=>{$("mMsg").textContent=m})};
+$("mapAddManual").onclick=()=>{const lat=parseFloat($("mapLatManual").value.replace(/,/g,"")),lng=parseFloat($("mapLngManual").value.replace(/,/g,""));if(!isFinite(lat)||!isFinite(lng)||Math.abs(lat)>90||Math.abs(lng)>180){$("mMsg").textContent="Enter valid latitude (−90 to 90) and longitude (−180 to 180).";return}const ll=L.latLng(lat,lng);mp.push(ll);dots.push(L.circleMarker(ll,{radius:6,fillOpacity:1,color:"#5430a6"}).addTo(gmap));gmap.setView(ll,17);$("mapLatManual").value="";$("mapLngManual").value="";refresh();$("mMsg").textContent="Manual coordinate point added."};
+$("mapExportCsv").onclick=()=>{if(!mp.length){$("mMsg").textContent="Capture or add at least one point first.";return}const csv="Point,Latitude,Longitude\n"+mp.map((p,i)=>`${i+1},${p.lat.toFixed(8)},${p.lng.toFixed(8)}`).join("\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="PropMeasure_coordinates.csv";a.click();URL.revokeObjectURL(url);$("mMsg").textContent="Coordinate CSV exported."};
 $("mSave").onclick=()=>{if(mp.length<3){$("mMsg").textContent="Add at least 3 points to save a plot.";return}
   addPlot("Map plot "+(plots.length+1),polyArea(mp).area);$("mMsg").textContent="Saved. See it under Land or Home."};
 
@@ -681,6 +737,17 @@ document.addEventListener("click",e=>{
   applyTheme(next);
  }
 });
+
+/* Thousands separators for numeric entry across existing and dynamically-created fields. */
+function formatGroupedNumber(raw){
+ const v=String(raw??"").replace(/,/g,"").replace(/[^0-9.\-]/g,"");if(!v||v==="-"||v===".")return v;
+ const parts=v.split(".");let whole=parts.shift();const sign=whole.startsWith("-")?"-":"";whole=whole.replace(/-/g,"");whole=whole.replace(/^0+(?=\d)/,"");whole=whole.replace(/\B(?=(\d{3})+(?!\d))/g,",");return sign+whole+(parts.length?"."+parts.join(""):"");
+}
+function prepareNumericField(el){if(!el||el.dataset.groupedReady)return;el.dataset.groupedReady="1";el.dataset.number="true";el.type="text";el.inputMode="decimal";el.autocomplete="off";el.value=formatGroupedNumber(el.value);}
+document.querySelectorAll('input[type="number"],input[data-number="true"]').forEach(prepareNumericField);
+document.addEventListener("focusin",e=>{if(e.target.matches('input[type="number"],input[data-number="true"]'))prepareNumericField(e.target)});
+document.addEventListener("input",e=>{const el=e.target;if(!el.matches('input[type="number"],input[data-number="true"]'))return;prepareNumericField(el);const start=el.selectionStart,old=el.value;const formatted=formatGroupedNumber(old);if(old!==formatted){el.value=formatted;try{el.setSelectionRange(start+(formatted.length-old.length),start+(formatted.length-old.length))}catch(_){}}});
+document.addEventListener("focusout",e=>{const el=e.target;if(el.matches('input[type="number"],input[data-number="true"]')){prepareNumericField(el);el.value=formatGroupedNumber(el.value)}});
 
 </script>
 </body></html>
